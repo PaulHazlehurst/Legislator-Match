@@ -319,12 +319,17 @@ function populateSubsets() {
   });
 }
 
-  ['state', 'issue', 'party', 'chamber'].forEach(id => {
-    document.getElementById(id).addEventListener('change', render);
+  ['state', 'party', 'chamber', 'subset']
+  .forEach(id => {
+    document
+      .getElementById(id)
+      .addEventListener('change', render);
   });
 
+issueSel.addEventListener('change', () => {
+  populateSubsets();
   render();
-}
+});
 
 // Passion score: weighted count of bills on this topic, favoring
 // sponsorships over co-sponsorships and recent years over older ones.
@@ -356,6 +361,7 @@ function computeScore(bills, issue) {
 function render() {
   const state = document.getElementById('state').value;
   const issue = document.getElementById('issue').value;
+  const subset = document.getElementById('subset').value;
   const party = document.getElementById('party').value;
   const chamber = document.getElementById('chamber').value;
 
@@ -366,7 +372,19 @@ function render() {
   if (chamber !== 'any') legislators = legislators.filter(l => l.chamber === chamber);
 
   const scored = legislators
-    .map(l => ({ l, ...computeScore(l.bills, issue) }))
+    .map(l => {
+  const filteredBills =
+    subset === 'any'
+      ? l.bills
+      : l.bills.filter(
+          b => b.subtopic === subset
+        );
+
+  return {
+    l,
+    ...computeScore(filteredBills, issue)
+  };
+})
     .filter(item => item.relevant.length > 0)
     .sort((a, b) => b.score - a.score);
 
