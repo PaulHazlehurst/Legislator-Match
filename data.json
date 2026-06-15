@@ -35,7 +35,7 @@
           "chamber": "senate",
           "district": "5",
           "bills": [
-            { "title": "Small Business Hiring Incentive", "topic": "workforce", "year": 2024, "role": "sponsor", "outcome": "passed" },
+            { "title": "Offshore Wind Expansion Act", "topic": "environment", "subtopic": "renewable-energy", "year": 2025, "role": "sponsor", "outcome": "passed" }
             { "title": "Rural Workforce Development Grant", "topic": "workforce", "year": 2024, "role": "co-sponsor", "outcome": "failed" },
             { "title": "Vocational Education Pilot Program", "topic": "workforce", "year": 2023, "role": "co-sponsor", "outcome": "failed" }
           ]
