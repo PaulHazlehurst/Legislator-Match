@@ -288,6 +288,37 @@ async function init() {
     issueSel.appendChild(opt);
   });
 
+  const subsetSel = document.getElementById('subset');
+
+function populateSubsets() {
+  const selectedIssue = issueSel.value;
+
+  subsetSel.innerHTML =
+    '<option value="any">All subsets</option>';
+
+  const subsets = new Set();
+
+  Object.values(DATA.states).forEach(state => {
+    state.legislators.forEach(leg => {
+      leg.bills.forEach(bill => {
+        if (
+          bill.topic === selectedIssue &&
+          bill.subtopic
+        ) {
+          subsets.add(bill.subtopic);
+        }
+      });
+    });
+  });
+
+  [...subsets].sort().forEach(subtopic => {
+    const opt = document.createElement('option');
+    opt.value = subtopic;
+    opt.textContent = subtopic;
+    subsetSel.appendChild(opt);
+  });
+}
+
   ['state', 'issue', 'party', 'chamber'].forEach(id => {
     document.getElementById(id).addEventListener('change', render);
   });
