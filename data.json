@@ -504,17 +504,7 @@
           "party": "D",
           "chamber": "senate",
           "district": "25",
-          "bills": [
-            {
-              "id": "B0044",
-              "title": "Community College Tuition Assistance Act",
-              "topic": "education",
-              "subtopic": "higher-ed-funding",
-              "year": 2025,
-              "role": "sponsor",
-              "outcome": "passed"
-            }
-          ]
+          "bills": []
         },
         {
           "id": "L014",
