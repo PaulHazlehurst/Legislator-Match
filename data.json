@@ -164,6 +164,24 @@
               "outcome": "failed"
             }
           ]
+        },
+        {
+          "id": "L023",
+          "name": "Pasteur",
+          "party": "D",
+          "chamber": "house",
+          "district": "11A",
+          "bills": [
+            {
+              "id": "B0071",
+              "title": "Correctional Education and Workforce Skills Training Programs - State Correctional Ombudsman and Certified Peer Recovery Specialist Training Program for Incarcerated Individuals",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            }
+          ]
         }
       ]
     }
@@ -236,7 +254,7 @@
     }
   },
   "meta": {
-    "nextLegislatorId": 23,
-    "nextBillId": 71
+    "nextLegislatorId": 24,
+    "nextBillId": 72
   }
 }
