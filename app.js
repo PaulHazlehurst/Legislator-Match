@@ -162,16 +162,26 @@ function computeScore(bills, issue, subtopic) {
   if (relevant.length === 0) return { score: 0, relevant, passed: 0, rate: 0 };
 
   const currentYear = new Date().getFullYear();
-  let raw = 0;
 
-  relevant.forEach(b => {
-    const roleWeight = b.role === 'sponsor' ? 1 : 0.5;
+  // Per-bill weighted strength: sponsor counts more than co-sponsor,
+  // recent bills count more than old ones. Each bill's strength maxes
+  // out at 1.0 (a sponsor, this year).
+  const strengths = relevant.map(b => {
+    const roleWeight = b.role === 'sponsor' ? 1 : 0.55;
     const age = Math.max(0, currentYear - b.year);
-    const recencyWeight = Math.max(0.3, 1 - age * 0.15);
-    raw += roleWeight * recencyWeight;
+    const recencyWeight = Math.max(0.35, 1 - age * 0.12);
+    return roleWeight * recencyWeight;
   });
 
-  const score = Math.min(100, Math.round((raw / 4) * 100));
+  const avgStrength = strengths.reduce((a, b) => a + b, 0) / strengths.length;
+
+  // A small volume bonus rewards a deeper track record without punishing
+  // someone who only has one or two bills on this topic so far — it adds
+  // up to +20 points at 5+ bills, scaling down to 0 for a single bill.
+  const volumeBonus = Math.min(20, (relevant.length - 1) * 5);
+
+  const score = Math.min(100, Math.round(avgStrength * 80 + volumeBonus));
+
   const decided = relevant.filter(b => b.outcome === 'passed' || b.outcome === 'failed');
   const passed = relevant.filter(b => b.outcome === 'passed').length;
   const rate = decided.length > 0 ? Math.round((passed / decided.length) * 100) : 0;
