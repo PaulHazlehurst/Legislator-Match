@@ -218,6 +218,24 @@
               "outcome": "passed"
             }
           ]
+        },
+        {
+          "id": "L026",
+          "name": "Delegate Rogers",
+          "party": "D",
+          "chamber": "house",
+          "district": "32",
+          "bills": [
+            {
+              "id": "B0074",
+              "title": "Anne Arundel County – Alcoholic Beverages – Class C (Veterans' Organization) Licenses – Membership",
+              "topic": "alcoholic-beverages-licensing",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            }
+          ]
         }
       ]
     }
@@ -297,7 +315,7 @@
     }
   },
   "meta": {
-    "nextLegislatorId": 26,
-    "nextBillId": 74
+    "nextLegislatorId": 27,
+    "nextBillId": 75
   }
 }
