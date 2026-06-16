@@ -153,6 +153,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0070",
+              "title": "Land Surveyors and Property Line Surveyors - Private Property Access - Prohibition",
+              "topic": "land-use-property-rights",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
             }
           ]
         }
@@ -218,10 +227,16 @@
       "subtopics": {
         "training-programs": "training-programs"
       }
+    },
+    "land-use-property-rights": {
+      "label": "Land Use & Property Rights",
+      "subtopics": {
+        "training-programs": "training-programs"
+      }
     }
   },
   "meta": {
     "nextLegislatorId": 23,
-    "nextBillId": 70
+    "nextBillId": 71
   }
 }
