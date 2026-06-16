@@ -1,0 +1,211 @@
+# Legislator bill matcher — Pinnacle Strategies LLC
+
+Pick a state, issue, and subtopic, and the app surfaces legislators with
+the strongest track record on that issue — interest score, passage rate,
+full bill history. Includes an in-app "+" button to add new bills/
+legislators (with optional AI auto-fill from a title or PDF) and a
+trash button to delete recent mistakes.
+
+## How it's put together
+
+This is two small pieces working together:
+
+1. **The website** (`index.html`, `app.js`, `data.json`) — a static
+   site. This is what you already have on GitHub Pages.
+2. **A tiny backend** (the `api/` folder) — three small functions that
+   do the things a static site can't do on its own: call Claude to
+   read a bill PDF, and write changes back into `data.json` on GitHub.
+   This deploys separately, to a free service called Vercel.
+
+You need both pieces running for the + and 🗑 buttons to work. Without
+the backend deployed, the site still works perfectly as a browsing
+tool — you just can't add/delete from the browser (you'd edit
+`data.json` by hand like before).
+
+---
+
+## Part 1 — Push the updated site to GitHub
+
+1. Replace your existing `index.html` and `data.json` in the repo with
+   the new versions here, and add `app.js` alongside them (same folder).
+2. Commit and push. GitHub Pages will redeploy automatically within
+   about a minute.
+3. At this point the site loads and browses fine, but the + and 🗑
+   buttons will show an alert saying the backend isn't configured yet.
+   That's expected — set up Part 2 next.
+
+---
+
+## Part 2 — Deploy the backend on Vercel
+
+### 2a. Create a GitHub personal access token
+
+This lets the backend write to your `data.json` file on your behalf.
+
+1. Go to https://github.com/settings/tokens → "Generate new token" →
+   "Fine-grained tokens"
+2. Name it something like `legislator-matcher-bot`
+3. Under "Repository access," select only your legislator-matcher repo
+4. Under "Permissions" → "Repository permissions" → set **Contents**
+   to **Read and write**
+5. Generate the token and copy it somewhere safe — you won't see it again
+
+### 2b. Get an Anthropic API key
+
+1. Go to https://console.anthropic.com → "API Keys" → "Create key"
+2. Copy the key. Add a few dollars of credit on the "Billing" page —
+   parsing a bill title or PDF costs a small fraction of a cent, so
+   even heavy use by your 8 users will run well under a dollar a month
+3. Optional but recommended: under "Limits," set a monthly spend cap
+   (e.g. $5) so there's no chance of a surprise bill
+
+### 2c. Deploy to Vercel
+
+1. Go to https://vercel.com and sign up (free) — sign in with GitHub,
+   it's the easiest path
+2. Click "Add New" → "Project," and import your legislator-matcher
+   GitHub repo
+3. Vercel will detect the `api/` folder automatically and deploy each
+   file in it as a serverless function — you don't need to configure
+   the build settings, the defaults work
+4. Before clicking deploy, expand "Environment Variables" and add:
+
+   | Name | Value |
+   |---|---|
+   | `ANTHROPIC_API_KEY` | the key from step 2b |
+   | `GITHUB_TOKEN` | the token from step 2a |
+   | `GITHUB_REPO` | your repo, formatted like `yourusername/legislator-matcher` |
+   | `GITHUB_BRANCH` | `main` (or whatever your default branch is called) |
+   | `DATA_FILE_PATH` | `data.json` (or the path to it if it's in a subfolder) |
+
+5. Click Deploy. After it finishes, Vercel gives you a URL like
+   `https://legislator-matcher-xyz.vercel.app`
+
+### 2d. Connect the frontend to the backend
+
+1. Open `app.js` in your GitHub repo (you can edit directly on
+   github.com — click the file, click the pencil icon)
+2. Find this line near the top:
+   ```js
+   const API_BASE = "PASTE_YOUR_VERCEL_FUNCTION_URL_HERE";
+   ```
+3. Replace it with your actual Vercel URL from step 2c, no trailing
+   slash:
+   ```js
+   const API_BASE = "https://legislator-matcher-xyz.vercel.app";
+   ```
+4. Commit directly to your main branch. GitHub Pages redeploys in
+   about a minute, and the + / 🗑 buttons will start working.
+
+That's the whole setup. You won't need to touch Vercel again unless
+you want to rotate keys or change the spend cap.
+
+---
+
+## Using the app day to day
+
+### Browsing (what your 8 coworkers will mostly do)
+
+Pick a state, issue, subtopic, party, and chamber. The list ranks
+legislators by interest score — bills they've sponsored or co-sponsored
+on that exact subtopic, weighted toward sponsorships and recent years.
+Click "Show bill history" on any card to see the underlying bills and
+which passed.
+
+### Adding a bill (the + button, bottom right)
+
+1. Click +
+2. Optional: paste a bill title into the AI box and click "Fill," or
+   drop a bill PDF onto the drop zone. Claude will try to fill in the
+   title, year, topic, subtopic, and sponsor name — review everything
+   it fills in, since it can guess wrong on ambiguous bills
+3. Choose whether this bill belongs to an existing legislator or a
+   brand new one
+4. Fill in/confirm the remaining fields and click "Save to GitHub"
+5. The site reloads with the new data within about a minute (GitHub
+   Pages' usual redeploy time)
+
+### Deleting a mistake (the 🗑 button, bottom right)
+
+Click the trash icon to see the 15 most recently added bills across
+all legislators, each with a "Delete" button. This only removes bills
+— if you accidentally created a brand-new legislator by mistake,
+delete their (likely only) bill, then manually remove the empty
+legislator entry from `data.json` on GitHub directly. That's
+intentionally a slightly bigger speed bump, since it is the most
+destructive action available.
+
+Everything saved or deleted goes through a normal GitHub commit, so
+the full history of changes lives in your repo's commit log if you
+ever need to look back further than the 15 most recent bills.
+
+---
+
+## Editing topics and subtopics
+
+Topics and subtopics live in `data.json` under the `topics` key:
+
+```json
+"topics": {
+  "workforce": {
+    "label": "Workforce development",
+    "subtopics": {
+      "training-programs": "Training programs",
+      "employer-incentives": "Employer incentives",
+      "grants": "Workforce grants"
+    }
+  }
+}
+```
+
+To add a new subtopic (e.g. an "insurance" topic with "auto,"
+"health," and "property" subtopics), add a new block following this
+same shape directly in `data.json` on GitHub. New topics/subtopics
+will appear in both the filter dropdowns and the add-bill form
+automatically — no code changes needed.
+
+---
+
+## Adding a new state
+
+Add a new entry under `states` in `data.json`:
+
+```json
+"states": {
+  "VA": {
+    "name": "Virginia",
+    "legislators": []
+  }
+}
+```
+
+It will show up in the state dropdown immediately, and you can start
+adding legislators to it through the + button.
+
+---
+
+## A note on the legislator roster
+
+The Maryland data shipped with this project is sample data for
+demonstration, not a verified current roster. Maryland's legislature
+has had several mid-term appointments recently, so before relying on
+this for real outreach, it's worth pulling the official current roster
+from https://mgaleg.maryland.gov/mgawebsite/Members/Index/house and
+replacing the sample legislators with real ones (keeping their bill
+histories empty until you fill them in via the + button or by hand).
+
+## Troubleshooting
+
+**"Could not load data.json"** — usually a JSON syntax error (missing
+comma, unescaped quote). Paste the file into jsonlint.com to find it.
+
+**+/🗑 buttons show an alert about the backend** — `API_BASE` in
+`app.js` is still the placeholder text. Revisit Part 2d.
+
+**AI fill or saving fails with an error message** — check the Vercel
+project's "Logs" tab for the specific error. The most common causes
+are an expired/wrong GitHub token, a missing Anthropic API key, or the
+`GITHUB_REPO` value not exactly matching `username/repo-name`.
+
+**Changes don't appear after saving** — GitHub Pages typically takes
+30–90 seconds to redeploy after a commit. Refresh after a minute.
