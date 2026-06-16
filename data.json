@@ -567,17 +567,7 @@
           "party": "D",
           "chamber": "house",
           "district": "44",
-          "bills": [
-            {
-              "id": "B0050",
-              "title": "Teacher Pay Raise Act",
-              "topic": "education",
-              "subtopic": "teacher-support",
-              "year": 2025,
-              "role": "co-sponsor",
-              "outcome": "passed"
-            }
-          ]
+          "bills": []
         },
         {
           "id": "L015",
