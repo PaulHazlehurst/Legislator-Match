@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Legislator Bill Matcher — Pinnacle Strategies</title>
+<style>
+  :root {
+    --bg: #F4F7FB;
+    --surface: #FFFFFF;
+    --border: rgba(15, 40, 75, 0.10);
+    --border-strong: rgba(15, 40, 75, 0.20);
+    --text: #14213D;
+    --text-secondary: #5B6B85;
+    --text-tertiary: #93A0B5;
+    --blue-900: #0B2A4A;
+    --blue-700: #154D85;
+    --blue-600: #1B63AC;
+    --blue-500: #2C7BCB;
+    --blue-100: #E6F0FA;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: var(--font-sans);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+  }
+  .page {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 1.75rem 1.5rem 5rem;
+  }
+  .brand-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .brand-bar .brand {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  }
+  .brand-mark {
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, var(--blue-600), var(--blue-900));
+    flex-shrink: 0;
+  }
+  .brand-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--blue-900);
+    letter-spacing: 0.01em;
+  }
+  .built-by {
+    font-size: 11.5px;
+    color: var(--text-tertiary);
+  }
+  header h1 {
+    font-size: 22px;
+    font-weight: 600;
+    margin: 0 0 4px;
+    letter-spacing: -0.01em;
+    color: var(--blue-900);
+  }
+  header p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin: 0 0 1.75rem;
+  }
+  .controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin-bottom: 1.75rem;
+  }
+  .field label {
+    display: block;
+    font-size: 11.5px;
+    color: var(--text-secondary);
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  select, input, textarea {
+    width: 100%;
+    padding: 0 10px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+    color: var(--text);
+    font-size: 14px;
+    font-family: inherit;
+  }
+  select { height: 38px; appearance: none; }
+  input { height: 38px; }
+  textarea { padding: 8px 10px; resize: vertical; min-height: 70px; }
+  select:focus, input:focus, textarea:focus {
+    outline: 2px solid var(--blue-500);
+    outline-offset: 1px;
+  }
+  .results-meta {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+  }
+  .results {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.25rem;
+  }
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .card-top .name {
+    font-weight: 600;
+    font-size: 15px;
+    margin: 0;
+    color: var(--blue-900);
+  }
+  .card-top .meta {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin: 2px 0 0;
+  }
+  .score-box { text-align: right; flex-shrink: 0; }
+  .score-box .label {
+    font-size: 10.5px;
+    color: var(--text-tertiary);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .score-box .value {
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0;
+    color: var(--blue-600);
+  }
+  .meter {
+    height: 6px;
+    background: var(--blue-100);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+  .meter-fill { height: 100%; background: var(--blue-600); }
+  .stats-row {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+  }
+  details { border-top: 1px solid var(--border); padding-top: 8px; }
+  details summary { font-size: 13px; color: var(--blue-700); cursor: pointer; }
+  .bill-list { list-style: none; margin: 8px 0 0; padding: 0; font-size: 13px; color: var(--text-secondary); }
+  .bill-list li {
+    padding: 5px 0;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .bill-list li:last-child { border-bottom: none; }
+  .bill-list .bill-tags { display: flex; gap: 6px; flex-shrink: 0; }
+  .tag {
+    font-size: 10.5px;
+    padding: 2px 7px;
+    border-radius: 100px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .tag-passed { background: var(--blue-100); color: var(--blue-700); }
+  .tag-failed { background: rgba(15, 40, 75, 0.08); color: var(--text-secondary); }
+  .tag-sub { background: rgba(15, 40, 75, 0.06); color: var(--text-secondary); }
+  .empty { font-size: 14px; color: var(--text-secondary); padding: 1rem 0; }
+  footer { margin-top: 2.5rem; font-size: 12px; color: var(--text-tertiary); text-align: center; }
+  footer code { background: var(--blue-100); padding: 2px 5px; border-radius: 4px; }
+
+  /* Floating add button */
+  .fab {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: var(--blue-600);
+    color: white;
+    border: none;
+    font-size: 26px;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(11, 42, 74, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 40;
+  }
+  .fab:hover { background: var(--blue-700); }
+  .fab-delete {
+    position: fixed;
+    bottom: 24px;
+    right: 90px;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: var(--surface);
+    color: var(--blue-900);
+    border: 1px solid var(--border-strong);
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(11, 42, 74, 0.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 40;
+  }
+  .fab-delete:hover { background: var(--blue-100); }
+
+  /* Modal/panel overlay */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(11, 42, 74, 0.35);
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+    z-index: 50;
+  }
+  .overlay.open { display: flex; }
+  .panel {
+    background: var(--surface);
+    width: 100%;
+    max-width: 540px;
+    max-height: 88vh;
+    overflow-y: auto;
+    border-radius: 16px 16px 0 0;
+    padding: 1.5rem 1.5rem 2rem;
+  }
+  @media (min-width: 640px) {
+    .overlay { align-items: center; }
+    .panel { border-radius: 16px; max-height: 80vh; }
+  }
+  .panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+  }
+  .panel-header h2 {
+    font-size: 17px;
+    font-weight: 600;
+    margin: 0;
+    color: var(--blue-900);
+  }
+  .panel-close {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    padding: 4px;
+  }
+  .tab-row { display: flex; gap: 6px; margin-bottom: 1.25rem; }
+  .tab-btn {
+    flex: 1;
+    padding: 8px 0;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .tab-btn.active { background: var(--blue-600); color: white; border-color: var(--blue-600); }
+  .form-group { margin-bottom: 14px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .form-row + .form-row { margin-top: 14px; }
+  .form-group label, .form-row label {
+    display: block;
+    font-size: 11.5px;
+    color: var(--text-secondary);
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .radio-row { display: flex; gap: 14px; font-size: 13px; color: var(--text); margin-top: 4px; }
+  .radio-row label { text-transform: none; font-size: 13px; display: flex; align-items: center; gap: 5px; margin: 0; }
+  .btn {
+    width: 100%;
+    height: 42px;
+    border-radius: var(--radius-md);
+    border: none;
+    background: var(--blue-600);
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .btn:hover { background: var(--blue-700); }
+  .btn:disabled { background: var(--text-tertiary); cursor: not-allowed; }
+  .btn-secondary {
+    background: var(--surface);
+    color: var(--blue-700);
+    border: 1px solid var(--border-strong);
+  }
+  .btn-secondary:hover { background: var(--blue-100); }
+  .btn-danger { background: #B3261E; }
+  .btn-danger:hover { background: #8E1E18; }
+  .ai-box {
+    background: var(--blue-100);
+    border-radius: var(--radius-md);
+    padding: 12px;
+    margin-bottom: 16px;
+  }
+  .ai-box label {
+    font-size: 11.5px;
+    color: var(--blue-700);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .ai-row { display: flex; gap: 8px; }
+  .ai-row input { flex: 1; }
+  .ai-row .btn { width: auto; padding: 0 16px; flex-shrink: 0; }
+  .file-drop {
+    border: 1.5px dashed var(--border-strong);
+    border-radius: var(--radius-md);
+    padding: 14px;
+    text-align: center;
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    margin-top: 8px;
+    cursor: pointer;
+    background: var(--surface);
+  }
+  .file-drop.dragover { background: var(--blue-100); border-color: var(--blue-500); }
+  .status-msg { font-size: 12.5px; margin-top: 8px; min-height: 16px; }
+  .status-msg.error { color: #B3261E; }
+  .status-msg.success { color: #146C43; }
+  .status-msg.loading { color: var(--text-secondary); }
+  .delete-list { display: flex; flex-direction: column; gap: 8px; }
+  .delete-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 10px 12px;
+  }
+  .delete-item .info { font-size: 13px; }
+  .delete-item .info .who { color: var(--text-secondary); font-size: 12px; margin-top: 2px; }
+  .delete-item button {
+    flex-shrink: 0;
+    background: none;
+    border: 1px solid rgba(179, 38, 30, 0.4);
+    color: #B3261E;
+    border-radius: var(--radius-md);
+    font-size: 12px;
+    padding: 6px 10px;
+    cursor: pointer;
+  }
+  .delete-item button:hover { background: rgba(179, 38, 30, 0.08); }
+  .sub-divider { font-size: 11px; color: var(--text-tertiary); margin: 16px 0 8px; text-transform: uppercase; letter-spacing: 0.04em; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="brand-bar">
+    <div class="brand">
+      <div class="brand-mark"></div>
+      <span class="brand-name">PINNACLE STRATEGIES LLC</span>
+    </div>
+    <span class="built-by">Built by Paul Hazlehurst</span>
+  </div>
+
+  <header>
+    <h1>Legislator bill matcher</h1>
+    <p>Find legislators with a track record on your issue, ranked by interest and passage rate.</p>
+  </header>
+
+  <div class="controls">
+    <div class="field">
+      <label for="state">State</label>
+      <select id="state"></select>
+    </div>
+    <div class="field">
+      <label for="issue">Issue area</label>
+      <select id="issue"></select>
+    </div>
+    <div class="field">
+      <label for="subissue">Subtopic</label>
+      <select id="subissue">
+        <option value="any">All subtopics</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="party">Party</label>
+      <select id="party">
+        <option value="any">Any party</option>
+        <option value="D">Democrat</option>
+        <option value="R">Republican</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="chamber">Chamber</label>
+      <select id="chamber">
+        <option value="any">Both chambers</option>
+        <option value="senate">Senate</option>
+        <option value="house">House / Delegates</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="results-meta" id="results-meta"></div>
+  <div class="results" id="results"></div>
+
+  <footer>
+    Data lives in <code>data.json</code> on GitHub. Use the + button to add, the trash button to remove recent entries.
+  </footer>
+</div>
+
+<button class="fab-delete" id="open-delete" title="Delete recent entry">🗑</button>
+<button class="fab" id="open-add" title="Add bill or legislator">+</button>
+
+<!-- ADD PANEL -->
+<div class="overlay" id="add-overlay">
+  <div class="panel">
+    <div class="panel-header">
+      <h2>Add a bill</h2>
+      <button class="panel-close" id="close-add">✕</button>
+    </div>
+
+    <div class="ai-box">
+      <label>AI auto-fill (optional)</label>
+      <div class="ai-row">
+        <input type="text" id="ai-title-input" placeholder="Paste a bill title, e.g. 'HB 0412 Workforce Apprenticeship Expansion Act'" />
+        <button class="btn" id="ai-fill-btn">Fill</button>
+      </div>
+      <div class="file-drop" id="file-drop">
+        Drop a bill PDF here, or click to choose a file
+        <input type="file" id="file-input" accept="application/pdf" style="display:none;" />
+      </div>
+      <div class="status-msg" id="ai-status"></div>
+    </div>
+
+    <form id="add-form">
+      <div class="form-group">
+        <label for="f-state">State</label>
+        <select id="f-state"></select>
+      </div>
+
+      <div class="form-group">
+        <label>Legislator</label>
+        <div class="radio-row">
+          <label><input type="radio" name="leg-mode" value="existing" checked /> Use existing</label>
+          <label><input type="radio" name="leg-mode" value="new" /> Create new</label>
+        </div>
+      </div>
+
+      <div class="form-group" id="existing-leg-group">
+        <select id="f-existing-leg"></select>
+      </div>
+
+      <div id="new-leg-group" style="display:none;">
+        <div class="form-group">
+          <label for="f-leg-name">Name</label>
+          <input type="text" id="f-leg-name" placeholder="e.g. Sen. A. Diaz" />
+        </div>
+        <div class="form-row">
+          <div>
+            <label for="f-leg-party">Party</label>
+            <select id="f-leg-party">
+              <option value="D">Democrat</option>
+              <option value="R">Republican</option>
+            </select>
+          </div>
+          <div>
+            <label for="f-leg-chamber">Chamber</label>
+            <select id="f-leg-chamber">
+              <option value="senate">Senate</option>
+              <option value="house">House / Delegates</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="f-leg-district">District</label>
+          <input type="text" id="f-leg-district" placeholder="e.g. 13" />
+        </div>
+      </div>
+
+      <div class="sub-divider">Bill details</div>
+
+      <div class="form-group">
+        <label for="f-bill-title">Bill title</label>
+        <input type="text" id="f-bill-title" placeholder="e.g. Workforce Apprenticeship Expansion Act" />
+      </div>
+
+      <div class="form-row">
+        <div>
+          <label for="f-topic">Topic</label>
+          <select id="f-topic"></select>
+        </div>
+        <div>
+          <label for="f-subtopic">Subtopic</label>
+          <select id="f-subtopic"></select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div>
+          <label for="f-year">Year</label>
+          <input type="number" id="f-year" value="2026" />
+        </div>
+        <div>
+          <label for="f-role">Role</label>
+          <select id="f-role">
+            <option value="sponsor">Sponsor</option>
+            <option value="co-sponsor">Co-sponsor</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-top:14px;">
+        <label for="f-outcome">Outcome</label>
+        <select id="f-outcome">
+          <option value="passed">Passed</option>
+          <option value="failed">Did not pass</option>
+          <option value="pending">Pending</option>
+        </select>
+      </div>
+
+      <div class="status-msg" id="save-status"></div>
+      <button type="submit" class="btn" style="margin-top:8px;">Save to GitHub</button>
+    </form>
+  </div>
+</div>
+
+<!-- DELETE PANEL -->
+<div class="overlay" id="delete-overlay">
+  <div class="panel">
+    <div class="panel-header">
+      <h2>Delete a recent entry</h2>
+      <button class="panel-close" id="close-delete">✕</button>
+    </div>
+    <p style="font-size:13px; color:var(--text-secondary); margin-top:-6px;">Showing the 15 most recently added bills.</p>
+    <div class="delete-list" id="delete-list"></div>
+    <div class="status-msg" id="delete-status"></div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
