@@ -144,6 +144,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "failed"
+            },
+            {
+              "id": "B0069",
+              "title": "Property Tax - Credit for Dwelling House of Disabled Veterans and Surviving Spouses - Income Eligibility",
+              "topic": "taxation",
+              "subtopic": "property-tax-credit",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -194,7 +203,8 @@
       "label": "Taxation",
       "subtopics": {
         "training-programs": "training-programs",
-        "standard-deduction": "Standard deduction"
+        "standard-deduction": "Standard deduction",
+        "property-tax-credit": "Property tax credit"
       }
     },
     "firearms-weapons": {
@@ -212,6 +222,6 @@
   },
   "meta": {
     "nextLegislatorId": 23,
-    "nextBillId": 69
+    "nextBillId": 70
   }
 }
