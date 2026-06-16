@@ -3,7 +3,7 @@
 // See README.md "Deploying the serverless function" section.
 // Example: "https://legislator-matcher-api.vercel.app"
 // ===========================================================================
-const API_BASE = "https://legislator-match.vercel.app";
+const API_BASE = "PASTE_YOUR_VERCEL_FUNCTION_URL_HERE";
 
 let DATA = null;
 
@@ -480,15 +480,22 @@ async function handleSaveBill(e) {
       throw new Error(errBody.error || `Server returned ${res.status}`);
     }
     const result = await res.json();
-    let savedMsg = 'Saved! GitHub Pages will update in ~1 minute.';
+    let savedMsg = 'Saved! Waiting for GitHub Pages to publish…';
     if (result.topicWasNew) savedMsg = `Saved, and created a new topic "${topicLabel}". ` + savedMsg;
     else if (result.subtopicWasNew) savedMsg = `Saved, and created a new subtopic "${subtopicLabel}". ` + savedMsg;
-    setStatus('save-status', savedMsg, 'success');
+    setStatus('save-status', savedMsg, 'loading');
     document.getElementById('add-form').reset();
+
+    const appeared = await waitForBillToAppear(result.billId);
+    if (appeared) {
+      setStatus('save-status', 'Saved and live — refreshing the page now.', 'success');
+    } else {
+      setStatus('save-status', 'Saved to GitHub, but the live site is taking longer than usual to update. It will show up soon — refresh in a minute if it doesn\'t.', 'success');
+    }
     setTimeout(() => {
       document.getElementById('add-overlay').classList.remove('open');
       init(); // reload data
-    }, 1400);
+    }, 900);
   } catch (err) {
     setStatus('save-status', `Save failed: ${err.message}`, 'error');
   }
@@ -501,6 +508,53 @@ function slugify(str) {
     .replace(/[^a-z0-9\s-]/g, '')
     .replace(/\s+/g, '-')
     .replace(/-+/g, '-');
+}
+
+// Polls data.json (cache-busted) every couple seconds until the given
+// bill ID actually shows up, since GitHub Pages typically takes
+// 30-90 seconds to republish after a commit. Gives up after ~2 minutes.
+async function waitForBillToAppear(billId, maxWaitMs = 120000, intervalMs = 3000) {
+  if (!billId) return false;
+  const start = Date.now();
+  while (Date.now() - start < maxWaitMs) {
+    try {
+      const res = await fetch('data.json?_=' + Date.now());
+      const fresh = await res.json();
+      const found = Object.values(fresh.states).some(st =>
+        st.legislators.some(l => l.bills.some(b => b.id === billId))
+      );
+      if (found) {
+        DATA = fresh; // adopt the freshly fetched data right away
+        return true;
+      }
+    } catch {
+      // ignore transient fetch errors and keep polling
+    }
+    await new Promise(r => setTimeout(r, intervalMs));
+  }
+  return false;
+}
+
+async function waitForBillToDisappear(billId, maxWaitMs = 120000, intervalMs = 3000) {
+  if (!billId) return false;
+  const start = Date.now();
+  while (Date.now() - start < maxWaitMs) {
+    try {
+      const res = await fetch('data.json?_=' + Date.now());
+      const fresh = await res.json();
+      const stillThere = Object.values(fresh.states).some(st =>
+        st.legislators.some(l => l.bills.some(b => b.id === billId))
+      );
+      if (!stillThere) {
+        DATA = fresh;
+        return true;
+      }
+    } catch {
+      // ignore transient fetch errors and keep polling
+    }
+    await new Promise(r => setTimeout(r, intervalMs));
+  }
+  return false;
 }
 
 // ---------------------------------------------------------------------------
@@ -571,8 +625,12 @@ async function handleDeleteBill(stateCode, legislatorId, billId) {
       const errBody = await res.json().catch(() => ({}));
       throw new Error(errBody.error || `Server returned ${res.status}`);
     }
-    setStatus('delete-status', 'Deleted. Refreshing…', 'success');
-    setTimeout(() => init(), 1000);
+    setStatus('delete-status', 'Deleted from GitHub. Waiting for the live site to update…', 'loading');
+    const gone = await waitForBillToDisappear(billId);
+    setStatus('delete-status', gone
+      ? 'Removed and live — refreshing now.'
+      : 'Deleted from GitHub, but the live site is taking longer than usual. It will update soon.', 'success');
+    setTimeout(() => init(), 900);
   } catch (err) {
     setStatus('delete-status', `Delete failed: ${err.message}`, 'error');
   }

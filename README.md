@@ -129,18 +129,22 @@ which passed.
 4. Choose whether this bill belongs to an existing legislator or a
    brand new one
 5. Fill in/confirm the remaining fields and click "Save to GitHub"
-6. The site reloads with the new data within about a minute (GitHub
-   Pages' usual redeploy time)
+6. The app automatically watches for your new bill to go live and
+   refreshes itself the moment it does — usually 30-90 seconds, with no
+   manual reload needed. If GitHub Pages is unusually slow, you'll see
+   a message saying so after about 2 minutes; the bill is already
+   safely saved either way, it'll just take a bit longer to appear)
 
 ### Deleting a mistake (the 🗑 button, bottom right)
 
 Click the trash icon to see the 15 most recently added bills across
-all legislators, each with a "Delete" button. This only removes bills
-— if you accidentally created a brand-new legislator by mistake,
-delete their (likely only) bill, then manually remove the empty
-legislator entry from `data.json` on GitHub directly. That's
-intentionally a slightly bigger speed bump, since it is the most
-destructive action available.
+all legislators, each with a "Delete" button. The app watches for the
+deletion to go live and refreshes automatically, same as adding a
+bill. This only removes bills — if you accidentally created a
+brand-new legislator by mistake, delete their (likely only) bill, then
+manually remove the empty legislator entry from `data.json` on GitHub
+directly. That's intentionally a slightly bigger speed bump, since it
+is the most destructive action available.
 
 Everything saved or deleted goes through a normal GitHub commit, so
 the full history of changes lives in your repo's commit log if you
@@ -219,5 +223,9 @@ project's "Logs" tab for the specific error. The most common causes
 are an expired/wrong GitHub token, a missing Anthropic API key, or the
 `GITHUB_REPO` value not exactly matching `username/repo-name`.
 
-**Changes don't appear after saving** — GitHub Pages typically takes
-30–90 seconds to redeploy after a commit. Refresh after a minute.
+**Changes don't appear after saving** — the app polls automatically
+for up to 2 minutes and refreshes itself the moment GitHub Pages
+publishes your change, so you shouldn't need to do anything. If it
+still hasn't shown up after that, GitHub Pages itself may be having a
+slow moment — check your repo's "Actions" tab to see if the Pages
+deployment succeeded, then just refresh the page.
