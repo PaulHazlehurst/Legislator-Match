@@ -56,6 +56,24 @@
               "outcome": "passed"
             }
           ]
+        },
+        {
+          "id": "L019",
+          "name": "Delegate Arikan",
+          "party": "R",
+          "chamber": "house",
+          "district": "",
+          "bills": [
+            {
+              "id": "B0063",
+              "title": "Consumer Goods – Restrictions Based on Energy Source – Prohibition (Energy Equality Act of 2026)",
+              "topic": "environment",
+              "subtopic": "clean-energy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            }
+          ]
         }
       ]
     }
@@ -108,7 +126,7 @@
     }
   },
   "meta": {
-    "nextLegislatorId": 19,
-    "nextBillId": 63
+    "nextLegislatorId": 20,
+    "nextBillId": 64
   }
 }
