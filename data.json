@@ -38,6 +38,24 @@
               "outcome": "passed"
             }
           ]
+        },
+        {
+          "id": "L018",
+          "name": "Pena-Melnyk",
+          "party": "D",
+          "chamber": "senate",
+          "district": "",
+          "bills": [
+            {
+              "id": "B0062",
+              "title": "Public Health – Mammograms – Arterial Calcification Notice",
+              "topic": "healthcare",
+              "subtopic": "access-equity",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            }
+          ]
         }
       ]
     }
@@ -90,7 +108,7 @@
     }
   },
   "meta": {
-    "nextLegislatorId": 18,
-    "nextBillId": 62
+    "nextLegislatorId": 19,
+    "nextBillId": 63
   }
 }
