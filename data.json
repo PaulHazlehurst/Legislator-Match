@@ -119,6 +119,24 @@
               "outcome": "passed"
             }
           ]
+        },
+        {
+          "id": "L022",
+          "name": "Pippy",
+          "party": "R",
+          "chamber": "house",
+          "district": "",
+          "bills": [
+            {
+              "id": "B0067",
+              "title": "Regulated Firearms - Seven-Day Waiting Period - Exceptions",
+              "topic": "firearms-weapons",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            }
+          ]
         }
       ]
     }
@@ -169,10 +187,16 @@
         "training-programs": "training-programs",
         "standard-deduction": "Standard deduction"
       }
+    },
+    "firearms-weapons": {
+      "label": "Firearms & Weapons",
+      "subtopics": {
+        "training-programs": "training-programs"
+      }
     }
   },
   "meta": {
-    "nextLegislatorId": 22,
-    "nextBillId": 67
+    "nextLegislatorId": 23,
+    "nextBillId": 68
   }
 }
