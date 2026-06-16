@@ -54,6 +54,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0066",
+              "title": "Health Occupations, Public Health, and Insurance - Menopause - Provider Training Coverage Requirements, Policy Initiatives, and Access to Care",
+              "topic": "healthcare",
+              "subtopic": "access-equity",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         },
@@ -164,6 +173,6 @@
   },
   "meta": {
     "nextLegislatorId": 22,
-    "nextBillId": 66
+    "nextBillId": 67
   }
 }
