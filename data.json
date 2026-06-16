@@ -135,6 +135,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "failed"
+            },
+            {
+              "id": "B0068",
+              "title": "Department of Juvenile Services - Employees - Prohibited Convictions (Juvenile Offender Protection Act)",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
             }
           ]
         }
@@ -193,10 +202,16 @@
       "subtopics": {
         "training-programs": "training-programs"
       }
+    },
+    "public-safety-criminal-justice": {
+      "label": "Public Safety & Criminal Justice",
+      "subtopics": {
+        "training-programs": "training-programs"
+      }
     }
   },
   "meta": {
     "nextLegislatorId": 23,
-    "nextBillId": 68
+    "nextBillId": 69
   }
 }
