@@ -612,17 +612,7 @@
           "party": "R",
           "chamber": "senate",
           "district": "1",
-          "bills": [
-            {
-              "id": "B0054",
-              "title": "School Choice Pilot Program",
-              "topic": "education",
-              "subtopic": "school-choice",
-              "year": 2024,
-              "role": "sponsor",
-              "outcome": "passed"
-            }
-          ]
+          "bills": []
         },
         {
           "id": "L016",
