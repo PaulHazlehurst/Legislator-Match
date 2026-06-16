@@ -92,6 +92,24 @@
               "outcome": "passed"
             }
           ]
+        },
+        {
+          "id": "L021",
+          "name": "Beauchamp",
+          "party": "R",
+          "chamber": "house",
+          "district": "",
+          "bills": [
+            {
+              "id": "B0065",
+              "title": "Solar Energy - Construction of Generating Stations in Priority Preservation Areas and Study",
+              "topic": "environment",
+              "subtopic": "clean-energy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            }
+          ]
         }
       ]
     }
@@ -145,7 +163,7 @@
     }
   },
   "meta": {
-    "nextLegislatorId": 21,
-    "nextBillId": 65
+    "nextLegislatorId": 22,
+    "nextBillId": 66
   }
 }
