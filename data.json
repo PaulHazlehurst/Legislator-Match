@@ -639,17 +639,7 @@
           "party": "R",
           "chamber": "house",
           "district": "31",
-          "bills": [
-            {
-              "id": "B0057",
-              "title": "Literacy Funding Act",
-              "topic": "education",
-              "subtopic": "k12-funding",
-              "year": 2023,
-              "role": "co-sponsor",
-              "outcome": "passed"
-            }
-          ]
+          "bills": []
         }
       ]
     }
