@@ -486,17 +486,7 @@
           "party": "R",
           "chamber": "house",
           "district": "3",
-          "bills": [
-            {
-              "id": "B0043",
-              "title": "Stream Restoration Funding Act",
-              "topic": "environment",
-              "subtopic": "conservation",
-              "year": 2023,
-              "role": "co-sponsor",
-              "outcome": "failed"
-            }
-          ]
+          "bills": []
         },
         {
           "id": "L013",
