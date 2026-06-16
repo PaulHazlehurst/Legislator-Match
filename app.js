@@ -3,7 +3,7 @@
 // See README.md "Deploying the serverless function" section.
 // Example: "https://legislator-matcher-api.vercel.app"
 // ===========================================================================
-const API_BASE = "https://legislator-match.vercel.app";
+const API_BASE = "PASTE_YOUR_VERCEL_FUNCTION_URL_HERE";
 
 let DATA = null;
 
@@ -32,7 +32,9 @@ async function init() {
 
   document.getElementById('f-topic').addEventListener('change', () => {
     populateSubtopicDropdown('f-topic', 'f-subtopic');
+    toggleNewTopicInput();
   });
+  document.getElementById('f-subtopic').addEventListener('change', toggleNewSubtopicInput);
   document.getElementById('f-state').addEventListener('change', populateExistingLegislatorDropdown);
 
   setupAddPanel();
@@ -55,22 +57,36 @@ function populateStateDropdowns() {
 }
 
 function populateTopicDropdowns() {
-  ['issue', 'f-topic'].forEach(selId => {
-    const sel = document.getElementById(selId);
-    sel.innerHTML = '';
-    Object.entries(DATA.topics).forEach(([code, t]) => {
-      const opt = document.createElement('option');
-      opt.value = code;
-      opt.textContent = t.label;
-      sel.appendChild(opt);
-    });
+  // Filter dropdown — topics only, no "create new" option
+  const filterSel = document.getElementById('issue');
+  filterSel.innerHTML = '';
+  Object.entries(DATA.topics).forEach(([code, t]) => {
+    const opt = document.createElement('option');
+    opt.value = code;
+    opt.textContent = t.label;
+    filterSel.appendChild(opt);
   });
+
+  // Form dropdown — topics plus a "create new" option
+  const formSel = document.getElementById('f-topic');
+  formSel.innerHTML = '';
+  Object.entries(DATA.topics).forEach(([code, t]) => {
+    const opt = document.createElement('option');
+    opt.value = code;
+    opt.textContent = t.label;
+    formSel.appendChild(opt);
+  });
+  const newOpt = document.createElement('option');
+  newOpt.value = '__new__';
+  newOpt.textContent = '+ Add new topic…';
+  formSel.appendChild(newOpt);
 }
 
 function populateSubtopicDropdown(topicSelId, subSelId) {
   const topicCode = document.getElementById(topicSelId).value;
   const sel = document.getElementById(subSelId);
   const isFilter = subSelId === 'subissue';
+  const isFormTopic = topicSelId === 'f-topic';
   sel.innerHTML = '';
 
   if (isFilter) {
@@ -78,6 +94,16 @@ function populateSubtopicDropdown(topicSelId, subSelId) {
     anyOpt.value = 'any';
     anyOpt.textContent = 'All subtopics';
     sel.appendChild(anyOpt);
+  }
+
+  // Form's topic select is on "+ Add new topic…" — subtopic must also be new
+  if (isFormTopic && topicCode === '__new__') {
+    const newOpt = document.createElement('option');
+    newOpt.value = '__new__';
+    newOpt.textContent = '+ Add new subtopic…';
+    newOpt.selected = true;
+    sel.appendChild(newOpt);
+    return;
   }
 
   const topic = DATA.topics[topicCode];
@@ -88,6 +114,24 @@ function populateSubtopicDropdown(topicSelId, subSelId) {
     opt.textContent = label;
     sel.appendChild(opt);
   });
+
+  if (isFormTopic) {
+    const newOpt = document.createElement('option');
+    newOpt.value = '__new__';
+    newOpt.textContent = '+ Add new subtopic…';
+    sel.appendChild(newOpt);
+  }
+}
+
+function toggleNewTopicInput() {
+  const isNew = document.getElementById('f-topic').value === '__new__';
+  document.getElementById('f-topic-new').style.display = isNew ? 'block' : 'none';
+  if (isNew) toggleNewSubtopicInput(); // topic being new forces subtopic new too
+}
+
+function toggleNewSubtopicInput() {
+  const isNew = document.getElementById('f-subtopic').value === '__new__';
+  document.getElementById('f-subtopic-new').style.display = isNew ? 'block' : 'none';
 }
 
 function populateExistingLegislatorDropdown() {
@@ -232,6 +276,10 @@ function setupAddPanel() {
     populateExistingLegislatorDropdown();
     document.getElementById('ai-status').textContent = '';
     document.getElementById('save-status').textContent = '';
+    document.getElementById('f-topic-new').style.display = 'none';
+    document.getElementById('f-topic-new').value = '';
+    document.getElementById('f-subtopic-new').style.display = 'none';
+    document.getElementById('f-subtopic-new').value = '';
     overlay.classList.add('open');
   });
   document.getElementById('close-add').addEventListener('click', () => overlay.classList.remove('open'));
@@ -297,11 +345,30 @@ async function runAiFill(payload) {
 
     if (result.title) document.getElementById('f-bill-title').value = result.title;
     if (result.year) document.getElementById('f-year').value = result.year;
-    if (result.topic && DATA.topics[result.topic]) {
-      document.getElementById('f-topic').value = result.topic;
+
+    if (result.topicMatch && DATA.topics[result.topicMatch]) {
+      // Matched an existing topic
+      document.getElementById('f-topic').value = result.topicMatch;
       populateSubtopicDropdown('f-topic', 'f-subtopic');
-      if (result.subtopic) document.getElementById('f-subtopic').value = result.subtopic;
+      toggleNewTopicInput();
+      if (result.subtopicMatch && DATA.topics[result.topicMatch].subtopics[result.subtopicMatch]) {
+        document.getElementById('f-subtopic').value = result.subtopicMatch;
+        toggleNewSubtopicInput();
+      } else if (result.suggestedSubtopicLabel) {
+        document.getElementById('f-subtopic').value = '__new__';
+        document.getElementById('f-subtopic-new').value = result.suggestedSubtopicLabel;
+        toggleNewSubtopicInput();
+      }
+    } else if (result.suggestedTopicLabel) {
+      // No existing topic fit — select "+ Add new topic…" and pre-fill the name
+      document.getElementById('f-topic').value = '__new__';
+      document.getElementById('f-topic-new').value = result.suggestedTopicLabel;
+      toggleNewTopicInput();
+      if (result.suggestedSubtopicLabel) {
+        document.getElementById('f-subtopic-new').value = result.suggestedSubtopicLabel;
+      }
     }
+
     if (result.sponsorName) {
       document.getElementById('ai-status').dataset.sponsor = result.sponsorName;
       // try to match an existing legislator by name
@@ -324,7 +391,13 @@ async function runAiFill(payload) {
       }
     }
 
-    setStatus('ai-status', 'Fields filled — review before saving.', 'success');
+    let fillMsg = 'Fields filled — review before saving.';
+    if (result.suggestedTopicLabel) {
+      fillMsg = `Fields filled — suggested a new topic "${result.suggestedTopicLabel}" since none of the existing ones fit. Review before saving.`;
+    } else if (result.suggestedSubtopicLabel) {
+      fillMsg = `Fields filled — suggested a new subtopic "${result.suggestedSubtopicLabel}". Review before saving.`;
+    }
+    setStatus('ai-status', fillMsg, 'success');
   } catch (err) {
     setStatus('ai-status', `AI fill failed: ${err.message}. You can still fill the form manually.`, 'error');
   }
@@ -337,15 +410,38 @@ async function handleSaveBill(e) {
   const isNewLeg = document.querySelector('input[name="leg-mode"]:checked').value === 'new';
   const stateCode = document.getElementById('f-state').value;
   const title = document.getElementById('f-bill-title').value.trim();
-  const topic = document.getElementById('f-topic').value;
-  const subtopic = document.getElementById('f-subtopic').value;
   const year = parseInt(document.getElementById('f-year').value, 10);
   const role = document.getElementById('f-role').value;
   const outcome = document.getElementById('f-outcome').value;
 
   if (!title) { setStatus('save-status', 'Bill title is required.', 'error'); return; }
 
-  const bill = { title, topic, subtopic, year, role, outcome };
+  // Resolve topic — either an existing code, or a brand-new one typed by the user
+  let topicSel = document.getElementById('f-topic').value;
+  let topic, topicLabel;
+  if (topicSel === '__new__') {
+    topicLabel = document.getElementById('f-topic-new').value.trim();
+    if (!topicLabel) { setStatus('save-status', 'New topic name is required.', 'error'); return; }
+    topic = slugify(topicLabel);
+  } else {
+    topic = topicSel;
+    topicLabel = DATA.topics[topic] ? DATA.topics[topic].label : topic;
+  }
+
+  // Resolve subtopic the same way
+  let subtopicSel = document.getElementById('f-subtopic').value;
+  let subtopic = null, subtopicLabel = null;
+  if (subtopicSel === '__new__') {
+    subtopicLabel = document.getElementById('f-subtopic-new').value.trim();
+    if (!subtopicLabel) { setStatus('save-status', 'New subtopic name is required.', 'error'); return; }
+    subtopic = slugify(subtopicLabel);
+  } else if (subtopicSel) {
+    subtopic = subtopicSel;
+    subtopicLabel = (DATA.topics[topic] && DATA.topics[topic].subtopics[subtopic])
+      ? DATA.topics[topic].subtopics[subtopic] : subtopic;
+  }
+
+  const bill = { title, topic, topicLabel, subtopic, subtopicLabel, year, role, outcome };
 
   let legislatorPayload;
   if (isNewLeg) {
@@ -373,15 +469,28 @@ async function handleSaveBill(e) {
       const errBody = await res.json().catch(() => ({}));
       throw new Error(errBody.error || `Server returned ${res.status}`);
     }
-    setStatus('save-status', 'Saved! GitHub Pages will update in ~1 minute.', 'success');
+    const result = await res.json();
+    let savedMsg = 'Saved! GitHub Pages will update in ~1 minute.';
+    if (result.topicWasNew) savedMsg = `Saved, and created a new topic "${topicLabel}". ` + savedMsg;
+    else if (result.subtopicWasNew) savedMsg = `Saved, and created a new subtopic "${subtopicLabel}". ` + savedMsg;
+    setStatus('save-status', savedMsg, 'success');
     document.getElementById('add-form').reset();
     setTimeout(() => {
       document.getElementById('add-overlay').classList.remove('open');
       init(); // reload data
-    }, 1200);
+    }, 1400);
   } catch (err) {
     setStatus('save-status', `Save failed: ${err.message}`, 'error');
   }
+}
+
+function slugify(str) {
+  return str
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-');
 }
 
 // ---------------------------------------------------------------------------

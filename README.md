@@ -117,12 +117,19 @@ which passed.
 1. Click +
 2. Optional: paste a bill title into the AI box and click "Fill," or
    drop a bill PDF onto the drop zone. Claude will try to fill in the
-   title, year, topic, subtopic, and sponsor name — review everything
+   title, year, sponsor name, and topic/subtopic — review everything
    it fills in, since it can guess wrong on ambiguous bills
-3. Choose whether this bill belongs to an existing legislator or a
+3. Choose the topic and subtopic. If the bill doesn't fit any existing
+   one, pick **"+ Add new topic…"** (or **"+ Add new subtopic…"** if
+   only the subtopic is missing) and type a name — it gets created
+   automatically the moment you save, and will appear in the filter
+   dropdowns for everyone from then on. The AI auto-fill will also
+   suggest a new topic/subtopic name on its own when nothing existing
+   fits, which you can edit before saving
+4. Choose whether this bill belongs to an existing legislator or a
    brand new one
-4. Fill in/confirm the remaining fields and click "Save to GitHub"
-5. The site reloads with the new data within about a minute (GitHub
+5. Fill in/confirm the remaining fields and click "Save to GitHub"
+6. The site reloads with the new data within about a minute (GitHub
    Pages' usual redeploy time)
 
 ### Deleting a mistake (the 🗑 button, bottom right)
@@ -143,7 +150,13 @@ ever need to look back further than the 15 most recent bills.
 
 ## Editing topics and subtopics
 
-Topics and subtopics live in `data.json` under the `topics` key:
+The easiest way to add a topic or subtopic is now right in the add-bill
+form — pick "+ Add new topic…" or "+ Add new subtopic…" and type a
+name. No GitHub editing required.
+
+If you ever want to rename, merge, or remove a topic, that still
+requires editing `data.json` directly. Topics and subtopics live there
+under the `topics` key:
 
 ```json
 "topics": {
@@ -158,11 +171,10 @@ Topics and subtopics live in `data.json` under the `topics` key:
 }
 ```
 
-To add a new subtopic (e.g. an "insurance" topic with "auto,"
-"health," and "property" subtopics), add a new block following this
-same shape directly in `data.json` on GitHub. New topics/subtopics
-will appear in both the filter dropdowns and the add-bill form
-automatically — no code changes needed.
+The internal codes (like `training-programs`) are generated automatically
+from whatever label you type when creating one through the + button, so
+they'll look a little different from these hand-written examples, but
+work exactly the same way.
 
 ---
 
