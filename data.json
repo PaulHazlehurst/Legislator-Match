@@ -74,6 +74,24 @@
               "outcome": "failed"
             }
           ]
+        },
+        {
+          "id": "L020",
+          "name": "Buckel",
+          "party": "R",
+          "chamber": "house",
+          "district": "",
+          "bills": [
+            {
+              "id": "B0064",
+              "title": "Income Tax – Standard Deduction – Alteration",
+              "topic": "taxation",
+              "subtopic": "standard-deduction",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            }
+          ]
         }
       ]
     }
@@ -121,12 +139,13 @@
     "taxation": {
       "label": "Taxation",
       "subtopics": {
-        "training-programs": "training-programs"
+        "training-programs": "training-programs",
+        "standard-deduction": "Standard deduction"
       }
     }
   },
   "meta": {
-    "nextLegislatorId": 20,
-    "nextBillId": 64
+    "nextLegislatorId": 21,
+    "nextBillId": 65
   }
 }
