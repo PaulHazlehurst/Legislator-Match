@@ -40,6 +40,30 @@ export default async function handler(req, res) {
     const newBillId = 'B' + String(content.meta.nextBillId).padStart(4, '0');
     const billRecord = { id: newBillId, ...bill };
 
+    // If the topic and/or subtopic on this bill don't exist yet, create them.
+    // bill.topicLabel / bill.subtopicLabel carry the human-readable name the
+    // user typed; bill.topic / bill.subtopic are the slug codes derived from it.
+    let topicWasNew = false, subtopicWasNew = false;
+
+    if (billRecord.topic) {
+      if (!content.topics[billRecord.topic]) {
+        content.topics[billRecord.topic] = {
+          label: billRecord.topicLabel || billRecord.topic,
+          subtopics: {}
+        };
+        topicWasNew = true;
+      }
+      if (billRecord.subtopic && !content.topics[billRecord.topic].subtopics[billRecord.subtopic]) {
+        content.topics[billRecord.topic].subtopics[billRecord.subtopic] =
+          billRecord.subtopicLabel || billRecord.subtopic;
+        subtopicWasNew = true;
+      }
+    }
+
+    // Don't store the helper label fields on the bill record itself
+    delete billRecord.topicLabel;
+    delete billRecord.subtopicLabel;
+
     let targetLegislator;
     if (legislator.mode === 'existing') {
       targetLegislator = content.states[stateCode].legislators.find(l => l.id === legislator.legislatorId);
@@ -63,13 +87,18 @@ export default async function handler(req, res) {
 
     // 2. Commit updated file back to GitHub
     const updatedContent = Buffer.from(JSON.stringify(content, null, 2)).toString('base64');
+    const commitNote = topicWasNew
+      ? ` (new topic: ${billRecord.topic})`
+      : subtopicWasNew
+        ? ` (new subtopic: ${billRecord.subtopic})`
+        : '';
     const putRes = await fetch(
       `https://api.github.com/repos/${repo}/contents/${filePath}`,
       {
         method: 'PUT',
         headers: { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json' },
         body: JSON.stringify({
-          message: `Add bill: ${bill.title}`,
+          message: `Add bill: ${bill.title}${commitNote}`,
           content: updatedContent,
           sha: fileMeta.sha,
           branch
@@ -81,7 +110,13 @@ export default async function handler(req, res) {
       throw new Error(`GitHub commit failed: ${errText}`);
     }
 
-    return res.status(200).json({ success: true, billId: newBillId, legislatorId: targetLegislator.id });
+    return res.status(200).json({
+      success: true,
+      billId: newBillId,
+      legislatorId: targetLegislator.id,
+      topicWasNew,
+      subtopicWasNew
+    });
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }

@@ -28,19 +28,21 @@ export default async function handler(req, res) {
 
   const systemPrompt = `You extract structured data about a state legislative bill from a title, description, or PDF the user provides.
 
-Valid topics and subtopics are:
-${topicList}
+The existing topics and subtopics in this system are:
+${topicList || '(none yet)'}
 
 Respond with ONLY a JSON object, no other text, no markdown fences. Use this exact shape:
 {
   "title": "string, the bill's official or best-guess title",
   "year": number or null,
-  "topic": "one of the topic codes above, or null if none fit well",
-  "subtopic": "one of that topic's subtopic codes above, or null if none fit well",
+  "topicMatch": "one of the existing topic codes above if one fits well, otherwise null",
+  "subtopicMatch": "one of that topic's existing subtopic codes if one fits well, otherwise null",
+  "suggestedTopicLabel": "if no existing topic fits well, a short human-readable label for a NEW topic this bill belongs to (e.g. 'Insurance'), otherwise null",
+  "suggestedSubtopicLabel": "if no existing subtopic fits well, a short human-readable label for a NEW subtopic under the matched or suggested topic (e.g. 'Auto insurance'), otherwise null",
   "sponsorName": "string or null, the primary sponsor's name if mentioned"
 }
 
-If you cannot confidently determine a field, use null for it rather than guessing wildly. Do not invent a sponsor name if none is mentioned.`;
+Prefer matching an existing topic/subtopic over suggesting a new one whenever the fit is reasonable. Only suggest a new topic or subtopic when the bill clearly doesn't belong under any existing one. Do not invent a sponsor name if none is mentioned.`;
 
   const userContent = [];
   if (pdfBase64) {
