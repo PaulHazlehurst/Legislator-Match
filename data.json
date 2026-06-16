@@ -200,6 +200,24 @@
               "outcome": "passed"
             }
           ]
+        },
+        {
+          "id": "L025",
+          "name": "Delegate Pruski",
+          "party": "D",
+          "chamber": "senate",
+          "district": "33A",
+          "bills": [
+            {
+              "id": "B0073",
+              "title": "Anne Arundel County – Alcoholic Beverages – Golf Course License and Sports Activity Venue Licenses",
+              "topic": "alcoholic-beverages-licensing",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            }
+          ]
         }
       ]
     }
@@ -270,10 +288,16 @@
       "subtopics": {
         "training-programs": "training-programs"
       }
+    },
+    "alcoholic-beverages-licensing": {
+      "label": "Alcoholic Beverages Licensing",
+      "subtopics": {
+        "training-programs": "training-programs"
+      }
     }
   },
   "meta": {
-    "nextLegislatorId": 25,
-    "nextBillId": 73
+    "nextLegislatorId": 26,
+    "nextBillId": 74
   }
 }
