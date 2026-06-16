@@ -18,6 +18,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0060",
+              "title": "Estates – Maryland Uniform Simultaneous Death Act",
+              "topic": "estates-probate",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -57,10 +66,16 @@
         "teacher-support": "Teacher support",
         "school-choice": "School choice"
       }
+    },
+    "estates-probate": {
+      "label": "Estates & Probate",
+      "subtopics": {
+        "training-programs": "training-programs"
+      }
     }
   },
   "meta": {
     "nextLegislatorId": 18,
-    "nextBillId": 60
+    "nextBillId": 61
   }
 }
