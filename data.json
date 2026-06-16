@@ -459,17 +459,7 @@
           "party": "R",
           "chamber": "senate",
           "district": "37",
-          "bills": [
-            {
-              "id": "B0041",
-              "title": "Agricultural Conservation Grant Act",
-              "topic": "environment",
-              "subtopic": "conservation",
-              "year": 2024,
-              "role": "sponsor",
-              "outcome": "passed"
-            }
-          ]
+          "bills": []
         },
         {
           "id": "L012",
