@@ -407,15 +407,6 @@
           "district": "17",
           "bills": [
             {
-              "id": "B0036",
-              "title": "EV Charging Infrastructure Act",
-              "topic": "environment",
-              "subtopic": "clean-energy",
-              "year": 2025,
-              "role": "sponsor",
-              "outcome": "passed"
-            },
-            {
               "id": "B0038",
               "title": "Tree Canopy Expansion Act",
               "topic": "environment",
