@@ -182,6 +182,24 @@
               "outcome": "failed"
             }
           ]
+        },
+        {
+          "id": "L024",
+          "name": "Delegate Lewis",
+          "party": "D",
+          "chamber": "house",
+          "district": "46",
+          "bills": [
+            {
+              "id": "B0072",
+              "title": "Baltimore City – Ordinance Enforcement – Fines and Penalties",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "fines-penalties",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            }
+          ]
         }
       ]
     }
@@ -243,7 +261,8 @@
     "public-safety-criminal-justice": {
       "label": "Public Safety & Criminal Justice",
       "subtopics": {
-        "training-programs": "training-programs"
+        "training-programs": "training-programs",
+        "fines-penalties": "Fines & Penalties"
       }
     },
     "land-use-property-rights": {
@@ -254,7 +273,7 @@
     }
   },
   "meta": {
-    "nextLegislatorId": 24,
-    "nextBillId": 72
+    "nextLegislatorId": 25,
+    "nextBillId": 73
   }
 }
