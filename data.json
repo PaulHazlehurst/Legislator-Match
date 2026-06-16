@@ -640,6 +640,24 @@
           "chamber": "house",
           "district": "31",
           "bills": []
+        },
+        {
+          "id": "L017",
+          "name": "Nkongolo",
+          "party": "R",
+          "chamber": "house",
+          "district": "31",
+          "bills": [
+            {
+              "id": "B0059",
+              "title": "Health Insurance – Scalp Cooling Systems – Required Coverage",
+              "topic": "healthcare",
+              "subtopic": "insurance-coverage",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            }
+          ]
         }
       ]
     }
@@ -680,7 +698,7 @@
     }
   },
   "meta": {
-    "nextLegislatorId": 17,
-    "nextBillId": 59
+    "nextLegislatorId": 18,
+    "nextBillId": 60
   }
 }
