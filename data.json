@@ -245,15 +245,6 @@
           "district": "41",
           "bills": [
             {
-              "id": "B0022",
-              "title": "Mental Health Parity Enforcement Act",
-              "topic": "healthcare",
-              "subtopic": "insurance-coverage",
-              "year": 2025,
-              "role": "co-sponsor",
-              "outcome": "passed"
-            },
-            {
               "id": "B0024",
               "title": "Community Health Worker Funding Act",
               "topic": "healthcare",
