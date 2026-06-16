@@ -10,12 +10,60 @@
           "chamber": "senate",
           "district": "13",
           "bills": [
-            { "id": "B0001", "title": "Workforce Apprenticeship Expansion Act", "topic": "workforce", "subtopic": "training-programs", "year": 2025, "role": "sponsor", "outcome": "passed" },
-            { "id": "B0002", "title": "Manufacturing Jobs Tax Credit", "topic": "workforce", "subtopic": "employer-incentives", "year": 2025, "role": "sponsor", "outcome": "passed" },
-            { "id": "B0003", "title": "Youth Job Corps Funding Act", "topic": "workforce", "subtopic": "grants", "year": 2024, "role": "sponsor", "outcome": "passed" },
-            { "id": "B0004", "title": "Skills Training Grant Program", "topic": "workforce", "subtopic": "grants", "year": 2024, "role": "co-sponsor", "outcome": "failed" },
-            { "id": "B0005", "title": "Career Readiness in Schools Act", "topic": "workforce", "subtopic": "training-programs", "year": 2023, "role": "sponsor", "outcome": "failed" },
-            { "id": "B0006", "title": "Veterans Workforce Reentry Program", "topic": "workforce", "subtopic": "training-programs", "year": 2023, "role": "co-sponsor", "outcome": "failed" }
+            {
+              "id": "B0001",
+              "title": "Workforce Apprenticeship Expansion Act",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0002",
+              "title": "Manufacturing Jobs Tax Credit",
+              "topic": "workforce",
+              "subtopic": "employer-incentives",
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0003",
+              "title": "Youth Job Corps Funding Act",
+              "topic": "workforce",
+              "subtopic": "grants",
+              "year": 2024,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0004",
+              "title": "Skills Training Grant Program",
+              "topic": "workforce",
+              "subtopic": "grants",
+              "year": 2024,
+              "role": "co-sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0005",
+              "title": "Career Readiness in Schools Act",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2023,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0006",
+              "title": "Veterans Workforce Reentry Program",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2023,
+              "role": "co-sponsor",
+              "outcome": "failed"
+            }
           ]
         },
         {
@@ -25,10 +73,42 @@
           "chamber": "house",
           "district": "21",
           "bills": [
-            { "id": "B0007", "title": "Job Training Tax Credit Act", "topic": "workforce", "subtopic": "employer-incentives", "year": 2025, "role": "co-sponsor", "outcome": "passed" },
-            { "id": "B0008", "title": "Apprenticeship Pipeline Expansion", "topic": "workforce", "subtopic": "training-programs", "year": 2025, "role": "co-sponsor", "outcome": "passed" },
-            { "id": "B0009", "title": "Community College Workforce Partnership Act", "topic": "workforce", "subtopic": "training-programs", "year": 2024, "role": "sponsor", "outcome": "failed" },
-            { "id": "B0010", "title": "Small Business Hiring Incentive", "topic": "workforce", "subtopic": "employer-incentives", "year": 2023, "role": "co-sponsor", "outcome": "failed" }
+            {
+              "id": "B0007",
+              "title": "Job Training Tax Credit Act",
+              "topic": "workforce",
+              "subtopic": "employer-incentives",
+              "year": 2025,
+              "role": "co-sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0008",
+              "title": "Apprenticeship Pipeline Expansion",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2025,
+              "role": "co-sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0009",
+              "title": "Community College Workforce Partnership Act",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2024,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0010",
+              "title": "Small Business Hiring Incentive",
+              "topic": "workforce",
+              "subtopic": "employer-incentives",
+              "year": 2023,
+              "role": "co-sponsor",
+              "outcome": "failed"
+            }
           ]
         },
         {
@@ -38,9 +118,33 @@
           "chamber": "senate",
           "district": "5",
           "bills": [
-            { "id": "B0011", "title": "Small Business Hiring Incentive", "topic": "workforce", "subtopic": "employer-incentives", "year": 2024, "role": "sponsor", "outcome": "passed" },
-            { "id": "B0012", "title": "Rural Workforce Development Grant", "topic": "workforce", "subtopic": "grants", "year": 2024, "role": "co-sponsor", "outcome": "failed" },
-            { "id": "B0013", "title": "Vocational Education Pilot Program", "topic": "workforce", "subtopic": "training-programs", "year": 2023, "role": "co-sponsor", "outcome": "failed" }
+            {
+              "id": "B0011",
+              "title": "Small Business Hiring Incentive",
+              "topic": "workforce",
+              "subtopic": "employer-incentives",
+              "year": 2024,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0012",
+              "title": "Rural Workforce Development Grant",
+              "topic": "workforce",
+              "subtopic": "grants",
+              "year": 2024,
+              "role": "co-sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0013",
+              "title": "Vocational Education Pilot Program",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2023,
+              "role": "co-sponsor",
+              "outcome": "failed"
+            }
           ]
         },
         {
@@ -50,7 +154,15 @@
           "chamber": "house",
           "district": "34",
           "bills": [
-            { "id": "B0014", "title": "Vocational Education Pilot Program", "topic": "workforce", "subtopic": "training-programs", "year": 2024, "role": "co-sponsor", "outcome": "failed" }
+            {
+              "id": "B0014",
+              "title": "Vocational Education Pilot Program",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2024,
+              "role": "co-sponsor",
+              "outcome": "failed"
+            }
           ]
         },
         {
@@ -60,13 +172,69 @@
           "chamber": "senate",
           "district": "9",
           "bills": [
-            { "id": "B0015", "title": "Rural Hospital Funding Act", "topic": "healthcare", "subtopic": "hospital-funding", "year": 2025, "role": "sponsor", "outcome": "passed" },
-            { "id": "B0016", "title": "Prescription Drug Affordability Expansion", "topic": "healthcare", "subtopic": "insurance-coverage", "year": 2025, "role": "sponsor", "outcome": "passed" },
-            { "id": "B0017", "title": "Maternal Health Equity Act", "topic": "healthcare", "subtopic": "access-equity", "year": 2024, "role": "sponsor", "outcome": "passed" },
-            { "id": "B0018", "title": "Mental Health Parity Enforcement Act", "topic": "healthcare", "subtopic": "insurance-coverage", "year": 2024, "role": "co-sponsor", "outcome": "passed" },
-            { "id": "B0019", "title": "Telehealth Access Expansion", "topic": "healthcare", "subtopic": "access-equity", "year": 2023, "role": "sponsor", "outcome": "failed" },
-            { "id": "B0020", "title": "Nursing Home Staffing Standards Act", "topic": "healthcare", "subtopic": "hospital-funding", "year": 2023, "role": "co-sponsor", "outcome": "failed" },
-            { "id": "B0021", "title": "Medicaid Dental Coverage Expansion", "topic": "healthcare", "subtopic": "insurance-coverage", "year": 2022, "role": "sponsor", "outcome": "failed" }
+            {
+              "id": "B0015",
+              "title": "Rural Hospital Funding Act",
+              "topic": "healthcare",
+              "subtopic": "hospital-funding",
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0016",
+              "title": "Prescription Drug Affordability Expansion",
+              "topic": "healthcare",
+              "subtopic": "insurance-coverage",
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0017",
+              "title": "Maternal Health Equity Act",
+              "topic": "healthcare",
+              "subtopic": "access-equity",
+              "year": 2024,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0018",
+              "title": "Mental Health Parity Enforcement Act",
+              "topic": "healthcare",
+              "subtopic": "insurance-coverage",
+              "year": 2024,
+              "role": "co-sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0019",
+              "title": "Telehealth Access Expansion",
+              "topic": "healthcare",
+              "subtopic": "access-equity",
+              "year": 2023,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0020",
+              "title": "Nursing Home Staffing Standards Act",
+              "topic": "healthcare",
+              "subtopic": "hospital-funding",
+              "year": 2023,
+              "role": "co-sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0021",
+              "title": "Medicaid Dental Coverage Expansion",
+              "topic": "healthcare",
+              "subtopic": "insurance-coverage",
+              "year": 2022,
+              "role": "sponsor",
+              "outcome": "failed"
+            }
           ]
         },
         {
@@ -76,9 +244,33 @@
           "chamber": "house",
           "district": "41",
           "bills": [
-            { "id": "B0022", "title": "Mental Health Parity Enforcement Act", "topic": "healthcare", "subtopic": "insurance-coverage", "year": 2025, "role": "co-sponsor", "outcome": "passed" },
-            { "id": "B0023", "title": "School-Based Health Center Expansion", "topic": "healthcare", "subtopic": "access-equity", "year": 2024, "role": "sponsor", "outcome": "failed" },
-            { "id": "B0024", "title": "Community Health Worker Funding Act", "topic": "healthcare", "subtopic": "access-equity", "year": 2023, "role": "co-sponsor", "outcome": "failed" }
+            {
+              "id": "B0022",
+              "title": "Mental Health Parity Enforcement Act",
+              "topic": "healthcare",
+              "subtopic": "insurance-coverage",
+              "year": 2025,
+              "role": "co-sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0023",
+              "title": "School-Based Health Center Expansion",
+              "topic": "healthcare",
+              "subtopic": "access-equity",
+              "year": 2024,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0024",
+              "title": "Community Health Worker Funding Act",
+              "topic": "healthcare",
+              "subtopic": "access-equity",
+              "year": 2023,
+              "role": "co-sponsor",
+              "outcome": "failed"
+            }
           ]
         },
         {
@@ -88,8 +280,24 @@
           "chamber": "senate",
           "district": "29",
           "bills": [
-            { "id": "B0025", "title": "Telehealth Licensing Reform Act", "topic": "healthcare", "subtopic": "access-equity", "year": 2024, "role": "sponsor", "outcome": "passed" },
-            { "id": "B0026", "title": "Rural Pharmacy Access Act", "topic": "healthcare", "subtopic": "access-equity", "year": 2023, "role": "co-sponsor", "outcome": "failed" }
+            {
+              "id": "B0025",
+              "title": "Telehealth Licensing Reform Act",
+              "topic": "healthcare",
+              "subtopic": "access-equity",
+              "year": 2024,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0026",
+              "title": "Rural Pharmacy Access Act",
+              "topic": "healthcare",
+              "subtopic": "access-equity",
+              "year": 2023,
+              "role": "co-sponsor",
+              "outcome": "failed"
+            }
           ]
         },
         {
@@ -99,7 +307,15 @@
           "chamber": "house",
           "district": "8",
           "bills": [
-            { "id": "B0027", "title": "Medicaid Program Integrity Audit Act", "topic": "healthcare", "subtopic": "insurance-coverage", "year": 2023, "role": "co-sponsor", "outcome": "failed" }
+            {
+              "id": "B0027",
+              "title": "Medicaid Program Integrity Audit Act",
+              "topic": "healthcare",
+              "subtopic": "insurance-coverage",
+              "year": 2023,
+              "role": "co-sponsor",
+              "outcome": "failed"
+            }
           ]
         },
         {
@@ -109,14 +325,78 @@
           "chamber": "senate",
           "district": "12",
           "bills": [
-            { "id": "B0028", "title": "Offshore Wind Expansion Act", "topic": "environment", "subtopic": "clean-energy", "year": 2025, "role": "sponsor", "outcome": "passed" },
-            { "id": "B0029", "title": "Clean Energy Jobs Act Amendments", "topic": "environment", "subtopic": "clean-energy", "year": 2025, "role": "sponsor", "outcome": "passed" },
-            { "id": "B0030", "title": "Solar Panel Recycling Program", "topic": "environment", "subtopic": "clean-energy", "year": 2025, "role": "co-sponsor", "outcome": "passed" },
-            { "id": "B0031", "title": "Chesapeake Bay Restoration Funding Act", "topic": "environment", "subtopic": "conservation", "year": 2024, "role": "sponsor", "outcome": "passed" },
-            { "id": "B0032", "title": "Building Energy Performance Standards", "topic": "environment", "subtopic": "clean-energy", "year": 2024, "role": "sponsor", "outcome": "passed" },
-            { "id": "B0033", "title": "Plastic Bag Reduction Act", "topic": "environment", "subtopic": "waste-pollution", "year": 2023, "role": "co-sponsor", "outcome": "failed" },
-            { "id": "B0034", "title": "Coastal Resiliency Bond Act", "topic": "environment", "subtopic": "conservation", "year": 2023, "role": "sponsor", "outcome": "failed" },
-            { "id": "B0035", "title": "Methane Emissions Reduction Act", "topic": "environment", "subtopic": "waste-pollution", "year": 2022, "role": "co-sponsor", "outcome": "failed" }
+            {
+              "id": "B0028",
+              "title": "Offshore Wind Expansion Act",
+              "topic": "environment",
+              "subtopic": "clean-energy",
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0029",
+              "title": "Clean Energy Jobs Act Amendments",
+              "topic": "environment",
+              "subtopic": "clean-energy",
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0030",
+              "title": "Solar Panel Recycling Program",
+              "topic": "environment",
+              "subtopic": "clean-energy",
+              "year": 2025,
+              "role": "co-sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0031",
+              "title": "Chesapeake Bay Restoration Funding Act",
+              "topic": "environment",
+              "subtopic": "conservation",
+              "year": 2024,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0032",
+              "title": "Building Energy Performance Standards",
+              "topic": "environment",
+              "subtopic": "clean-energy",
+              "year": 2024,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0033",
+              "title": "Plastic Bag Reduction Act",
+              "topic": "environment",
+              "subtopic": "waste-pollution",
+              "year": 2023,
+              "role": "co-sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0034",
+              "title": "Coastal Resiliency Bond Act",
+              "topic": "environment",
+              "subtopic": "conservation",
+              "year": 2023,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0035",
+              "title": "Methane Emissions Reduction Act",
+              "topic": "environment",
+              "subtopic": "waste-pollution",
+              "year": 2022,
+              "role": "co-sponsor",
+              "outcome": "failed"
+            }
           ]
         },
         {
@@ -126,11 +406,51 @@
           "chamber": "house",
           "district": "17",
           "bills": [
-            { "id": "B0036", "title": "EV Charging Infrastructure Act", "topic": "environment", "subtopic": "clean-energy", "year": 2025, "role": "sponsor", "outcome": "passed" },
-            { "id": "B0037", "title": "Clean Vehicle Rebate Program", "topic": "environment", "subtopic": "clean-energy", "year": 2025, "role": "sponsor", "outcome": "passed" },
-            { "id": "B0038", "title": "Tree Canopy Expansion Act", "topic": "environment", "subtopic": "conservation", "year": 2024, "role": "co-sponsor", "outcome": "failed" },
-            { "id": "B0039", "title": "Stormwater Management Reform Act", "topic": "environment", "subtopic": "waste-pollution", "year": 2023, "role": "co-sponsor", "outcome": "failed" },
-            { "id": "B0040", "title": "Green Building Tax Credit", "topic": "environment", "subtopic": "clean-energy", "year": 2023, "role": "sponsor", "outcome": "failed" }
+            {
+              "id": "B0036",
+              "title": "EV Charging Infrastructure Act",
+              "topic": "environment",
+              "subtopic": "clean-energy",
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0037",
+              "title": "Clean Vehicle Rebate Program",
+              "topic": "environment",
+              "subtopic": "clean-energy",
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0038",
+              "title": "Tree Canopy Expansion Act",
+              "topic": "environment",
+              "subtopic": "conservation",
+              "year": 2024,
+              "role": "co-sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0039",
+              "title": "Stormwater Management Reform Act",
+              "topic": "environment",
+              "subtopic": "waste-pollution",
+              "year": 2023,
+              "role": "co-sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0040",
+              "title": "Green Building Tax Credit",
+              "topic": "environment",
+              "subtopic": "clean-energy",
+              "year": 2023,
+              "role": "sponsor",
+              "outcome": "failed"
+            }
           ]
         },
         {
@@ -140,8 +460,24 @@
           "chamber": "senate",
           "district": "37",
           "bills": [
-            { "id": "B0041", "title": "Agricultural Conservation Grant Act", "topic": "environment", "subtopic": "conservation", "year": 2024, "role": "sponsor", "outcome": "passed" },
-            { "id": "B0042", "title": "Forest Preservation Tax Credit", "topic": "environment", "subtopic": "conservation", "year": 2023, "role": "co-sponsor", "outcome": "failed" }
+            {
+              "id": "B0041",
+              "title": "Agricultural Conservation Grant Act",
+              "topic": "environment",
+              "subtopic": "conservation",
+              "year": 2024,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0042",
+              "title": "Forest Preservation Tax Credit",
+              "topic": "environment",
+              "subtopic": "conservation",
+              "year": 2023,
+              "role": "co-sponsor",
+              "outcome": "failed"
+            }
           ]
         },
         {
@@ -151,7 +487,15 @@
           "chamber": "house",
           "district": "3",
           "bills": [
-            { "id": "B0043", "title": "Stream Restoration Funding Act", "topic": "environment", "subtopic": "conservation", "year": 2023, "role": "co-sponsor", "outcome": "failed" }
+            {
+              "id": "B0043",
+              "title": "Stream Restoration Funding Act",
+              "topic": "environment",
+              "subtopic": "conservation",
+              "year": 2023,
+              "role": "co-sponsor",
+              "outcome": "failed"
+            }
           ]
         },
         {
@@ -161,12 +505,60 @@
           "chamber": "senate",
           "district": "25",
           "bills": [
-            { "id": "B0044", "title": "Community College Tuition Assistance Act", "topic": "education", "subtopic": "higher-ed-funding", "year": 2025, "role": "sponsor", "outcome": "passed" },
-            { "id": "B0045", "title": "School Construction Funding Formula Reform", "topic": "education", "subtopic": "k12-funding", "year": 2025, "role": "sponsor", "outcome": "passed" },
-            { "id": "B0046", "title": "Universal Pre-K Expansion Act", "topic": "education", "subtopic": "k12-funding", "year": 2024, "role": "sponsor", "outcome": "passed" },
-            { "id": "B0047", "title": "Teacher Loan Forgiveness Expansion", "topic": "education", "subtopic": "teacher-support", "year": 2024, "role": "co-sponsor", "outcome": "failed" },
-            { "id": "B0048", "title": "Special Education Funding Equity Act", "topic": "education", "subtopic": "k12-funding", "year": 2023, "role": "sponsor", "outcome": "failed" },
-            { "id": "B0049", "title": "School Meals For All Act", "topic": "education", "subtopic": "k12-funding", "year": 2023, "role": "co-sponsor", "outcome": "failed" }
+            {
+              "id": "B0044",
+              "title": "Community College Tuition Assistance Act",
+              "topic": "education",
+              "subtopic": "higher-ed-funding",
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0045",
+              "title": "School Construction Funding Formula Reform",
+              "topic": "education",
+              "subtopic": "k12-funding",
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0046",
+              "title": "Universal Pre-K Expansion Act",
+              "topic": "education",
+              "subtopic": "k12-funding",
+              "year": 2024,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0047",
+              "title": "Teacher Loan Forgiveness Expansion",
+              "topic": "education",
+              "subtopic": "teacher-support",
+              "year": 2024,
+              "role": "co-sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0048",
+              "title": "Special Education Funding Equity Act",
+              "topic": "education",
+              "subtopic": "k12-funding",
+              "year": 2023,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0049",
+              "title": "School Meals For All Act",
+              "topic": "education",
+              "subtopic": "k12-funding",
+              "year": 2023,
+              "role": "co-sponsor",
+              "outcome": "failed"
+            }
           ]
         },
         {
@@ -176,10 +568,42 @@
           "chamber": "house",
           "district": "44",
           "bills": [
-            { "id": "B0050", "title": "Teacher Pay Raise Act", "topic": "education", "subtopic": "teacher-support", "year": 2025, "role": "co-sponsor", "outcome": "passed" },
-            { "id": "B0051", "title": "Literacy Intervention Funding Act", "topic": "education", "subtopic": "k12-funding", "year": 2024, "role": "sponsor", "outcome": "passed" },
-            { "id": "B0052", "title": "School Library Modernization Act", "topic": "education", "subtopic": "k12-funding", "year": 2024, "role": "co-sponsor", "outcome": "failed" },
-            { "id": "B0053", "title": "Career and Technical Education Expansion", "topic": "education", "subtopic": "higher-ed-funding", "year": 2023, "role": "co-sponsor", "outcome": "failed" }
+            {
+              "id": "B0050",
+              "title": "Teacher Pay Raise Act",
+              "topic": "education",
+              "subtopic": "teacher-support",
+              "year": 2025,
+              "role": "co-sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0051",
+              "title": "Literacy Intervention Funding Act",
+              "topic": "education",
+              "subtopic": "k12-funding",
+              "year": 2024,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0052",
+              "title": "School Library Modernization Act",
+              "topic": "education",
+              "subtopic": "k12-funding",
+              "year": 2024,
+              "role": "co-sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0053",
+              "title": "Career and Technical Education Expansion",
+              "topic": "education",
+              "subtopic": "higher-ed-funding",
+              "year": 2023,
+              "role": "co-sponsor",
+              "outcome": "failed"
+            }
           ]
         },
         {
@@ -189,9 +613,24 @@
           "chamber": "senate",
           "district": "1",
           "bills": [
-            { "id": "B0054", "title": "School Choice Pilot Program", "topic": "education", "subtopic": "school-choice", "year": 2024, "role": "sponsor", "outcome": "passed" },
-            { "id": "B0055", "title": "Parental Rights in Education Act", "topic": "education", "subtopic": "school-choice", "year": 2024, "role": "co-sponsor", "outcome": "failed" },
-            { "id": "B0056", "title": "Charter School Expansion Act", "topic": "education", "subtopic": "school-choice", "year": 2023, "role": "co-sponsor", "outcome": "failed" }
+            {
+              "id": "B0054",
+              "title": "School Choice Pilot Program",
+              "topic": "education",
+              "subtopic": "school-choice",
+              "year": 2024,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0055",
+              "title": "Parental Rights in Education Act",
+              "topic": "education",
+              "subtopic": "school-choice",
+              "year": 2024,
+              "role": "co-sponsor",
+              "outcome": "failed"
+            }
           ]
         },
         {
@@ -201,8 +640,24 @@
           "chamber": "house",
           "district": "31",
           "bills": [
-            { "id": "B0057", "title": "Literacy Funding Act", "topic": "education", "subtopic": "k12-funding", "year": 2023, "role": "co-sponsor", "outcome": "passed" },
-            { "id": "B0058", "title": "Homeschool Resource Access Act", "topic": "education", "subtopic": "school-choice", "year": 2023, "role": "co-sponsor", "outcome": "failed" }
+            {
+              "id": "B0057",
+              "title": "Literacy Funding Act",
+              "topic": "education",
+              "subtopic": "k12-funding",
+              "year": 2023,
+              "role": "co-sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0058",
+              "title": "Homeschool Resource Access Act",
+              "topic": "education",
+              "subtopic": "school-choice",
+              "year": 2023,
+              "role": "co-sponsor",
+              "outcome": "failed"
+            }
           ]
         }
       ]
