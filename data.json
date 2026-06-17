@@ -531,6 +531,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0106",
+              "title": "State Aid - Nonprofits - Status",
+              "topic": "government-administration",
+              "subtopic": "agency-operations",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -644,6 +653,6 @@
   },
   "meta": {
     "nextLegislatorId": 29,
-    "nextBillId": 106
+    "nextBillId": 107
   }
 }
