@@ -72,6 +72,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0096",
+              "title": "Criminal Law - Causing Ingestion of an Abortion-Inducing Drug - Prohibition (Women's Freedom From Coercion Act)",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "fines-penalties",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         },
@@ -522,6 +531,6 @@
   },
   "meta": {
     "nextLegislatorId": 28,
-    "nextBillId": 96
+    "nextBillId": 97
   }
 }
