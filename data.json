@@ -558,6 +558,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0108",
+              "title": "Public Safety - Police Accountability - Investigation Records Relating to Not Administratively Charged, Unfounded, and Exonerated Complaints",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "police-accountability",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -628,7 +637,8 @@
         "training-programs": "training-programs",
         "fines-penalties": "Fines & Penalties",
         "child-protection": "Child Protection",
-        "offender-registration": "Offender Registration"
+        "offender-registration": "Offender Registration",
+        "police-accountability": "Police Accountability"
       }
     },
     "land-use-property-rights": {
@@ -677,6 +687,6 @@
   },
   "meta": {
     "nextLegislatorId": 30,
-    "nextBillId": 108
+    "nextBillId": 109
   }
 }
