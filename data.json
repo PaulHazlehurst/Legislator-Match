@@ -846,6 +846,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0139",
+              "title": "Campaign Finance - Contributions by Gas and Electric Utility Companies - Prohibition",
+              "topic": "election-law-voter-registration",
+              "subtopic": "campaign-contribution-restrictions",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -970,7 +979,8 @@
       "subtopics": {
         "voter-eligibility-verification": "Voter Eligibility & Verification",
         "district-election-administration": "District & Election Administration",
-        "candidate-financial-disclosure": "Candidate financial disclosure"
+        "candidate-financial-disclosure": "Candidate financial disclosure",
+        "campaign-contribution-restrictions": "Campaign contribution restrictions"
       }
     },
     "gambling-gaming": {
@@ -1003,6 +1013,6 @@
   },
   "meta": {
     "nextLegislatorId": 31,
-    "nextBillId": 139
+    "nextBillId": 140
   }
 }
