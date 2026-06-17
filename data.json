@@ -360,6 +360,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0088",
+              "title": "Real Property - Wrongful Detainer Actions - Time of Hearing",
+              "topic": "land-use-property-rights",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -443,6 +452,6 @@
   },
   "meta": {
     "nextLegislatorId": 28,
-    "nextBillId": 88
+    "nextBillId": 89
   }
 }
