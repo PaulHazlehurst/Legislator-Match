@@ -954,6 +954,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0150",
+              "title": "Labor and Employment - Workforce Development - Hospital Employee Retraining and Placement Program and Workforce Development and Local Workforce Development Boards (Local Workforce Solutions Investment Act)",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -1134,6 +1143,6 @@
   },
   "meta": {
     "nextLegislatorId": 32,
-    "nextBillId": 150
+    "nextBillId": 151
   }
 }
