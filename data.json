@@ -506,6 +506,24 @@
               "outcome": "pending"
             }
           ]
+        },
+        {
+          "id": "L028",
+          "name": "Kathy Szeliga",
+          "party": "",
+          "chamber": "",
+          "district": "",
+          "bills": [
+            {
+              "id": "B0104",
+              "title": "Education - Interscholastic and Intramural Junior Varsity and Varsity Teams and Locker Rooms - Designation Based on Sex (Fairness in Girls' Sports Act)",
+              "topic": "education",
+              "subtopic": "sports-gender-policy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            }
+          ]
         }
       ]
     }
@@ -542,7 +560,8 @@
         "higher-ed-funding": "Higher ed funding",
         "teacher-support": "Teacher support",
         "school-choice": "School choice",
-        "curriculum-requirements": "Curriculum Requirements"
+        "curriculum-requirements": "Curriculum Requirements",
+        "sports-gender-policy": "sports-gender-policy"
       }
     },
     "estates-probate": {
@@ -614,7 +633,7 @@
     }
   },
   "meta": {
-    "nextLegislatorId": 28,
-    "nextBillId": 104
+    "nextLegislatorId": 29,
+    "nextBillId": 105
   }
 }
