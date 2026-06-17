@@ -272,6 +272,36 @@ from https://mgaleg.maryland.gov/mgawebsite/Members/Index/house and
 replacing the sample legislators with real ones (keeping their bill
 histories empty until you fill them in via the + button or by hand).
 
+## Reliability notes (worth knowing before rolling out to the team)
+
+A few things were added once more than one person started using this at
+the same time:
+
+- **Concurrent edits no longer silently fail.** If two people save or
+  delete a bill within a second or two of each other, GitHub will
+  reject the second write because the file changed underneath it. The
+  backend now automatically retries that write a couple of times by
+  refetching the latest data and reapplying the change, so this should
+  be invisible in practice. If both people are editing the exact same
+  bill at the exact same instant, last-write-wins still applies — but
+  that's a much narrower window than before.
+- **Duplicate topics/subtopics are caught automatically.** If someone
+  types "Insurance" and someone else later types "insurance," the
+  second one reuses the first instead of creating a near-duplicate
+  topic. The check is case- and whitespace-insensitive.
+- **Duplicate legislators are caught the same way.** Creating "Sen. J.
+  Carter" twice (say, from two browser tabs) now attaches the second
+  bill to the existing legislator instead of creating a second entry.
+- **The existing-legislator picker in the add form is now searchable**
+  — type a few letters to filter the list instead of scrolling, useful
+  once you have a full chamber's roster loaded.
+
+**Known follow-up, not yet done:** a dedicated pass on small mobile
+screens (the add/import panels were built and tested at desktop and
+typical mobile widths, but haven't been checked on a wide range of
+actual phones). Worth a quick check if your team will be using this
+from their phones day to day — flag anything cramped and it's a fast fix.
+
 ## Troubleshooting
 
 **"Could not load data.json"** — usually a JSON syntax error (missing

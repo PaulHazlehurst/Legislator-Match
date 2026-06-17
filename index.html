@@ -391,7 +391,8 @@
   .status-msg { font-size: 12.5px; margin-top: 8px; min-height: 16px; }
   .status-msg.error { color: #B3261E; }
   .status-msg.success { color: #146C43; }
-  .status-msg.loading { color: var(--text-secondary); }
+  .status-msg.loading { color: var(--text-secondary); animation: pulse 1.4s ease-in-out infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
   .delete-list { display: flex; flex-direction: column; gap: 8px; }
   .delete-item {
     display: flex;
@@ -467,7 +468,7 @@
   </div>
 
   <div class="results-meta" id="results-meta"></div>
-  <div class="results" id="results"></div>
+  <div class="results" id="results"><p class="empty">Loading legislator data…</p></div>
 
   <footer>
     Data lives in <code>data.json</code> on GitHub. Use the + button to add, the trash button to remove recent entries.
@@ -514,7 +515,8 @@
       </div>
 
       <div class="form-group" id="existing-leg-group">
-        <select id="f-existing-leg"></select>
+        <input type="text" id="f-existing-leg-search" placeholder="Type to filter…" style="margin-bottom:8px;" />
+        <select id="f-existing-leg" size="6" style="height:auto;"></select>
       </div>
 
       <div id="new-leg-group" style="display:none;">

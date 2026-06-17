@@ -3,7 +3,7 @@
 // See README.md "Deploying the serverless function" section.
 // Example: "https://legislator-matcher-api.vercel.app"
 // ===========================================================================
-const API_BASE = "https://legislator-match.vercel.app";
+const API_BASE = "PASTE_YOUR_VERCEL_FUNCTION_URL_HERE";
 
 let DATA = null;
 
@@ -35,7 +35,10 @@ async function init() {
     toggleNewTopicInput();
   });
   document.getElementById('f-subtopic').addEventListener('change', toggleNewSubtopicInput);
-  document.getElementById('f-state').addEventListener('change', populateExistingLegislatorDropdown);
+  document.getElementById('f-state').addEventListener('change', () => {
+    document.getElementById('f-existing-leg-search').value = '';
+    populateExistingLegislatorDropdown();
+  });
 
   setupAddPanel();
   setupDeletePanel();
@@ -147,21 +150,38 @@ function populateImportStateDropdown() {
   });
 }
 
-function populateExistingLegislatorDropdown() {
+function populateExistingLegislatorDropdown(filterText) {
   const stateCode = document.getElementById('f-state').value;
   const sel = document.getElementById('f-existing-leg');
+  const previousValue = sel.value;
   sel.innerHTML = '';
   const stateData = DATA.states[stateCode];
   if (!stateData) return;
+
+  const needle = (filterText || '').trim().toLowerCase();
+
   stateData.legislators
     .slice()
     .sort((a, b) => a.name.localeCompare(b.name))
+    .filter(l => !needle || l.name.toLowerCase().includes(needle))
     .forEach(l => {
       const opt = document.createElement('option');
       opt.value = l.id;
       opt.textContent = `${l.name} (${l.party}, ${l.chamber === 'senate' ? 'Senate' : 'House'} D${l.district || '—'})`;
       sel.appendChild(opt);
     });
+
+  // Keep the previous selection if it's still in the filtered list
+  if (previousValue && Array.from(sel.options).some(o => o.value === previousValue)) {
+    sel.value = previousValue;
+  }
+
+  if (sel.options.length === 0) {
+    const opt = document.createElement('option');
+    opt.disabled = true;
+    opt.textContent = 'No matches';
+    sel.appendChild(opt);
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -296,6 +316,7 @@ function escapeHtml(str) {
 function setupAddPanel() {
   const overlay = document.getElementById('add-overlay');
   document.getElementById('open-add').addEventListener('click', () => {
+    document.getElementById('f-existing-leg-search').value = '';
     populateExistingLegislatorDropdown();
     document.getElementById('ai-status').textContent = '';
     document.getElementById('save-status').textContent = '';
@@ -304,6 +325,9 @@ function setupAddPanel() {
     document.getElementById('f-subtopic-new').style.display = 'none';
     document.getElementById('f-subtopic-new').value = '';
     overlay.classList.add('open');
+  });
+  document.getElementById('f-existing-leg-search').addEventListener('input', e => {
+    populateExistingLegislatorDropdown(e.target.value);
   });
   document.getElementById('close-add').addEventListener('click', () => overlay.classList.remove('open'));
   overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('open'); });
