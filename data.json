@@ -819,6 +819,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0136",
+              "title": "Election Law - Certificate of Candidacy for Congressional Offices - Stock Trading Activities (Congressional Stock Trading Transparency Act)",
+              "topic": "election-law-voter-registration",
+              "subtopic": "candidate-financial-disclosure",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -941,7 +950,8 @@
       "label": "Election Law & Voter Registration",
       "subtopics": {
         "voter-eligibility-verification": "Voter Eligibility & Verification",
-        "district-election-administration": "District & Election Administration"
+        "district-election-administration": "District & Election Administration",
+        "candidate-financial-disclosure": "Candidate financial disclosure"
       }
     },
     "gambling-gaming": {
@@ -974,6 +984,6 @@
   },
   "meta": {
     "nextLegislatorId": 31,
-    "nextBillId": 136
+    "nextBillId": 137
   }
 }
