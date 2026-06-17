@@ -117,6 +117,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0101",
+              "title": "Criminal Procedure - Domestic Violence Offenders - Registration",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "offender-registration",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         },
@@ -545,7 +554,8 @@
       "subtopics": {
         "training-programs": "training-programs",
         "fines-penalties": "Fines & Penalties",
-        "child-protection": "Child Protection"
+        "child-protection": "Child Protection",
+        "offender-registration": "Offender Registration"
       }
     },
     "land-use-property-rights": {
@@ -575,6 +585,6 @@
   },
   "meta": {
     "nextLegislatorId": 28,
-    "nextBillId": 101
+    "nextBillId": 102
   }
 }
