@@ -729,6 +729,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0126",
+              "title": "County Boards of Education - Therapy Dogs - Policy for Handling and Use in Schools",
+              "topic": "education",
+              "subtopic": "school-wellness-policy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -769,7 +778,8 @@
         "school-choice": "School choice",
         "curriculum-requirements": "Curriculum Requirements",
         "sports-gender-policy": "sports-gender-policy",
-        "civil-rights-compliance-coordinators": "Civil rights compliance coordinators"
+        "civil-rights-compliance-coordinators": "Civil rights compliance coordinators",
+        "school-wellness-policy": "School wellness policy"
       }
     },
     "estates-probate": {
@@ -879,6 +889,6 @@
   },
   "meta": {
     "nextLegislatorId": 31,
-    "nextBillId": 126
+    "nextBillId": 127
   }
 }
