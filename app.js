@@ -3,7 +3,7 @@
 // See README.md "Deploying the serverless function" section.
 // Example: "https://legislator-matcher-api.vercel.app"
 // ===========================================================================
-const API_BASE = "https://legislator-match.vercel.app";
+const API_BASE = "PASTE_YOUR_VERCEL_FUNCTION_URL_HERE";
 
 let DATA = null;
 
@@ -196,27 +196,37 @@ function computeScore(bills, issue, subtopic) {
 
   const currentYear = new Date().getFullYear();
 
-  // Per-bill weighted strength: sponsor counts more than co-sponsor,
-  // recent bills count more than old ones. Each bill's strength maxes
-  // out at 1.0 (a sponsor, this year).
-  const strengths = relevant.map(b => {
-    const roleWeight = b.role === 'sponsor' ? 1 : 0.55;
+  // Recency-weighted "activity" — each bill contributes up to 1.0, decayed
+  // gently by age with a floor so older bills still count for something.
+  const activityWeights = relevant.map(b => {
     const age = Math.max(0, currentYear - b.year);
-    const recencyWeight = Math.max(0.35, 1 - age * 0.12);
-    return roleWeight * recencyWeight;
+    return Math.max(0.4, 1 - age * 0.1);
   });
+  const totalActivity = activityWeights.reduce((a, b) => a + b, 0);
 
-  const avgStrength = strengths.reduce((a, b) => a + b, 0) / strengths.length;
+  // Volume score uses a square-root curve rather than linear scaling, so a
+  // single recent bill already registers as a real signal (~45) instead of
+  // looking indistinguishable from "no activity," while a genuine track
+  // record of 4-5+ recent bills is what's needed to approach 100. This is
+  // the main lever that fixed everyone clustering at the same score
+  // regardless of how many bills they actually had.
+  const volumeScore = Math.min(100, Math.sqrt(totalActivity / 5) * 100);
 
-  // A small volume bonus rewards a deeper track record without punishing
-  // someone who only has one or two bills on this topic so far — it adds
-  // up to +20 points at 5+ bills, scaling down to 0 for a single bill.
-  const volumeBonus = Math.min(20, (relevant.length - 1) * 5);
-
-  const score = Math.min(100, Math.round(avgStrength * 80 + volumeBonus));
-
+  // Passage rate then nudges the score up or down by up to ~15%, but only
+  // once there are enough decided bills (passed/failed, excluding pending)
+  // for the rate to mean something — a single decided bill barely moves
+  // the needle, while 4+ decided bills apply the full effect.
   const decided = relevant.filter(b => b.outcome === 'passed' || b.outcome === 'failed');
   const passed = relevant.filter(b => b.outcome === 'passed').length;
+  let passageMultiplier = 1.0;
+  if (decided.length > 0) {
+    const passRate = passed / decided.length;
+    const confidence = Math.min(1, decided.length / 4);
+    const rawMultiplier = 0.85 + passRate * 0.30; // ranges 0.85x (never passes) to 1.15x (always passes)
+    passageMultiplier = 1 + (rawMultiplier - 1) * confidence;
+  }
+
+  const score = Math.round(Math.min(100, volumeScore * passageMultiplier));
   const rate = decided.length > 0 ? Math.round((passed / decided.length) * 100) : 0;
 
   return { score, relevant, passed, rate };

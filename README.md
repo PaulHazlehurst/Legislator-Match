@@ -214,6 +214,50 @@ ever need to look back further than the 15 most recent bills.
 
 ---
 
+## How the interest score works
+
+The interest score tries to answer "if I'm proposing a bill on this
+topic, how good a target is this legislator?" It's built from two
+pieces:
+
+**Volume of recent activity** does most of the work. Each bill on the
+selected topic contributes to a recency-weighted activity total — bills
+from this year count fully, older bills count a little less (with a
+floor, so even a several-year-old bill still counts for something).
+That total is turned into a 0-100 "volume score" using a curve that
+gives real credit to a single recent bill (around 45) rather than
+making one bill look identical to no activity at all, while still
+requiring a genuine track record — roughly 4 or more recent bills — to
+approach the top of the scale. This curve is what fixed an earlier
+version of the scoring where nearly everyone landed around 80
+regardless of whether they had one bill or five.
+
+**Passage rate then nudges that volume score up or down**, by up to
+about 15% in either direction. A legislator who gets their bills
+passed scores a bit higher than an equally active one who can't get
+bills through; someone with no decided bills yet (everything still
+pending) isn't penalized, since there's no signal to apply. This
+modifier also only kicks in at full strength once there are 4+ decided
+bills (passed or failed) to base it on — a single passed or failed
+bill barely moves the score, since one data point isn't enough to
+draw a real conclusion from.
+
+A few representative examples to build intuition:
+
+- One recent bill, outcome pending → score in the mid-40s
+- Three recent bills, mixed outcomes → score in the mid-70s
+- Five recent bills, all passed → score near 100
+- Five recent bills, all failed → score in the high-70s/low-80s — still
+  reflects strong engagement with the topic, just without the passage
+  boost
+- A single bill from several years ago → score in the high-20s/30s,
+  reflecting that it's real but dated signal
+
+The passage rate shown separately on each card (e.g. "3 of 4 decided
+bills passed (75%)") is the plain percentage — passed ÷ decided bills,
+excluding anything still pending — shown for transparency alongside
+the score, not as a hidden multiplier you have to guess at.
+
 ## Editing topics and subtopics
 
 The easiest way to add a topic or subtopic is now right in the add-bill
