@@ -909,6 +909,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0145",
+              "title": "State Procurement - Preferences - Historically Underutilized Business Zone Businesses",
+              "topic": "government-administration",
+              "subtopic": "agency-operations",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -1076,6 +1085,6 @@
   },
   "meta": {
     "nextLegislatorId": 32,
-    "nextBillId": 145
+    "nextBillId": 146
   }
 }
