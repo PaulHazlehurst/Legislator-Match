@@ -837,6 +837,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0138",
+              "title": "County Boards of Education - Opioid Overdose-Reversing Medications - Policy Requirements (Naloxone Access Act)",
+              "topic": "education",
+              "subtopic": "school-health-safety-policy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -878,7 +887,8 @@
         "curriculum-requirements": "Curriculum Requirements",
         "sports-gender-policy": "sports-gender-policy",
         "civil-rights-compliance-coordinators": "Civil rights compliance coordinators",
-        "school-wellness-policy": "School wellness policy"
+        "school-wellness-policy": "School wellness policy",
+        "school-health-safety-policy": "School health & safety policy"
       }
     },
     "estates-probate": {
@@ -993,6 +1003,6 @@
   },
   "meta": {
     "nextLegislatorId": 31,
-    "nextBillId": 138
+    "nextBillId": 139
   }
 }
