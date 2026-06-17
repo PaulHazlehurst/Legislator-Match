@@ -873,6 +873,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0142",
+              "title": "Maryland Department of Labor - Investigation of Complaints - Requirements (Worksite Enforcement Act of 2026)",
+              "topic": "labor-employment-rights",
+              "subtopic": "worksite-enforcement-complaint-investigation",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -1027,12 +1036,13 @@
         "employee-meeting-protections": "Employee meeting protections",
         "overtime-pay-exemptions": "Overtime pay exemptions",
         "employee-paid-leave": "Employee paid leave",
-        "training-repayment-agreements": "Training repayment agreements"
+        "training-repayment-agreements": "Training repayment agreements",
+        "worksite-enforcement-complaint-investigation": "Worksite enforcement & complaint investigation"
       }
     }
   },
   "meta": {
     "nextLegislatorId": 31,
-    "nextBillId": 142
+    "nextBillId": 143
   }
 }
