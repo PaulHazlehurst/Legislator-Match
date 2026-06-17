@@ -693,6 +693,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0122",
+              "title": "Income Tax - Energy Efficient Home Improvement Credit",
+              "topic": "taxation",
+              "subtopic": "tax-credits-incentives",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -842,6 +851,6 @@
   },
   "meta": {
     "nextLegislatorId": 31,
-    "nextBillId": 122
+    "nextBillId": 123
   }
 }
