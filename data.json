@@ -884,6 +884,24 @@
               "outcome": "pending"
             }
           ]
+        },
+        {
+          "id": "L031",
+          "name": "Johnny Salling",
+          "party": "",
+          "chamber": "",
+          "district": "",
+          "bills": [
+            {
+              "id": "B0143",
+              "title": "Baltimore County Food Desert Study",
+              "topic": "food-security-nutrition",
+              "subtopic": "food-desert-study",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            }
+          ]
         }
       ]
     }
@@ -1039,10 +1057,16 @@
         "training-repayment-agreements": "Training repayment agreements",
         "worksite-enforcement-complaint-investigation": "Worksite enforcement & complaint investigation"
       }
+    },
+    "food-security-nutrition": {
+      "label": "Food Security & Nutrition",
+      "subtopics": {
+        "food-desert-study": "Food desert study"
+      }
     }
   },
   "meta": {
-    "nextLegislatorId": 31,
-    "nextBillId": 143
+    "nextLegislatorId": 32,
+    "nextBillId": 144
   }
 }
