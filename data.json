@@ -972,6 +972,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0152",
+              "title": "Property Tax - Credit for Dwelling House of Disabled Veterans and Surviving Spouses - Alterations",
+              "topic": "taxation",
+              "subtopic": "property-tax-credit",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -1152,6 +1161,6 @@
   },
   "meta": {
     "nextLegislatorId": 32,
-    "nextBillId": 152
+    "nextBillId": 153
   }
 }
