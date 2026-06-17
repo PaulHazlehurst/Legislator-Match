@@ -1017,6 +1017,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0156",
+              "title": "Property Taxes - Authority of Counties to Establish Subclasses and Set Separate Rates for Land and Improvements to Land",
+              "topic": "taxation",
+              "subtopic": "property-tax-credit",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -1204,6 +1213,6 @@
   },
   "meta": {
     "nextLegislatorId": 33,
-    "nextBillId": 156
+    "nextBillId": 157
   }
 }
