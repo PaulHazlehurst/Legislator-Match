@@ -603,6 +603,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0113",
+              "title": "Handgun Permits - Special Endorsement for Security Clearance Holders",
+              "topic": "firearms-weapons",
+              "subtopic": "permit-endorsements",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -664,7 +673,8 @@
     "firearms-weapons": {
       "label": "Firearms & Weapons",
       "subtopics": {
-        "training-programs": "training-programs"
+        "training-programs": "training-programs",
+        "permit-endorsements": "Permit Endorsements"
       }
     },
     "public-safety-criminal-justice": {
@@ -736,6 +746,6 @@
   },
   "meta": {
     "nextLegislatorId": 30,
-    "nextBillId": 113
+    "nextBillId": 114
   }
 }
