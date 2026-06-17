@@ -738,6 +738,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0127",
+              "title": "Family Law - Incapacitated or Protected Persons - Petition for Visitation",
+              "topic": "family-law",
+              "subtopic": "visitation-for-incapacitated-persons",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -844,7 +853,8 @@
     "family-law": {
       "label": "Family Law",
       "subtopics": {
-        "protective-orders": "Protective Orders"
+        "protective-orders": "Protective Orders",
+        "visitation-for-incapacitated-persons": "Visitation for incapacitated persons"
       }
     },
     "government-administration": {
@@ -889,6 +899,6 @@
   },
   "meta": {
     "nextLegislatorId": 31,
-    "nextBillId": 127
+    "nextBillId": 128
   }
 }
