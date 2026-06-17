@@ -288,6 +288,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0080",
+              "title": "Criminal Law - Theft and Opening of Mail and Packages",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "fines-penalties",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -370,6 +379,6 @@
   },
   "meta": {
     "nextLegislatorId": 28,
-    "nextBillId": 80
+    "nextBillId": 81
   }
 }
