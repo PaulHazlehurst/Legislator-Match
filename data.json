@@ -90,6 +90,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0098",
+              "title": "Consumer Protection - Application Store Accountability Act",
+              "topic": "consumer-protection",
+              "subtopic": "app-store-regulation",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         },
@@ -537,10 +546,16 @@
       "subtopics": {
         "liability-immunity": "Liability & Immunity"
       }
+    },
+    "consumer-protection": {
+      "label": "Consumer Protection",
+      "subtopics": {
+        "app-store-regulation": "App Store Regulation"
+      }
     }
   },
   "meta": {
     "nextLegislatorId": 28,
-    "nextBillId": 98
+    "nextBillId": 99
   }
 }
