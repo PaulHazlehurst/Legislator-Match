@@ -378,6 +378,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0090",
+              "title": "Baltimore City - Public Middle Schools - Instruction on the Consequences of a Conviction for Felony Murder",
+              "topic": "education",
+              "subtopic": "curriculum-requirements",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -461,6 +470,6 @@
   },
   "meta": {
     "nextLegislatorId": 28,
-    "nextBillId": 90
+    "nextBillId": 91
   }
 }
