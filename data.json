@@ -1044,6 +1044,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "failed"
+            },
+            {
+              "id": "B0159",
+              "title": "State Department of Assessments and Taxation and Department of General Services - Property Appraisal Aids - Geographic Images",
+              "topic": "government-administration",
+              "subtopic": "agency-operations",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -1232,6 +1241,6 @@
   },
   "meta": {
     "nextLegislatorId": 33,
-    "nextBillId": 159
+    "nextBillId": 160
   }
 }
