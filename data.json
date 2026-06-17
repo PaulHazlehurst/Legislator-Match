@@ -1116,6 +1116,15 @@
               "year": 2025,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0167",
+              "title": "State Department of Assessments and Taxation and Department of General Services - Property Appraisal Aids - Geographic Images",
+              "topic": "government-administration",
+              "subtopic": "agency-operations",
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -1305,6 +1314,6 @@
   },
   "meta": {
     "nextLegislatorId": 33,
-    "nextBillId": 167
+    "nextBillId": 168
   }
 }
