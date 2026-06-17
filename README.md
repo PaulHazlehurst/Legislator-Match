@@ -179,6 +179,12 @@ A few limitations worth knowing:
 - Only the bills LegiScan itself has indexed for the current session
   show up — if a state's legislature is slow to report to LegiScan,
   very recent bills might be missing for a few days
+- A legislator's bill titles and primary-sponsor status require one
+  LegiScan lookup per bill, so the import caps out at the first 60
+  bills found for a person in a session. This is generous for nearly
+  any legislator in a single session — if someone genuinely has more
+  than 60 primary-sponsored bills in one session, the rest can be
+  added through the manual flow
 - The AI topic/subtopic suggestions are a starting point, not gospel —
   skim them before saving, the same way you'd review the AI auto-fill
   in the manual add flow
@@ -186,6 +192,10 @@ A few limitations worth knowing:
   ask) — older sessions aren't included, so a legislator's full
   historical track record will still need the manual add flow or a
   future enhancement to this importer
+- The review screen always shows you exactly how many bills were
+  found before you save anything — if that number ever looks
+  unexpectedly high, it's worth double-checking before saving rather
+  than after
 
 ### Deleting a mistake (the 🗑 button, bottom right)
 

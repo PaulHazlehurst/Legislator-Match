@@ -3,7 +3,7 @@
 // See README.md "Deploying the serverless function" section.
 // Example: "https://legislator-matcher-api.vercel.app"
 // ===========================================================================
-const API_BASE = "https://legislator-match.vercel.app";
+const API_BASE = "PASTE_YOUR_VERCEL_FUNCTION_URL_HERE";
 
 let DATA = null;
 
@@ -686,6 +686,7 @@ async function handleImportFetchBills(match, stateCode) {
 
     importState = { peopleId: match.peopleId, matchedName: match.name, stateCode, bills: result.bills };
     document.getElementById('import-matched-name').textContent = match.name;
+    document.getElementById('import-bill-count').textContent = result.bills.length;
     renderImportReview();
 
     document.getElementById('import-search-step').style.display = 'none';
@@ -720,6 +721,11 @@ function renderImportReview() {
   container.innerHTML = importState.bills.map((b, i) => {
     const topicCode = b.topicMatch || (b.suggestedTopicLabel ? '__new__' : Object.keys(DATA.topics)[0]);
     const subtopicCode = b.subtopicMatch || (b.suggestedSubtopicLabel ? '__new__' : '');
+    // LegiScan status codes: 4 = Passed, 5 = Vetoed, 6 = Failed. Anything
+    // else (introduced/engrossed/enrolled-not-yet-passed) maps to pending.
+    let defaultOutcome = 'pending';
+    if (b.statusCode === 4) defaultOutcome = 'passed';
+    else if (b.statusCode === 5 || b.statusCode === 6) defaultOutcome = 'failed';
     return `
     <div class="card" data-bill-idx="${i}">
       <label style="display:flex; align-items:flex-start; gap:8px; margin-bottom:10px; text-transform:none; font-size:13px; color:var(--text);">
@@ -746,9 +752,9 @@ function renderImportReview() {
         <div>
           <label>Outcome</label>
           <select class="import-outcome">
-            <option value="pending" selected>Pending</option>
-            <option value="passed">Passed</option>
-            <option value="failed">Did not pass</option>
+            <option value="pending" ${defaultOutcome === 'pending' ? 'selected' : ''}>Pending</option>
+            <option value="passed" ${defaultOutcome === 'passed' ? 'selected' : ''}>Passed</option>
+            <option value="failed" ${defaultOutcome === 'failed' ? 'selected' : ''}>Did not pass</option>
           </select>
         </div>
       </div>
@@ -773,8 +779,12 @@ function renderImportReview() {
   });
 }
 
+let importSaveInProgress = false;
+
 async function handleImportSaveAll() {
   if (!apiConfigured()) return;
+  if (importSaveInProgress) return; // guard against double-clicks triggering duplicate saves
+
   const cards = document.querySelectorAll('#import-bill-list [data-bill-idx]');
   const checkedCards = Array.from(cards).filter(c => c.querySelector('.import-bill-checkbox').checked);
 
@@ -782,6 +792,11 @@ async function handleImportSaveAll() {
     setStatus('import-save-status', 'No bills selected.', 'error');
     return;
   }
+
+  importSaveInProgress = true;
+  const saveBtn = document.getElementById('import-save-all-btn');
+  saveBtn.disabled = true;
+  saveBtn.textContent = 'Saving…';
 
   // First, resolve the legislator: try to find an existing one by name in
   // this state; if none, create one (party/chamber/district unknown from
@@ -854,6 +869,10 @@ async function handleImportSaveAll() {
   } else {
     setStatus('import-save-status', 'All saves failed. Check the Vercel logs for details.', 'error');
   }
+
+  importSaveInProgress = false;
+  saveBtn.disabled = false;
+  saveBtn.textContent = 'Save selected to GitHub';
 }
 
 
