@@ -585,6 +585,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0111",
+              "title": "Vehicle Laws - Vehicle Emissions Inspection Program - Modifications",
+              "topic": "environment",
+              "subtopic": "waste-pollution",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -717,6 +726,6 @@
   },
   "meta": {
     "nextLegislatorId": 30,
-    "nextBillId": 111
+    "nextBillId": 112
   }
 }
