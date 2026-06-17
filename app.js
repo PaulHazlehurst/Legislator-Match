@@ -3,7 +3,7 @@
 // See README.md "Deploying the serverless function" section.
 // Example: "https://legislator-matcher-api.vercel.app"
 // ===========================================================================
-const API_BASE = "https://legislator-match.vercel.app";
+const API_BASE = "PASTE_YOUR_VERCEL_FUNCTION_URL_HERE";
 
 let DATA = null;
 
@@ -39,6 +39,8 @@ async function init() {
 
   setupAddPanel();
   setupDeletePanel();
+  setupImportPanel();
+  populateImportStateDropdown();
 
   render();
 }
@@ -132,6 +134,17 @@ function toggleNewTopicInput() {
 function toggleNewSubtopicInput() {
   const isNew = document.getElementById('f-subtopic').value === '__new__';
   document.getElementById('f-subtopic-new').style.display = isNew ? 'block' : 'none';
+}
+
+function populateImportStateDropdown() {
+  const sel = document.getElementById('import-state');
+  sel.innerHTML = '';
+  Object.entries(DATA.states).forEach(([code, st]) => {
+    const opt = document.createElement('option');
+    opt.value = code;
+    opt.textContent = st.name;
+    sel.appendChild(opt);
+  });
 }
 
 function populateExistingLegislatorDropdown() {
@@ -570,6 +583,279 @@ function setupDeletePanel() {
   document.getElementById('close-delete').addEventListener('click', () => overlay.classList.remove('open'));
   overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('open'); });
 }
+
+// ---------------------------------------------------------------------------
+// LEGISCAN IMPORT PANEL
+// ---------------------------------------------------------------------------
+let importState = { peopleId: null, matchedName: null, stateCode: null, bills: [] };
+
+function setupImportPanel() {
+  const overlay = document.getElementById('import-overlay');
+
+  document.getElementById('open-import').addEventListener('click', () => {
+    document.getElementById('import-search-step').style.display = 'block';
+    document.getElementById('import-review-step').style.display = 'none';
+    document.getElementById('import-search-status').textContent = '';
+    document.getElementById('import-matches').innerHTML = '';
+    document.getElementById('import-name').value = '';
+    overlay.classList.add('open');
+  });
+  document.getElementById('close-import').addEventListener('click', () => overlay.classList.remove('open'));
+  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('open'); });
+
+  document.getElementById('import-search-btn').addEventListener('click', handleImportSearch);
+  document.getElementById('import-back-btn').addEventListener('click', () => {
+    document.getElementById('import-search-step').style.display = 'block';
+    document.getElementById('import-review-step').style.display = 'none';
+  });
+  document.getElementById('import-save-all-btn').addEventListener('click', handleImportSaveAll);
+}
+
+async function handleImportSearch() {
+  if (!apiConfigured()) return;
+  const stateCode = document.getElementById('import-state').value;
+  const name = document.getElementById('import-name').value.trim();
+  if (!name) { setStatus('import-search-status', 'Enter a legislator name first.', 'error'); return; }
+
+  setStatus('import-search-status', 'Searching LegiScan…', 'loading');
+  document.getElementById('import-matches').innerHTML = '';
+
+  try {
+    const res = await fetch(`${API_BASE}/api/import-legiscan`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'findPerson', stateCode, name })
+    });
+    if (!res.ok) {
+      const errBody = await res.json().catch(() => ({}));
+      throw new Error(errBody.error || `Server returned ${res.status}`);
+    }
+    const result = await res.json();
+
+    if (!result.matches || result.matches.length === 0) {
+      setStatus('import-search-status', 'No matching legislator found in the current LegiScan session for that state. Check spelling, or they may not have a current-session entry yet.', 'error');
+      return;
+    }
+
+    setStatus('import-search-status', `Found ${result.matches.length} match${result.matches.length === 1 ? '' : 'es'} — pick one.`, 'success');
+    renderImportMatches(result.matches, stateCode);
+  } catch (err) {
+    setStatus('import-search-status', `Search failed: ${err.message}`, 'error');
+  }
+}
+
+function renderImportMatches(matches, stateCode) {
+  const container = document.getElementById('import-matches');
+  container.innerHTML = matches.map((m, i) => `
+    <div class="delete-item" style="margin-bottom:8px;">
+      <div class="info">
+        <div>${escapeHtml(m.name)}</div>
+        <div class="who">${escapeHtml(m.party || '')} &middot; ${escapeHtml(m.role || '')}${m.district ? ' &middot; District ' + escapeHtml(String(m.district)) : ''}</div>
+      </div>
+      <button data-idx="${i}" style="border-color:var(--blue-600); color:var(--blue-700);">Select</button>
+    </div>
+  `).join('');
+
+  container.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const match = matches[btn.dataset.idx];
+      handleImportFetchBills(match, stateCode);
+    });
+  });
+}
+
+async function handleImportFetchBills(match, stateCode) {
+  setStatus('import-search-status', `Fetching bills sponsored by ${match.name}…`, 'loading');
+
+  try {
+    const res = await fetch(`${API_BASE}/api/import-legiscan`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'fetchBills', peopleId: match.peopleId, knownTopics: DATA.topics })
+    });
+    if (!res.ok) {
+      const errBody = await res.json().catch(() => ({}));
+      throw new Error(errBody.error || `Server returned ${res.status}`);
+    }
+    const result = await res.json();
+
+    if (!result.bills || result.bills.length === 0) {
+      setStatus('import-search-status', `${match.name} has no primary-sponsored bills in the current session.`, 'error');
+      return;
+    }
+
+    importState = { peopleId: match.peopleId, matchedName: match.name, stateCode, bills: result.bills };
+    document.getElementById('import-matched-name').textContent = match.name;
+    renderImportReview();
+
+    document.getElementById('import-search-step').style.display = 'none';
+    document.getElementById('import-review-step').style.display = 'block';
+    document.getElementById('import-save-status').textContent = '';
+  } catch (err) {
+    setStatus('import-search-status', `Fetch failed: ${err.message}`, 'error');
+  }
+}
+
+function renderImportReview() {
+  const container = document.getElementById('import-bill-list');
+  const topicOptionsHtml = (selectedCode) => {
+    let html = Object.entries(DATA.topics).map(([code, t]) =>
+      `<option value="${code}" ${code === selectedCode ? 'selected' : ''}>${escapeHtml(t.label)}</option>`
+    ).join('');
+    html += `<option value="__new__" ${selectedCode === '__new__' ? 'selected' : ''}>+ Add new topic…</option>`;
+    return html;
+  };
+  const subtopicOptionsHtml = (topicCode, selectedCode) => {
+    const topic = DATA.topics[topicCode];
+    let html = '';
+    if (topic) {
+      html += Object.entries(topic.subtopics).map(([code, label]) =>
+        `<option value="${code}" ${code === selectedCode ? 'selected' : ''}>${escapeHtml(label)}</option>`
+      ).join('');
+    }
+    html += `<option value="__new__" ${selectedCode === '__new__' ? 'selected' : ''}>+ Add new subtopic…</option>`;
+    return html;
+  };
+
+  container.innerHTML = importState.bills.map((b, i) => {
+    const topicCode = b.topicMatch || (b.suggestedTopicLabel ? '__new__' : Object.keys(DATA.topics)[0]);
+    const subtopicCode = b.subtopicMatch || (b.suggestedSubtopicLabel ? '__new__' : '');
+    return `
+    <div class="card" data-bill-idx="${i}">
+      <label style="display:flex; align-items:flex-start; gap:8px; margin-bottom:10px; text-transform:none; font-size:13px; color:var(--text);">
+        <input type="checkbox" class="import-bill-checkbox" checked style="margin-top:3px;" />
+        <span style="font-weight:600; color:var(--blue-900);">${escapeHtml(b.title)}</span>
+      </label>
+      <div class="form-row">
+        <div>
+          <label>Topic</label>
+          <select class="import-topic-select">${topicOptionsHtml(topicCode)}</select>
+          <input type="text" class="import-topic-new" placeholder="New topic name" value="${escapeHtml(b.suggestedTopicLabel || '')}" style="display:${topicCode === '__new__' ? 'block' : 'none'}; margin-top:6px;" />
+        </div>
+        <div>
+          <label>Subtopic</label>
+          <select class="import-subtopic-select">${subtopicOptionsHtml(topicCode, subtopicCode)}</select>
+          <input type="text" class="import-subtopic-new" placeholder="New subtopic name" value="${escapeHtml(b.suggestedSubtopicLabel || '')}" style="display:${subtopicCode === '__new__' ? 'block' : 'none'}; margin-top:6px;" />
+        </div>
+      </div>
+      <div class="form-row" style="margin-top:10px;">
+        <div>
+          <label>Year</label>
+          <input type="number" class="import-year" value="${b.year || new Date().getFullYear()}" />
+        </div>
+        <div>
+          <label>Outcome</label>
+          <select class="import-outcome">
+            <option value="pending" selected>Pending</option>
+            <option value="passed">Passed</option>
+            <option value="failed">Did not pass</option>
+          </select>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Wire up each card's topic/subtopic select to toggle its own new-name input
+  container.querySelectorAll('[data-bill-idx]').forEach(card => {
+    const topicSel = card.querySelector('.import-topic-select');
+    const topicNew = card.querySelector('.import-topic-new');
+    const subSel = card.querySelector('.import-subtopic-select');
+    const subNew = card.querySelector('.import-subtopic-new');
+
+    topicSel.addEventListener('change', () => {
+      topicNew.style.display = topicSel.value === '__new__' ? 'block' : 'none';
+      subSel.innerHTML = subtopicOptionsHtml(topicSel.value, null);
+      subNew.style.display = subSel.value === '__new__' ? 'block' : 'none';
+    });
+    subSel.addEventListener('change', () => {
+      subNew.style.display = subSel.value === '__new__' ? 'block' : 'none';
+    });
+  });
+}
+
+async function handleImportSaveAll() {
+  if (!apiConfigured()) return;
+  const cards = document.querySelectorAll('#import-bill-list [data-bill-idx]');
+  const checkedCards = Array.from(cards).filter(c => c.querySelector('.import-bill-checkbox').checked);
+
+  if (checkedCards.length === 0) {
+    setStatus('import-save-status', 'No bills selected.', 'error');
+    return;
+  }
+
+  // First, resolve the legislator: try to find an existing one by name in
+  // this state; if none, create one (party/chamber/district unknown from
+  // LegiScan in this simplified flow, so they're left blank for manual fill).
+  const stateData = DATA.states[importState.stateCode];
+  const existing = stateData.legislators.find(l =>
+    l.name.toLowerCase().includes(importState.matchedName.toLowerCase()) ||
+    importState.matchedName.toLowerCase().includes(l.name.replace(/^(sen\.|del\.)\s*/i, '').toLowerCase())
+  );
+  const legislatorPayload = existing
+    ? { mode: 'existing', legislatorId: existing.id }
+    : { mode: 'new', name: importState.matchedName, party: '', chamber: '', district: '' };
+
+  let savedCount = 0, failedCount = 0;
+  let lastBillId = null;
+
+  setStatus('import-save-status', `Saving ${checkedCards.length} bill${checkedCards.length === 1 ? '' : 's'} to GitHub…`, 'loading');
+
+  for (const card of checkedCards) {
+    const idx = parseInt(card.dataset.billIdx, 10);
+    const original = importState.bills[idx];
+
+    const topicSel = card.querySelector('.import-topic-select').value;
+    const topicNewVal = card.querySelector('.import-topic-new').value.trim();
+    const subSel = card.querySelector('.import-subtopic-select').value;
+    const subNewVal = card.querySelector('.import-subtopic-new').value.trim();
+
+    const topic = topicSel === '__new__' ? slugify(topicNewVal) : topicSel;
+    const topicLabel = topicSel === '__new__' ? topicNewVal : DATA.topics[topicSel]?.label;
+    const subtopic = subSel === '__new__' ? slugify(subNewVal) : subSel;
+    const subtopicLabel = subSel === '__new__' ? subNewVal : (DATA.topics[topicSel]?.subtopics?.[subSel] || subSel);
+
+    const bill = {
+      title: original.title,
+      topic, topicLabel, subtopic, subtopicLabel,
+      year: parseInt(card.querySelector('.import-year').value, 10),
+      role: 'sponsor', // import flow only pulls primary-sponsored bills
+      outcome: card.querySelector('.import-outcome').value
+    };
+
+    try {
+      const res = await fetch(`${API_BASE}/api/save-bill`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ stateCode: importState.stateCode, legislator: legislatorPayload, bill })
+      });
+      if (!res.ok) throw new Error('save failed');
+      const result = await res.json();
+      lastBillId = result.billId;
+      // After the first new legislator is created, subsequent bills in this
+      // loop should attach to that same legislator rather than create more.
+      if (legislatorPayload.mode === 'new') {
+        legislatorPayload.mode = 'existing';
+        legislatorPayload.legislatorId = result.legislatorId;
+      }
+      savedCount++;
+    } catch {
+      failedCount++;
+    }
+  }
+
+  if (savedCount > 0) {
+    setStatus('import-save-status', `Saved ${savedCount} bill${savedCount === 1 ? '' : 's'}${failedCount > 0 ? `, ${failedCount} failed` : ''}. Waiting for the live site to update…`, 'loading');
+    await waitForBillToAppear(lastBillId);
+    setStatus('import-save-status', `Done — ${savedCount} bill${savedCount === 1 ? '' : 's'} saved and live.`, 'success');
+    setTimeout(() => {
+      document.getElementById('import-overlay').classList.remove('open');
+      init();
+    }, 1200);
+  } else {
+    setStatus('import-save-status', 'All saves failed. Check the Vercel logs for details.', 'error');
+  }
+}
+
 
 function renderDeleteList() {
   const allBills = [];

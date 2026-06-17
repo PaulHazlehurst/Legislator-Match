@@ -59,7 +59,17 @@ This lets the backend write to your `data.json` file on your behalf.
 3. Optional but recommended: under "Limits," set a monthly spend cap
    (e.g. $5) so there's no chance of a surprise bill
 
-### 2c. Deploy to Vercel
+### 2c. Get a free LegiScan API key (powers the "Import" button)
+
+This lets you import a legislator's current-session, primary-sponsored
+bills automatically instead of typing each one in by hand.
+
+1. Go to https://legiscan.com/legiscan and register for a free API key
+2. The free tier includes 30,000 requests/month — far more than 8
+   people will ever use just importing legislators occasionally
+3. Copy the key
+
+### 2d. Deploy to Vercel
 
 1. Go to https://vercel.com and sign up (free) — sign in with GitHub,
    it's the easiest path
@@ -73,6 +83,7 @@ This lets the backend write to your `data.json` file on your behalf.
    | Name | Value |
    |---|---|
    | `ANTHROPIC_API_KEY` | the key from step 2b |
+   | `LEGISCAN_API_KEY` | the key from step 2c |
    | `GITHUB_TOKEN` | the token from step 2a |
    | `GITHUB_REPO` | your repo, formatted like `yourusername/legislator-matcher` |
    | `GITHUB_BRANCH` | `main` (or whatever your default branch is called) |
@@ -81,7 +92,7 @@ This lets the backend write to your `data.json` file on your behalf.
 5. Click Deploy. After it finishes, Vercel gives you a URL like
    `https://legislator-matcher-xyz.vercel.app`
 
-### 2d. Connect the frontend to the backend
+### 2e. Connect the frontend to the backend
 
 1. Open `app.js` in your GitHub repo (you can edit directly on
    github.com — click the file, click the pencil icon)
@@ -134,6 +145,47 @@ which passed.
    manual reload needed. If GitHub Pages is unusually slow, you'll see
    a message saying so after about 2 minutes; the bill is already
    safely saved either way, it'll just take a bit longer to appear)
+
+### Importing a legislator's bills (the "Import ⇩" button)
+
+This is the fastest way to populate someone's bill history, and it's
+what answers the original ask: paste in a name instead of typing every
+bill by hand.
+
+1. Click "Import ⇩"
+2. Pick the state, type the legislator's name (full name, last name
+   only, or with "Sen."/"Del." — the search is forgiving), and click
+   "Search LegiScan"
+3. Pick the correct match if more than one comes back
+4. The app fetches every bill from the **current legislative session**
+   where that person is the **primary sponsor** (co-sponsored bills are
+   excluded automatically) and asks Claude to suggest a topic/subtopic
+   for each one
+5. Review the list — each bill shows an editable topic/subtopic
+   dropdown (with "+ Add new topic/subtopic…" available same as the
+   manual form), a year, and an outcome. Uncheck any bill you don't
+   want to import
+6. Click "Save selected to GitHub." If this is a brand-new legislator,
+   one gets created automatically using the name LegiScan returned —
+   note that party, chamber, and district aren't filled in by this
+   flow, since LegiScan's "current session roster" lookup is kept
+   simple here; you may want to fill those three fields in by editing
+   `data.json` directly afterward, or building on this flow later
+7. The app waits for the bills to go live, same as the manual add flow,
+   then refreshes automatically
+
+A few limitations worth knowing:
+
+- Only the bills LegiScan itself has indexed for the current session
+  show up — if a state's legislature is slow to report to LegiScan,
+  very recent bills might be missing for a few days
+- The AI topic/subtopic suggestions are a starting point, not gospel —
+  skim them before saving, the same way you'd review the AI auto-fill
+  in the manual add flow
+- This pulls the **current** session only by design (per your original
+  ask) — older sessions aren't included, so a legislator's full
+  historical track record will still need the manual add flow or a
+  future enhancement to this importer
 
 ### Deleting a mistake (the 🗑 button, bottom right)
 
@@ -215,13 +267,19 @@ histories empty until you fill them in via the + button or by hand).
 **"Could not load data.json"** — usually a JSON syntax error (missing
 comma, unescaped quote). Paste the file into jsonlint.com to find it.
 
-**+/🗑 buttons show an alert about the backend** — `API_BASE` in
-`app.js` is still the placeholder text. Revisit Part 2d.
+**+/🗑/Import buttons show an alert about the backend** — `API_BASE`
+in `app.js` is still the placeholder text. Revisit Part 2e.
 
 **AI fill or saving fails with an error message** — check the Vercel
 project's "Logs" tab for the specific error. The most common causes
 are an expired/wrong GitHub token, a missing Anthropic API key, or the
 `GITHUB_REPO` value not exactly matching `username/repo-name`.
+
+**"No matching legislator found" when importing** — double check the
+spelling, try just the last name, or confirm the person is actually
+serving in the current session (LegiScan may not have indexed someone
+newly appointed yet). Also check that `LEGISCAN_API_KEY` is set
+correctly in Vercel's environment variables.
 
 **Changes don't appear after saving** — the app polls automatically
 for up to 2 minutes and refreshes itself the moment GitHub Pages
