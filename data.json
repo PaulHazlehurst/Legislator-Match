@@ -1071,6 +1071,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0162",
+              "title": "Maryland Public Charter School Program - School Facilities - Funding",
+              "topic": "education",
+              "subtopic": "school-choice",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -1259,6 +1268,6 @@
   },
   "meta": {
     "nextLegislatorId": 33,
-    "nextBillId": 162
+    "nextBillId": 163
   }
 }
