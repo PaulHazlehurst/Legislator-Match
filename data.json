@@ -387,6 +387,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0091",
+              "title": "Correctional Services - Incarcerated Individuals - Menstrual Hygiene",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -470,6 +479,6 @@
   },
   "meta": {
     "nextLegislatorId": 28,
-    "nextBillId": 91
+    "nextBillId": 92
   }
 }
