@@ -936,6 +936,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0148",
+              "title": "Baltimore County - Property Tax Credits - Public Safety Officers and Public School System Employees",
+              "topic": "taxation",
+              "subtopic": "property-tax-credit",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -1110,6 +1119,6 @@
   },
   "meta": {
     "nextLegislatorId": 32,
-    "nextBillId": 148
+    "nextBillId": 149
   }
 }
