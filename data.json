@@ -36,6 +36,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0092",
+              "title": "Health Insurance - Scalp Cooling Systems - Required Coverage",
+              "topic": "healthcare",
+              "subtopic": "insurance-coverage",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         },
@@ -479,6 +488,6 @@
   },
   "meta": {
     "nextLegislatorId": 28,
-    "nextBillId": 92
+    "nextBillId": 93
   }
 }
