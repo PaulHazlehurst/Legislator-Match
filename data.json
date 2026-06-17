@@ -1098,6 +1098,15 @@
               "year": 2025,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0165",
+              "title": "Income Tax - Resident",
+              "topic": "taxation",
+              "subtopic": "standard-deduction",
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -1287,6 +1296,6 @@
   },
   "meta": {
     "nextLegislatorId": 33,
-    "nextBillId": 165
+    "nextBillId": 166
   }
 }
