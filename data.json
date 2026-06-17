@@ -1053,6 +1053,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0160",
+              "title": "Higher Education - Workforce Pell Grant Program - Implementation",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -1241,6 +1250,6 @@
   },
   "meta": {
     "nextLegislatorId": 33,
-    "nextBillId": 160
+    "nextBillId": 161
   }
 }
