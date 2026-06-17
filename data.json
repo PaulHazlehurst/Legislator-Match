@@ -666,6 +666,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0119",
+              "title": "Labor and Employment - Exemptions From Overtime Pay - Administrative, Executive, or Professional Capacity",
+              "topic": "labor-employment-rights",
+              "subtopic": "overtime-pay-exemptions",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -806,12 +815,13 @@
     "labor-employment-rights": {
       "label": "Labor & Employment Rights",
       "subtopics": {
-        "employee-meeting-protections": "Employee meeting protections"
+        "employee-meeting-protections": "Employee meeting protections",
+        "overtime-pay-exemptions": "Overtime pay exemptions"
       }
     }
   },
   "meta": {
     "nextLegislatorId": 31,
-    "nextBillId": 119
+    "nextBillId": 120
   }
 }
