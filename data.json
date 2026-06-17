@@ -1080,6 +1080,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0163",
+              "title": "Public Schools STEM and Robotics Program Task Force - Establishment",
+              "topic": "education",
+              "subtopic": "curriculum-requirements",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -1268,6 +1277,6 @@
   },
   "meta": {
     "nextLegislatorId": 33,
-    "nextBillId": 163
+    "nextBillId": 164
   }
 }
