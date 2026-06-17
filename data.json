@@ -54,6 +54,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0094",
+              "title": "Anne Arundel County - Residential Property Tax Payment Deferrals - Eligibility",
+              "topic": "taxation",
+              "subtopic": "property-tax-credit",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         },
@@ -498,6 +507,6 @@
   },
   "meta": {
     "nextLegislatorId": 28,
-    "nextBillId": 94
+    "nextBillId": 95
   }
 }
