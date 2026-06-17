@@ -623,6 +623,24 @@
               "outcome": "pending"
             }
           ]
+        },
+        {
+          "id": "L030",
+          "name": "Joe Vogel",
+          "party": "",
+          "chamber": "",
+          "district": "",
+          "bills": [
+            {
+              "id": "B0115",
+              "title": "Income Tax - Credit for 9-1-1 Specialist Retirement Income (Supporting Our 9-1-1 Specialists Act)",
+              "topic": "taxation",
+              "subtopic": "tax-credits-incentives",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            }
+          ]
         }
       ]
     }
@@ -754,7 +772,7 @@
     }
   },
   "meta": {
-    "nextLegislatorId": 30,
-    "nextBillId": 115
+    "nextLegislatorId": 31,
+    "nextBillId": 116
   }
 }
