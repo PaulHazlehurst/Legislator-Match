@@ -918,6 +918,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0146",
+              "title": "Business Regulation - Cemeteries and Abandoned Cemeteries - Sale, Transfer, or Government Acquisition and Disposition",
+              "topic": "business-regulation",
+              "subtopic": "cemetery-regulation-disposition",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -1081,10 +1090,16 @@
       "subtopics": {
         "food-desert-study": "Food desert study"
       }
+    },
+    "business-regulation": {
+      "label": "Business Regulation",
+      "subtopics": {
+        "cemetery-regulation-disposition": "Cemetery regulation & disposition"
+      }
     }
   },
   "meta": {
     "nextLegislatorId": 32,
-    "nextBillId": 146
+    "nextBillId": 147
   }
 }
