@@ -1026,6 +1026,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0157",
+              "title": "Vehicle Laws – Crosswalk Monitoring Systems – Authorization",
+              "topic": "vehicle-transportation-law",
+              "subtopic": "crosswalk-monitoring-systems",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -1166,7 +1175,8 @@
       "label": "Vehicle & Transportation Law",
       "subtopics": {
         "historic-special-vehicles": "Historic & Special Vehicles",
-        "electric-bicycle-registration-insurance": "Electric bicycle registration & insurance"
+        "electric-bicycle-registration-insurance": "Electric bicycle registration & insurance",
+        "crosswalk-monitoring-systems": "crosswalk-monitoring-systems"
       }
     },
     "labor-gig-economy": {
@@ -1213,6 +1223,6 @@
   },
   "meta": {
     "nextLegislatorId": 33,
-    "nextBillId": 157
+    "nextBillId": 158
   }
 }
