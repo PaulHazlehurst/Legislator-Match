@@ -297,6 +297,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0081",
+              "title": "Public Middle Schools – Instruction on the Consequences of a Conviction for Felony Murder",
+              "topic": "education",
+              "subtopic": "curriculum-requirements",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -334,7 +343,8 @@
         "k12-funding": "K-12 funding",
         "higher-ed-funding": "Higher ed funding",
         "teacher-support": "Teacher support",
-        "school-choice": "School choice"
+        "school-choice": "School choice",
+        "curriculum-requirements": "Curriculum Requirements"
       }
     },
     "estates-probate": {
@@ -379,6 +389,6 @@
   },
   "meta": {
     "nextLegislatorId": 28,
-    "nextBillId": 81
+    "nextBillId": 82
   }
 }
