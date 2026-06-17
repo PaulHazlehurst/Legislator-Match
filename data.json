@@ -1001,6 +1001,24 @@
               "outcome": "pending"
             }
           ]
+        },
+        {
+          "id": "L032",
+          "name": "Jim Rosapepe",
+          "party": "",
+          "chamber": "",
+          "district": "",
+          "bills": [
+            {
+              "id": "B0155",
+              "title": "Economic Development - Transformational Project Financing Program - Establishment",
+              "topic": "workforce",
+              "subtopic": "employer-incentives",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            }
+          ]
         }
       ]
     }
@@ -1185,7 +1203,7 @@
     }
   },
   "meta": {
-    "nextLegislatorId": 32,
-    "nextBillId": 155
+    "nextLegislatorId": 33,
+    "nextBillId": 156
   }
 }
