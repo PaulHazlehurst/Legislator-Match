@@ -774,6 +774,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0131",
+              "title": "Sales and Use Tax - Distribution of Cannabis Sales Tax Revenue - Maryland Veterans Trust Fund",
+              "topic": "taxation",
+              "subtopic": "tax-credits-incentives",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -928,6 +937,6 @@
   },
   "meta": {
     "nextLegislatorId": 31,
-    "nextBillId": 131
+    "nextBillId": 132
   }
 }
