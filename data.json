@@ -252,6 +252,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0076",
+              "title": "Law Enforcement - Use of Facial Recognition Technology - Images Captured in Dwelling Interior",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -334,6 +343,6 @@
   },
   "meta": {
     "nextLegislatorId": 28,
-    "nextBillId": 76
+    "nextBillId": 77
   }
 }
