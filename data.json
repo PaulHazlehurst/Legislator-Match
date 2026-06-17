@@ -963,6 +963,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0151",
+              "title": "Income Tax Credit - Venison Donation - Alterations",
+              "topic": "taxation",
+              "subtopic": "tax-credits-incentives",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -1143,6 +1152,6 @@
   },
   "meta": {
     "nextLegislatorId": 32,
-    "nextBillId": 151
+    "nextBillId": 152
   }
 }
