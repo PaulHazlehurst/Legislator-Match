@@ -135,6 +135,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0103",
+              "title": "Motor Vehicle Administration - Telephone Queuing System - Establishment",
+              "topic": "government-administration",
+              "subtopic": "agency-operations",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         },
@@ -596,10 +605,16 @@
       "subtopics": {
         "protective-orders": "Protective Orders"
       }
+    },
+    "government-administration": {
+      "label": "Government Administration",
+      "subtopics": {
+        "agency-operations": "Agency Operations"
+      }
     }
   },
   "meta": {
     "nextLegislatorId": 28,
-    "nextBillId": 103
+    "nextBillId": 104
   }
 }
