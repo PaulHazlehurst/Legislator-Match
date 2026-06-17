@@ -1,6 +1,10 @@
 // /api/delete-bill.js
 // Removes a single bill from a legislator's bills array and commits
-// the updated data.json back to GitHub.
+// the updated data.json back to GitHub. Wrapped in a retry loop so a
+// concurrent edit from someone else doesn't just fail outright — see the
+// comment at the top of save-bill.js for the full explanation.
+
+const MAX_RETRIES = 3;
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -22,48 +26,68 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Missing stateCode, legislatorId, or billId.' });
   }
 
-  try {
-    const getRes = await fetch(
-      `https://api.github.com/repos/${repo}/contents/${filePath}?ref=${branch}`,
-      { headers: { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json' } }
-    );
-    if (!getRes.ok) throw new Error(`Could not fetch data.json from GitHub (${getRes.status})`);
-    const fileMeta = await getRes.json();
-    const content = JSON.parse(Buffer.from(fileMeta.content, 'base64').toString('utf-8'));
-
-    const stateData = content.states[stateCode];
-    if (!stateData) return res.status(400).json({ error: `State ${stateCode} not found.` });
-
-    const legislator = stateData.legislators.find(l => l.id === legislatorId);
-    if (!legislator) return res.status(400).json({ error: 'Legislator not found.' });
-
-    const beforeCount = legislator.bills.length;
-    legislator.bills = legislator.bills.filter(b => b.id !== billId);
-    if (legislator.bills.length === beforeCount) {
-      return res.status(400).json({ error: 'Bill not found for that legislator.' });
-    }
-
-    const updatedContent = Buffer.from(JSON.stringify(content, null, 2)).toString('base64');
-    const putRes = await fetch(
-      `https://api.github.com/repos/${repo}/contents/${filePath}`,
-      {
-        method: 'PUT',
-        headers: { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json' },
-        body: JSON.stringify({
-          message: `Delete bill ${billId} from ${legislator.name}`,
-          content: updatedContent,
-          sha: fileMeta.sha,
-          branch
-        })
+  let lastError;
+  for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+    try {
+      const result = await attemptDelete({ stateCode, legislatorId, billId, token, repo, branch, filePath });
+      return res.status(200).json(result);
+    } catch (err) {
+      lastError = err;
+      if (err.isConflict && attempt < MAX_RETRIES - 1) {
+        continue;
       }
-    );
-    if (!putRes.ok) {
-      const errText = await putRes.text();
-      throw new Error(`GitHub commit failed: ${errText}`);
+      break;
     }
-
-    return res.status(200).json({ success: true });
-  } catch (err) {
-    return res.status(500).json({ error: err.message });
   }
+
+  return res.status(500).json({ error: lastError.message });
+}
+
+async function attemptDelete({ stateCode, legislatorId, billId, token, repo, branch, filePath }) {
+  const getRes = await fetch(
+    `https://api.github.com/repos/${repo}/contents/${filePath}?ref=${branch}`,
+    { headers: { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json' } }
+  );
+  if (!getRes.ok) throw new Error(`Could not fetch data.json from GitHub (${getRes.status})`);
+  const fileMeta = await getRes.json();
+  const content = JSON.parse(Buffer.from(fileMeta.content, 'base64').toString('utf-8'));
+
+  const stateData = content.states[stateCode];
+  if (!stateData) throw new Error(`State ${stateCode} not found.`);
+
+  const legislator = stateData.legislators.find(l => l.id === legislatorId);
+  if (!legislator) throw new Error('Legislator not found.');
+
+  const beforeCount = legislator.bills.length;
+  legislator.bills = legislator.bills.filter(b => b.id !== billId);
+  if (legislator.bills.length === beforeCount) {
+    // Bill already gone — likely someone else deleted it first. Treat as
+    // success rather than erroring, since the end state the user wanted
+    // (bill no longer present) is already true.
+    return { success: true, alreadyGone: true };
+  }
+
+  const updatedContent = Buffer.from(JSON.stringify(content, null, 2)).toString('base64');
+  const putRes = await fetch(
+    `https://api.github.com/repos/${repo}/contents/${filePath}`,
+    {
+      method: 'PUT',
+      headers: { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json' },
+      body: JSON.stringify({
+        message: `Delete bill ${billId} from ${legislator.name}`,
+        content: updatedContent,
+        sha: fileMeta.sha,
+        branch
+      })
+    }
+  );
+
+  if (!putRes.ok) {
+    const errText = await putRes.text();
+    const err = new Error(`GitHub commit failed: ${errText}`);
+    err.isConflict = putRes.status === 409 || putRes.status === 422;
+    throw err;
+  }
+
+  return { success: true };
 }
