@@ -864,6 +864,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0141",
+              "title": "Public Health - Local Drug Overdose Fatality Review Teams - Membership",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "drug-overdose-review-teams",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -940,7 +949,8 @@
         "child-protection": "Child Protection",
         "offender-registration": "Offender Registration",
         "police-accountability": "Police Accountability",
-        "hate-crime-definitions": "Hate crime definitions"
+        "hate-crime-definitions": "Hate crime definitions",
+        "drug-overdose-review-teams": "Drug overdose review teams"
       }
     },
     "land-use-property-rights": {
@@ -1023,6 +1033,6 @@
   },
   "meta": {
     "nextLegislatorId": 31,
-    "nextBillId": 141
+    "nextBillId": 142
   }
 }
