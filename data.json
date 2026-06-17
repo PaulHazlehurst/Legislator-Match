@@ -711,6 +711,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0124",
+              "title": "Energy Performance Contracts - Navigators, Funding, and Requirements",
+              "topic": "environment",
+              "subtopic": "clean-energy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -861,6 +870,6 @@
   },
   "meta": {
     "nextLegislatorId": 31,
-    "nextBillId": 124
+    "nextBillId": 125
   }
 }
