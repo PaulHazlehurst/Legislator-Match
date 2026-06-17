@@ -236,6 +236,24 @@
               "outcome": "passed"
             }
           ]
+        },
+        {
+          "id": "L027",
+          "name": "Frank Conaway",
+          "party": "",
+          "chamber": "",
+          "district": "",
+          "bills": [
+            {
+              "id": "B0075",
+              "title": "Criminal Procedure - Theft - Notification of Victims and Victims' Representatives",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            }
+          ]
         }
       ]
     }
@@ -315,7 +333,7 @@
     }
   },
   "meta": {
-    "nextLegislatorId": 27,
-    "nextBillId": 75
+    "nextLegislatorId": 28,
+    "nextBillId": 76
   }
 }
