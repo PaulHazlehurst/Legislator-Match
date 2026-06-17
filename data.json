@@ -63,6 +63,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0095",
+              "title": "Reduction Facilities and Veterans Service Organizations - Hydrolyzed and Soil Remains - Immunity",
+              "topic": "funeral-burial-services",
+              "subtopic": "liability-immunity",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         },
@@ -503,10 +512,16 @@
       "subtopics": {
         "training-programs": "training-programs"
       }
+    },
+    "funeral-burial-services": {
+      "label": "Funeral & Burial Services",
+      "subtopics": {
+        "liability-immunity": "Liability & Immunity"
+      }
     }
   },
   "meta": {
     "nextLegislatorId": 28,
-    "nextBillId": 95
+    "nextBillId": 96
   }
 }
