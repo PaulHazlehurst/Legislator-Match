@@ -639,6 +639,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0116",
+              "title": "Transportation Network Companies - Transportation Network Operators - Minimum Payments for Passenger Trips",
+              "topic": "labor-gig-economy",
+              "subtopic": "gig-worker-minimum-pay",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -769,10 +778,16 @@
       "subtopics": {
         "historic-special-vehicles": "Historic & Special Vehicles"
       }
+    },
+    "labor-gig-economy": {
+      "label": "Labor & Gig Economy",
+      "subtopics": {
+        "gig-worker-minimum-pay": "Gig worker minimum pay"
+      }
     }
   },
   "meta": {
     "nextLegislatorId": 31,
-    "nextBillId": 116
+    "nextBillId": 117
   }
 }
