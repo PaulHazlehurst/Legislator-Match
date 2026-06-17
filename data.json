@@ -522,6 +522,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0105",
+              "title": "Baltimore County - Alcoholic Beverages - Sale for Off-Premises Consumption",
+              "topic": "alcoholic-beverages-licensing",
+              "subtopic": "off-premises-sales",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -604,7 +613,8 @@
     "alcoholic-beverages-licensing": {
       "label": "Alcoholic Beverages Licensing",
       "subtopics": {
-        "training-programs": "training-programs"
+        "training-programs": "training-programs",
+        "off-premises-sales": "off-premises-sales"
       }
     },
     "funeral-burial-services": {
@@ -634,6 +644,6 @@
   },
   "meta": {
     "nextLegislatorId": 29,
-    "nextBillId": 105
+    "nextBillId": 106
   }
 }
