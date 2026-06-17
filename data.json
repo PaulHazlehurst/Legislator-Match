@@ -945,6 +945,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0149",
+              "title": "Law Enforcement Officers' Pension System - Military Service Credit Eligibility - Helicopter Pilots",
+              "topic": "public-pensions-retirement",
+              "subtopic": "military-service-credit-eligibility",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -1115,10 +1124,16 @@
         "cemetery-regulation-disposition": "Cemetery regulation & disposition",
         "abandoned-cemetery-acquisition": "Abandoned cemetery acquisition"
       }
+    },
+    "public-pensions-retirement": {
+      "label": "Public Pensions & Retirement",
+      "subtopics": {
+        "military-service-credit-eligibility": "Military service credit eligibility"
+      }
     }
   },
   "meta": {
     "nextLegislatorId": 32,
-    "nextBillId": 149
+    "nextBillId": 150
   }
 }
