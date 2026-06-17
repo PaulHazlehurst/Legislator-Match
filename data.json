@@ -261,6 +261,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0077",
+              "title": "Theft of Mail and Packages and Victim Notification",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -343,6 +352,6 @@
   },
   "meta": {
     "nextLegislatorId": 28,
-    "nextBillId": 77
+    "nextBillId": 78
   }
 }
