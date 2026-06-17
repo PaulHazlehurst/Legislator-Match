@@ -567,6 +567,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0109",
+              "title": "Problem Gambling - Authorized Uses of Funds - Alterations",
+              "topic": "gambling-gaming",
+              "subtopic": "problem-gambling-funds",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -683,10 +692,16 @@
       "subtopics": {
         "voter-eligibility-verification": "Voter Eligibility & Verification"
       }
+    },
+    "gambling-gaming": {
+      "label": "Gambling & Gaming",
+      "subtopics": {
+        "problem-gambling-funds": "Problem Gambling Funds"
+      }
     }
   },
   "meta": {
     "nextLegislatorId": 30,
-    "nextBillId": 109
+    "nextBillId": 110
   }
 }
