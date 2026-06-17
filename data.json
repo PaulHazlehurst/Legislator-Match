@@ -801,6 +801,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0134",
+              "title": "Public Health - Social Isolation and Loneliness Pilot Grant Program - Establishment",
+              "topic": "healthcare",
+              "subtopic": "access-equity",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -955,6 +964,6 @@
   },
   "meta": {
     "nextLegislatorId": 31,
-    "nextBillId": 134
+    "nextBillId": 135
   }
 }
