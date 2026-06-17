@@ -81,6 +81,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0097",
+              "title": "Child Exploitation Material - Civil and Criminal Actions (Safe Kids Act)",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "child-protection",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         },
@@ -507,7 +516,8 @@
       "label": "Public Safety & Criminal Justice",
       "subtopics": {
         "training-programs": "training-programs",
-        "fines-penalties": "Fines & Penalties"
+        "fines-penalties": "Fines & Penalties",
+        "child-protection": "Child Protection"
       }
     },
     "land-use-property-rights": {
@@ -531,6 +541,6 @@
   },
   "meta": {
     "nextLegislatorId": 28,
-    "nextBillId": 97
+    "nextBillId": 98
   }
 }
