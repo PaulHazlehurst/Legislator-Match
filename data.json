@@ -576,6 +576,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0110",
+              "title": "Vehicle Laws - Historic Motor Vehicles and Street Rod Vehicles - Minimum Age",
+              "topic": "vehicle-transportation-law",
+              "subtopic": "historic-special-vehicles",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -698,10 +707,16 @@
       "subtopics": {
         "problem-gambling-funds": "Problem Gambling Funds"
       }
+    },
+    "vehicle-transportation-law": {
+      "label": "Vehicle & Transportation Law",
+      "subtopics": {
+        "historic-special-vehicles": "Historic & Special Vehicles"
+      }
     }
   },
   "meta": {
     "nextLegislatorId": 30,
-    "nextBillId": 110
+    "nextBillId": 111
   }
 }
