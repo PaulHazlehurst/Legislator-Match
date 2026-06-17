@@ -1107,6 +1107,15 @@
               "year": 2025,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0166",
+              "title": "County Income Tax - Rate and Income Brackets - Alterations",
+              "topic": "taxation",
+              "subtopic": "standard-deduction",
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -1296,6 +1305,6 @@
   },
   "meta": {
     "nextLegislatorId": 33,
-    "nextBillId": 166
+    "nextBillId": 167
   }
 }
