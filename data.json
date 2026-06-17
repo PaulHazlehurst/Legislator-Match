@@ -1143,6 +1143,15 @@
               "year": 2025,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0170",
+              "title": "Property Tax - Property Adjacent to Rail Stations - Subclasses and Special Rates",
+              "topic": "taxation",
+              "subtopic": "property-tax-credit",
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -1334,6 +1343,6 @@
   },
   "meta": {
     "nextLegislatorId": 33,
-    "nextBillId": 170
+    "nextBillId": 171
   }
 }
