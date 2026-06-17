@@ -900,6 +900,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0144",
+              "title": "Public Schools - Airway Clearing Device Availability and Use - Policy (Bowen Levy Airway Clearing Device Act)",
+              "topic": "education",
+              "subtopic": "school-health-safety-policy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -1067,6 +1076,6 @@
   },
   "meta": {
     "nextLegislatorId": 32,
-    "nextBillId": 144
+    "nextBillId": 145
   }
 }
