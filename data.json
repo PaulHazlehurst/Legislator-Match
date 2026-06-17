@@ -1134,6 +1134,15 @@
               "year": 2025,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0169",
+              "title": "Vehicle Laws - Motor Vehicle Administration - 3-Hour Roadway Safety Driving Education Program - Requirements",
+              "topic": "vehicle-transportation-law",
+              "subtopic": "driver-education-requirements",
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -1277,7 +1286,8 @@
       "subtopics": {
         "historic-special-vehicles": "Historic & Special Vehicles",
         "electric-bicycle-registration-insurance": "Electric bicycle registration & insurance",
-        "crosswalk-monitoring-systems": "crosswalk-monitoring-systems"
+        "crosswalk-monitoring-systems": "crosswalk-monitoring-systems",
+        "driver-education-requirements": "driver-education-requirements"
       }
     },
     "labor-gig-economy": {
@@ -1324,6 +1334,6 @@
   },
   "meta": {
     "nextLegislatorId": 33,
-    "nextBillId": 169
+    "nextBillId": 170
   }
 }
