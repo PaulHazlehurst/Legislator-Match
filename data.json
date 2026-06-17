@@ -99,6 +99,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0099",
+              "title": "Income Tax - Angel Investor Tax Credit",
+              "topic": "taxation",
+              "subtopic": "tax-credits-incentives",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         },
@@ -512,7 +521,8 @@
       "subtopics": {
         "training-programs": "training-programs",
         "standard-deduction": "Standard deduction",
-        "property-tax-credit": "Property tax credit"
+        "property-tax-credit": "Property tax credit",
+        "tax-credits-incentives": "Tax Credits & Incentives"
       }
     },
     "firearms-weapons": {
@@ -556,6 +566,6 @@
   },
   "meta": {
     "nextLegislatorId": 28,
-    "nextBillId": 99
+    "nextBillId": 100
   }
 }
