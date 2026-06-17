@@ -828,6 +828,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0137",
+              "title": "Continuing Care Providers - Financial Stress Tests, Transparency, and Governing Bodies",
+              "topic": "healthcare",
+              "subtopic": "hospital-funding",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -984,6 +993,6 @@
   },
   "meta": {
     "nextLegislatorId": 31,
-    "nextBillId": 137
+    "nextBillId": 138
   }
 }
