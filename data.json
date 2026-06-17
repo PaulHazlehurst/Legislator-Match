@@ -765,6 +765,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0130",
+              "title": "Consumer Protection and Labor and Employment - Surveillance-Based Price and Wage Setting - Prohibition",
+              "topic": "consumer-protection",
+              "subtopic": "surveillance-based-pricing-prohibition",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -866,7 +875,8 @@
       "label": "Consumer Protection",
       "subtopics": {
         "app-store-regulation": "App Store Regulation",
-        "fair-pricing-market-competition": "Fair pricing & market competition"
+        "fair-pricing-market-competition": "Fair pricing & market competition",
+        "surveillance-based-pricing-prohibition": "Surveillance-based pricing prohibition"
       }
     },
     "family-law": {
@@ -918,6 +928,6 @@
   },
   "meta": {
     "nextLegislatorId": 31,
-    "nextBillId": 130
+    "nextBillId": 131
   }
 }
