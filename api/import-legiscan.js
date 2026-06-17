@@ -84,33 +84,56 @@ async function findPerson(req, res, legiscanKey) {
 }
 
 // ---------------------------------------------------------------------------
-// Step 2: pull that person's sponsored bills, keep primary-sponsor only,
-// and classify each one with Claude against the existing topic list.
+// Step 2: pull that person's sponsored bill IDs, then fetch each bill's full
+// detail (titles and accurate sponsor roles only exist on getBill, not on
+// the lightweight getSponsoredList response), keep primary-sponsor-only,
+// then classify each one with Claude against the existing topic list.
 // ---------------------------------------------------------------------------
 async function fetchBills(req, res, legiscanKey, anthropicKey) {
   const { peopleId, knownTopics } = req.body;
   if (!peopleId) return res.status(400).json({ error: 'peopleId is required.' });
 
-  const data = await legiscanGet('getSponsoredList', { id: peopleId }, legiscanKey);
-  const sponsoredList = (data.sponsoredbills && data.sponsoredbills.bills) || data.sponsoredbills || [];
+  const sponsoredData = await legiscanGet('getSponsoredList', { id: peopleId }, legiscanKey);
+  const sponsoredBills = (sponsoredData.sponsoredbills && sponsoredData.sponsoredbills.bills) || [];
 
-  // getSponsoredList includes everything the person is attached to;
-  // keep only bills where this exact people_id is sponsor position/order 1
-  // (LegiScan calls this "sponsor_order"). If that field isn't present in
-  // the trimmed list response, we treat all returned bills as primary,
-  // since getSponsoredList is scoped to "sponsored", not "cosponsored".
-  const primaryOnly = sponsoredList.filter(b => b.sponsor_order === undefined || b.sponsor_order === 1);
+  if (sponsoredBills.length === 0) {
+    return res.status(200).json({ bills: [] });
+  }
+
+  // getSponsoredList only gives bill_id + number, no title or sponsor role —
+  // both require a getBill call per bill. Cap how many we fetch in one
+  // import to keep this within a reasonable request budget and runtime.
+  const MAX_BILLS = 60;
+  const toFetch = sponsoredBills.slice(0, MAX_BILLS);
+
+  const detailed = [];
+  for (const b of toFetch) {
+    try {
+      const billData = await legiscanGet('getBill', { id: b.bill_id }, legiscanKey);
+      detailed.push(billData.bill);
+    } catch {
+      // Skip bills that fail to fetch rather than aborting the whole import
+    }
+  }
+
+  // Primary sponsor = sponsor_type_id 1, specifically for *this* person_id.
+  // (sponsor_order also tends to be 1 for the primary, but sponsor_type_id
+  // is the documented, authoritative field for this.)
+  const primaryOnly = detailed.filter(bill =>
+    Array.isArray(bill.sponsors) &&
+    bill.sponsors.some(s => String(s.people_id) === String(peopleId) && Number(s.sponsor_type_id) === 1)
+  );
 
   if (primaryOnly.length === 0) {
     return res.status(200).json({ bills: [] });
   }
 
-  // Classify each bill's topic/subtopic using Claude, same logic as parse-bill.js
-  let classified = primaryOnly.map(b => ({
-    title: b.title || b.bill_number,
-    billNumber: b.bill_number,
-    year: b.last_action_date ? parseInt(b.last_action_date.slice(0, 4), 10) : null,
-    legiscanUrl: b.url || b.state_link,
+  let classified = primaryOnly.map(bill => ({
+    title: bill.title || bill.bill_number || 'Untitled bill',
+    billNumber: bill.bill_number,
+    year: bill.session && bill.session.year_start ? bill.session.year_start : null,
+    legiscanUrl: bill.url || bill.state_link,
+    statusCode: bill.status, // 4 = Passed, 5 = Vetoed, 6 = Failed, else pending/in-progress
     topicMatch: null,
     subtopicMatch: null,
     suggestedTopicLabel: null,
