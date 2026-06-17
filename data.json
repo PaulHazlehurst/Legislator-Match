@@ -684,6 +684,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0121",
+              "title": "State and Local Employees - Cancer Screening - Paid Leave",
+              "topic": "labor-employment-rights",
+              "subtopic": "employee-paid-leave",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -826,12 +835,13 @@
       "label": "Labor & Employment Rights",
       "subtopics": {
         "employee-meeting-protections": "Employee meeting protections",
-        "overtime-pay-exemptions": "Overtime pay exemptions"
+        "overtime-pay-exemptions": "Overtime pay exemptions",
+        "employee-paid-leave": "Employee paid leave"
       }
     }
   },
   "meta": {
     "nextLegislatorId": 31,
-    "nextBillId": 121
+    "nextBillId": 122
   }
 }
