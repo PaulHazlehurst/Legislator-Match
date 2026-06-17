@@ -657,6 +657,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0118",
+              "title": "Public Schools - Maryland Civic Excellence Program - Established",
+              "topic": "education",
+              "subtopic": "curriculum-requirements",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -803,6 +812,6 @@
   },
   "meta": {
     "nextLegislatorId": 31,
-    "nextBillId": 118
+    "nextBillId": 119
   }
 }
