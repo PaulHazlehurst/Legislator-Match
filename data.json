@@ -542,6 +542,24 @@
               "outcome": "pending"
             }
           ]
+        },
+        {
+          "id": "L029",
+          "name": "Kevin Hornberger",
+          "party": "",
+          "chamber": "",
+          "district": "",
+          "bills": [
+            {
+              "id": "B0107",
+              "title": "Election Law - Voter Registration Eligibility - U.S. Citizenship Verification (SAVE Our Elections Act of 2026)",
+              "topic": "election-law-voter-registration",
+              "subtopic": "voter-eligibility-verification",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            }
+          ]
         }
       ]
     }
@@ -649,10 +667,16 @@
       "subtopics": {
         "agency-operations": "Agency Operations"
       }
+    },
+    "election-law-voter-registration": {
+      "label": "Election Law & Voter Registration",
+      "subtopics": {
+        "voter-eligibility-verification": "Voter Eligibility & Verification"
+      }
     }
   },
   "meta": {
-    "nextLegislatorId": 29,
-    "nextBillId": 107
+    "nextLegislatorId": 30,
+    "nextBillId": 108
   }
 }
