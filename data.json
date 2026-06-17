@@ -981,6 +981,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0153",
+              "title": "State Government - Veterans and Military Families Ombudsman - Establishment",
+              "topic": "veterans-military-affairs",
+              "subtopic": "veterans-ombudsman",
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -1157,10 +1166,16 @@
       "subtopics": {
         "military-service-credit-eligibility": "Military service credit eligibility"
       }
+    },
+    "veterans-military-affairs": {
+      "label": "Veterans & Military Affairs",
+      "subtopics": {
+        "veterans-ombudsman": "Veterans ombudsman"
+      }
     }
   },
   "meta": {
     "nextLegislatorId": 32,
-    "nextBillId": 153
+    "nextBillId": 154
   }
 }
