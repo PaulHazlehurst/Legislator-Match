@@ -675,6 +675,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0120",
+              "title": "Landlord and Tenant - Residential Leases - Fee Disclosures",
+              "topic": "land-use-property-rights",
+              "subtopic": "residential-lease-fee-disclosures",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -753,7 +762,8 @@
     "land-use-property-rights": {
       "label": "Land Use & Property Rights",
       "subtopics": {
-        "training-programs": "training-programs"
+        "training-programs": "training-programs",
+        "residential-lease-fee-disclosures": "Residential lease fee disclosures"
       }
     },
     "alcoholic-beverages-licensing": {
@@ -822,6 +832,6 @@
   },
   "meta": {
     "nextLegislatorId": 31,
-    "nextBillId": 120
+    "nextBillId": 121
   }
 }
