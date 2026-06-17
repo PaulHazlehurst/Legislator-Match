@@ -792,6 +792,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0133",
+              "title": "Department of Commerce - Complaint Portal and Annual Report",
+              "topic": "government-administration",
+              "subtopic": "agency-operations",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -946,6 +955,6 @@
   },
   "meta": {
     "nextLegislatorId": 31,
-    "nextBillId": 133
+    "nextBillId": 134
   }
 }
