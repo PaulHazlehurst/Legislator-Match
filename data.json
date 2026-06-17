@@ -594,6 +594,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0112",
+              "title": "Cecil County - County Council and Board of Education Elections - Single-Member Districts",
+              "topic": "election-law-voter-registration",
+              "subtopic": "district-election-administration",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -708,7 +717,8 @@
     "election-law-voter-registration": {
       "label": "Election Law & Voter Registration",
       "subtopics": {
-        "voter-eligibility-verification": "Voter Eligibility & Verification"
+        "voter-eligibility-verification": "Voter Eligibility & Verification",
+        "district-election-administration": "District & Election Administration"
       }
     },
     "gambling-gaming": {
@@ -726,6 +736,6 @@
   },
   "meta": {
     "nextLegislatorId": 30,
-    "nextBillId": 112
+    "nextBillId": 113
   }
 }
