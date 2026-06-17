@@ -351,6 +351,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0087",
+              "title": "Criminal Law - Fraud - Possession of Residential Real Property",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "fines-penalties",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -434,6 +443,6 @@
   },
   "meta": {
     "nextLegislatorId": 28,
-    "nextBillId": 87
+    "nextBillId": 88
   }
 }
