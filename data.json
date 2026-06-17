@@ -1089,6 +1089,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0164",
+              "title": "Maryland Small Business Retirement Savings Board - Membership - Alteration",
+              "topic": "workforce",
+              "subtopic": "retirement-savings-board",
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -1101,7 +1110,8 @@
       "subtopics": {
         "training-programs": "Training programs",
         "employer-incentives": "Employer incentives",
-        "grants": "Workforce grants"
+        "grants": "Workforce grants",
+        "retirement-savings-board": "retirement-savings-board"
       }
     },
     "healthcare": {
@@ -1277,6 +1287,6 @@
   },
   "meta": {
     "nextLegislatorId": 33,
-    "nextBillId": 164
+    "nextBillId": 165
   }
 }
