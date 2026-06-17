@@ -990,6 +990,15 @@
               "year": 2025,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0154",
+              "title": "Vehicle Laws - Electric Bicycles - Certificate of Title, Registration, and Insurance",
+              "topic": "vehicle-transportation-law",
+              "subtopic": "electric-bicycle-registration-insurance",
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -1129,7 +1138,8 @@
     "vehicle-transportation-law": {
       "label": "Vehicle & Transportation Law",
       "subtopics": {
-        "historic-special-vehicles": "Historic & Special Vehicles"
+        "historic-special-vehicles": "Historic & Special Vehicles",
+        "electric-bicycle-registration-insurance": "Electric bicycle registration & insurance"
       }
     },
     "labor-gig-economy": {
@@ -1176,6 +1186,6 @@
   },
   "meta": {
     "nextLegislatorId": 32,
-    "nextBillId": 154
+    "nextBillId": 155
   }
 }
