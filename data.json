@@ -1035,6 +1035,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0158",
+              "title": "Procurement - Advertising - Maryland News Organizations (Local News for Maryland Communities Act of 2026)",
+              "topic": "government-administration",
+              "subtopic": "agency-operations",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
             }
           ]
         }
@@ -1223,6 +1232,6 @@
   },
   "meta": {
     "nextLegislatorId": 33,
-    "nextBillId": 158
+    "nextBillId": 159
   }
 }
