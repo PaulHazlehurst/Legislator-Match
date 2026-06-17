@@ -279,6 +279,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0079",
+              "title": "Speed Monitoring Systems - Citations - Failure to Pay",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "fines-penalties",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -361,6 +370,6 @@
   },
   "meta": {
     "nextLegislatorId": 28,
-    "nextBillId": 79
+    "nextBillId": 80
   }
 }
