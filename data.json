@@ -1125,6 +1125,15 @@
               "year": 2025,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0168",
+              "title": "Fantasy Competitions - Alterations and Voluntary Exclusion Requirements",
+              "topic": "gambling-gaming",
+              "subtopic": "fantasy-competitions-regulation",
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -1259,7 +1268,8 @@
     "gambling-gaming": {
       "label": "Gambling & Gaming",
       "subtopics": {
-        "problem-gambling-funds": "Problem Gambling Funds"
+        "problem-gambling-funds": "Problem Gambling Funds",
+        "fantasy-competitions-regulation": "fantasy-competitions-regulation"
       }
     },
     "vehicle-transportation-law": {
@@ -1314,6 +1324,6 @@
   },
   "meta": {
     "nextLegislatorId": 33,
-    "nextBillId": 168
+    "nextBillId": 169
   }
 }
