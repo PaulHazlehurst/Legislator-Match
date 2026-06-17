@@ -756,6 +756,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0129",
+              "title": "Commercial Law – Fair Pricing and Market Competition Fund – Establishment",
+              "topic": "consumer-protection",
+              "subtopic": "fair-pricing-market-competition",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -856,7 +865,8 @@
     "consumer-protection": {
       "label": "Consumer Protection",
       "subtopics": {
-        "app-store-regulation": "App Store Regulation"
+        "app-store-regulation": "App Store Regulation",
+        "fair-pricing-market-competition": "Fair pricing & market competition"
       }
     },
     "family-law": {
@@ -908,6 +918,6 @@
   },
   "meta": {
     "nextLegislatorId": 31,
-    "nextBillId": 129
+    "nextBillId": 130
   }
 }
