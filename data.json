@@ -333,6 +333,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0085",
+              "title": "Criminal Procedure - Theft - Notification of Victims and Victims' Representatives",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -416,6 +425,6 @@
   },
   "meta": {
     "nextLegislatorId": 28,
-    "nextBillId": 85
+    "nextBillId": 86
   }
 }
