@@ -720,6 +720,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0125",
+              "title": "Income Tax - Subtraction Modification - Losses From Theft or Fraud",
+              "topic": "taxation",
+              "subtopic": "tax-credits-incentives",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -870,6 +879,6 @@
   },
   "meta": {
     "nextLegislatorId": 31,
-    "nextBillId": 125
+    "nextBillId": 126
   }
 }
