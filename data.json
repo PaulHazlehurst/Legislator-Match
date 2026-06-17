@@ -702,6 +702,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0123",
+              "title": "Institutions of Higher Education and Elementary and Secondary Schools - Title VI Coordinators",
+              "topic": "education",
+              "subtopic": "civil-rights-compliance-coordinators",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -741,7 +750,8 @@
         "teacher-support": "Teacher support",
         "school-choice": "School choice",
         "curriculum-requirements": "Curriculum Requirements",
-        "sports-gender-policy": "sports-gender-policy"
+        "sports-gender-policy": "sports-gender-policy",
+        "civil-rights-compliance-coordinators": "Civil rights compliance coordinators"
       }
     },
     "estates-probate": {
@@ -851,6 +861,6 @@
   },
   "meta": {
     "nextLegislatorId": 31,
-    "nextBillId": 123
+    "nextBillId": 124
   }
 }
