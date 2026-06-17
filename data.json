@@ -342,6 +342,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0086",
+              "title": "County Boards of Education - College Preparatory Programs - Fees",
+              "topic": "education",
+              "subtopic": "higher-ed-funding",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -425,6 +434,6 @@
   },
   "meta": {
     "nextLegislatorId": 28,
-    "nextBillId": 86
+    "nextBillId": 87
   }
 }
