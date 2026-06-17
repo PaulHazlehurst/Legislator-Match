@@ -648,6 +648,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0117",
+              "title": "Labor and Employment - Mandatory Meetings on Religious or Political Matters - Employee Attendance and Participation (Maryland Worker Freedom Act)",
+              "topic": "labor-employment-rights",
+              "subtopic": "employee-meeting-protections",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -784,10 +793,16 @@
       "subtopics": {
         "gig-worker-minimum-pay": "Gig worker minimum pay"
       }
+    },
+    "labor-employment-rights": {
+      "label": "Labor & Employment Rights",
+      "subtopics": {
+        "employee-meeting-protections": "Employee meeting protections"
+      }
     }
   },
   "meta": {
     "nextLegislatorId": 31,
-    "nextBillId": 117
+    "nextBillId": 118
   }
 }
