@@ -126,6 +126,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0102",
+              "title": "Family Law - Final Protective Orders - Duration",
+              "topic": "family-law",
+              "subtopic": "protective-orders",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         },
@@ -581,10 +590,16 @@
       "subtopics": {
         "app-store-regulation": "App Store Regulation"
       }
+    },
+    "family-law": {
+      "label": "Family Law",
+      "subtopics": {
+        "protective-orders": "Protective Orders"
+      }
     }
   },
   "meta": {
     "nextLegislatorId": 28,
-    "nextBillId": 102
+    "nextBillId": 103
   }
 }
