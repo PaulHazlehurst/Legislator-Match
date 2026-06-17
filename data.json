@@ -324,6 +324,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0084",
+              "title": "Criminal Law - Theft - Mail and Packages (Porch Piracy Act of 2026)",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "fines-penalties",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -407,6 +416,6 @@
   },
   "meta": {
     "nextLegislatorId": 28,
-    "nextBillId": 84
+    "nextBillId": 85
   }
 }
