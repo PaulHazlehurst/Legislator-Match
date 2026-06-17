@@ -612,6 +612,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0114",
+              "title": "Certified Peer Recovery Specialists - Coverage Under the Maryland Medical Assistance Program and Health Insurance and Workgroup on Certification",
+              "topic": "healthcare",
+              "subtopic": "insurance-coverage",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -746,6 +755,6 @@
   },
   "meta": {
     "nextLegislatorId": 30,
-    "nextBillId": 114
+    "nextBillId": 115
   }
 }
