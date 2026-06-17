@@ -810,6 +810,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0135",
+              "title": "Labor and Employment - Training Repayment Agreements - Prohibition",
+              "topic": "labor-employment-rights",
+              "subtopic": "training-repayment-agreements",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -958,12 +967,13 @@
       "subtopics": {
         "employee-meeting-protections": "Employee meeting protections",
         "overtime-pay-exemptions": "Overtime pay exemptions",
-        "employee-paid-leave": "Employee paid leave"
+        "employee-paid-leave": "Employee paid leave",
+        "training-repayment-agreements": "Training repayment agreements"
       }
     }
   },
   "meta": {
     "nextLegislatorId": 31,
-    "nextBillId": 135
+    "nextBillId": 136
   }
 }
