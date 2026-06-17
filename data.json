@@ -108,6 +108,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0100",
+              "title": "Labor and Employment - Workforce Development and Local Workforce Development Boards (Local Workforce Solutions Investment Act",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         },
@@ -566,6 +575,6 @@
   },
   "meta": {
     "nextLegislatorId": 28,
-    "nextBillId": 100
+    "nextBillId": 101
   }
 }
