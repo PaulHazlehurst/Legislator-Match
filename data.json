@@ -855,6 +855,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0140",
+              "title": "Hate Crimes and Hate Bias - Definitions of Sexual Orientation and Hate Bias Incident",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "hate-crime-definitions",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -930,7 +939,8 @@
         "fines-penalties": "Fines & Penalties",
         "child-protection": "Child Protection",
         "offender-registration": "Offender Registration",
-        "police-accountability": "Police Accountability"
+        "police-accountability": "Police Accountability",
+        "hate-crime-definitions": "Hate crime definitions"
       }
     },
     "land-use-property-rights": {
@@ -1013,6 +1023,6 @@
   },
   "meta": {
     "nextLegislatorId": 31,
-    "nextBillId": 140
+    "nextBillId": 141
   }
 }
