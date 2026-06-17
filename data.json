@@ -369,6 +369,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0089",
+              "title": "Real Property - Actions for Wrongful Detainer - Required Postings",
+              "topic": "land-use-property-rights",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -452,6 +461,6 @@
   },
   "meta": {
     "nextLegislatorId": 28,
-    "nextBillId": 89
+    "nextBillId": 90
   }
 }
