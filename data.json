@@ -927,6 +927,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0147",
+              "title": "Business Regulation - Abandoned Cemeteries - Acquisition and Disposition",
+              "topic": "business-regulation",
+              "subtopic": "abandoned-cemetery-acquisition",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -1094,12 +1103,13 @@
     "business-regulation": {
       "label": "Business Regulation",
       "subtopics": {
-        "cemetery-regulation-disposition": "Cemetery regulation & disposition"
+        "cemetery-regulation-disposition": "Cemetery regulation & disposition",
+        "abandoned-cemetery-acquisition": "Abandoned cemetery acquisition"
       }
     }
   },
   "meta": {
     "nextLegislatorId": 32,
-    "nextBillId": 147
+    "nextBillId": 148
   }
 }
