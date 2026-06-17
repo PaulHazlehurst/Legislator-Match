@@ -747,6 +747,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "pending"
+            },
+            {
+              "id": "B0128",
+              "title": "Maryland Public Ethics Law - Officials of the Legislative Branch - Gifts of Food and Beverages",
+              "topic": "government-administration",
+              "subtopic": "agency-operations",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
             }
           ]
         }
@@ -899,6 +908,6 @@
   },
   "meta": {
     "nextLegislatorId": 31,
-    "nextBillId": 128
+    "nextBillId": 129
   }
 }
