@@ -1297,6 +1297,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0185",
+              "title": "Health Occupations - Grounds for Discipline - Federal and Court Actions",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -1490,7 +1499,7 @@
   },
   "meta": {
     "nextLegislatorId": 35,
-    "nextBillId": 185
+    "nextBillId": 186
   },
   "sponsors": {
     "L017": {
