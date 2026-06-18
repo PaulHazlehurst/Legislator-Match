@@ -1462,11 +1462,13 @@
             {
               "id": "B0198",
               "title": "Mel Noland Woodland Incentives and Fellowship Fund - Reporting",
-              "topic": "workforce",
-              "subtopic": "training-programs",
+              "topic": "land-use-property-rights",
+              "subtopic": null,
               "year": 2026,
               "role": "sponsor",
-              "outcome": "passed"
+              "outcome": "passed",
+              "topicLabel": "Land Use & Property Rights",
+              "subtopicLabel": null
             },
             {
               "id": "B0199",
