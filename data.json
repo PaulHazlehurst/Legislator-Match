@@ -1668,6 +1668,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0217",
+              "title": "Railroads - Required Crew for Movement of Freight",
+              "topic": "construction",
+              "subtopic": "requirements",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
             }
           ]
         }
@@ -1862,11 +1871,17 @@
     "commemorative": {
       "label": "Commemorative",
       "subtopics": {}
+    },
+    "construction": {
+      "label": "Construction",
+      "subtopics": {
+        "requirements": "Requirements"
+      }
     }
   },
   "meta": {
     "nextLegislatorId": 36,
-    "nextBillId": 217
+    "nextBillId": 218
   },
   "sponsors": {
     "L017": {
