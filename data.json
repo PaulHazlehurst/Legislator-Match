@@ -1495,6 +1495,15 @@
               "year": 2025,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0207",
+              "title": "Funeral Establishments, Crematories, and Reduction Facilities - Disposition of Unclaimed Remains - Veterans",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -1688,7 +1697,7 @@
   },
   "meta": {
     "nextLegislatorId": 35,
-    "nextBillId": 207
+    "nextBillId": 208
   },
   "sponsors": {
     "L017": {
