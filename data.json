@@ -1414,6 +1414,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0198",
+              "title": "Mel Noland Woodland Incentives and Fellowship Fund - Reporting",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -1607,7 +1616,7 @@
   },
   "meta": {
     "nextLegislatorId": 35,
-    "nextBillId": 198
+    "nextBillId": 199
   },
   "sponsors": {
     "L017": {
