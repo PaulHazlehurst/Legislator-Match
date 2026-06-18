@@ -1333,6 +1333,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0189",
+              "title": "Notation of Veteran Status - Public Profiles",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -1526,7 +1535,7 @@
   },
   "meta": {
     "nextLegislatorId": 35,
-    "nextBillId": 189
+    "nextBillId": 190
   },
   "sponsors": {
     "L017": {
