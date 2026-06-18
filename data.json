@@ -1189,6 +1189,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "failed"
+            },
+            {
+              "id": "B0174",
+              "title": "State Board of Dental Examiners - Disciplinary Action and Unannounced Inspections",
+              "topic": "government-administration",
+              "subtopic": "agency-operations",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
             }
           ]
         }
@@ -1382,7 +1391,7 @@
   },
   "meta": {
     "nextLegislatorId": 34,
-    "nextBillId": 174
+    "nextBillId": 175
   },
   "sponsors": {
     "L017": {
