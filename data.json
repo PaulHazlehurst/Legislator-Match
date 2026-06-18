@@ -1345,5 +1345,11 @@
   "meta": {
     "nextLegislatorId": 33,
     "nextBillId": 171
+  },
+  "sponsors": {
+    "L017": {
+      "addedAt": "2026-06-18T19:07:00.818Z",
+      "note": ""
+    }
   }
 }
