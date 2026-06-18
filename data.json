@@ -1341,11 +1341,13 @@
             {
               "id": "B0187",
               "title": "Anne Arundel County - Residential Property Tax Payment Deferrals - Eligibility",
-              "topic": "workforce",
-              "subtopic": "training-programs",
+              "topic": "public-pensions-retirement",
+              "subtopic": "military-service-credit-eligibility",
               "year": 2026,
               "role": "sponsor",
-              "outcome": "passed"
+              "outcome": "passed",
+              "topicLabel": "Public Pensions & Retirement",
+              "subtopicLabel": "Military service credit eligibility"
             },
             {
               "id": "B0188",
