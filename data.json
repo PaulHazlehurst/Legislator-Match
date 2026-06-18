@@ -1264,11 +1264,13 @@
             {
               "id": "B0180",
               "title": "Reduction Facilities and Veterans Service Organizations - Hydrolyzed and Soil Remains - Immunity",
-              "topic": "workforce",
-              "subtopic": "training-programs",
+              "topic": "funeral-burial-services",
+              "subtopic": "liability-immunity",
               "year": 2026,
               "role": "sponsor",
-              "outcome": "passed"
+              "outcome": "passed",
+              "topicLabel": "Funeral & Burial Services",
+              "subtopicLabel": "Liability & Immunity"
             },
             {
               "id": "B0181",
