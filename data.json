@@ -1180,6 +1180,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0173",
+              "title": "Health Insurance - Physical Therapy - Copayments, Coinsurance, and Deductibles",
+              "topic": "healthcare",
+              "subtopic": "insurance-coverage",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
             }
           ]
         }
@@ -1373,7 +1382,7 @@
   },
   "meta": {
     "nextLegislatorId": 34,
-    "nextBillId": 173
+    "nextBillId": 174
   },
   "sponsors": {
     "L017": {
