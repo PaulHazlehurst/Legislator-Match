@@ -1242,11 +1242,13 @@
             {
               "id": "B0178",
               "title": "Natural Resources - State Parks - Maryland Golden Age Pass",
-              "topic": "workforce",
-              "subtopic": "training-programs",
+              "topic": "public-pensions-retirement",
+              "subtopic": null,
               "year": 2026,
               "role": "sponsor",
-              "outcome": "passed"
+              "outcome": "passed",
+              "topicLabel": "Public Pensions & Retirement",
+              "subtopicLabel": null
             },
             {
               "id": "B0179",
