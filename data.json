@@ -1441,6 +1441,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "failed"
+            },
+            {
+              "id": "B0201",
+              "title": "Professional Licensing Portability - Members of the Foreign Service and Spouses",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -1634,7 +1643,7 @@
   },
   "meta": {
     "nextLegislatorId": 35,
-    "nextBillId": 201
+    "nextBillId": 202
   },
   "sponsors": {
     "L017": {
