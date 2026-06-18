@@ -1363,11 +1363,13 @@
             {
               "id": "B0189",
               "title": "Notation of Veteran Status - Public Profiles",
-              "topic": "workforce",
-              "subtopic": "training-programs",
+              "topic": "veterans-military-affairs",
+              "subtopic": null,
               "year": 2026,
               "role": "sponsor",
-              "outcome": "passed"
+              "outcome": "passed",
+              "topicLabel": "Veterans & Military Affairs",
+              "subtopicLabel": null
             },
             {
               "id": "B0190",
