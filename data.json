@@ -1317,11 +1317,13 @@
             {
               "id": "B0185",
               "title": "Health Occupations - Grounds for Discipline - Federal and Court Actions",
-              "topic": "workforce",
-              "subtopic": "training-programs",
+              "topic": "labor-employment-rights",
+              "subtopic": null,
               "year": 2026,
               "role": "sponsor",
-              "outcome": "passed"
+              "outcome": "passed",
+              "topicLabel": "Labor & Employment Rights",
+              "subtopicLabel": null
             },
             {
               "id": "B0186",
