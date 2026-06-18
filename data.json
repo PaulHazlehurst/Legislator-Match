@@ -1713,6 +1713,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "failed"
+            },
+            {
+              "id": "B0222",
+              "title": "Baltimore County Board of Education - Financial Reporting Requirements",
+              "topic": "education",
+              "subtopic": "school-wellness-policy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
             }
           ]
         }
@@ -1918,7 +1927,7 @@
   },
   "meta": {
     "nextLegislatorId": 36,
-    "nextBillId": 222
+    "nextBillId": 223
   },
   "sponsors": {
     "L017": {
