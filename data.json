@@ -1171,6 +1171,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "failed"
+            },
+            {
+              "id": "B0172",
+              "title": "State Veterans' Cemeteries - Interment",
+              "topic": "veterans-military-affairs",
+              "subtopic": "veterans-cemetery-interment",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -1357,13 +1366,14 @@
     "veterans-military-affairs": {
       "label": "Veterans & Military Affairs",
       "subtopics": {
-        "veterans-ombudsman": "Veterans ombudsman"
+        "veterans-ombudsman": "Veterans ombudsman",
+        "veterans-cemetery-interment": "Veterans cemetery interment"
       }
     }
   },
   "meta": {
     "nextLegislatorId": 34,
-    "nextBillId": 172
+    "nextBillId": 173
   },
   "sponsors": {
     "L017": {
