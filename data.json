@@ -1396,6 +1396,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0196",
+              "title": "Uniformed Services Spouses Act",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -1589,7 +1598,7 @@
   },
   "meta": {
     "nextLegislatorId": 35,
-    "nextBillId": 196
+    "nextBillId": 197
   },
   "sponsors": {
     "L017": {
