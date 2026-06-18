@@ -1599,11 +1599,13 @@
             {
               "id": "B0211",
               "title": "Department of the Environment - Notation of Veteran Status",
-              "topic": "workforce",
-              "subtopic": "training-programs",
+              "topic": "veterans-military-affairs",
+              "subtopic": null,
               "year": 2025,
               "role": "sponsor",
-              "outcome": "passed"
+              "outcome": "passed",
+              "topicLabel": "Veterans & Military Affairs",
+              "subtopicLabel": null
             },
             {
               "id": "B0212",
