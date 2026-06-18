@@ -1330,11 +1330,13 @@
             {
               "id": "B0186",
               "title": "Sheila E. Hixson Behavioral Health Services Matching Grant Program for Service Members and Veterans - Terminology - Active Service Members",
-              "topic": "workforce",
-              "subtopic": "training-programs",
+              "topic": "veterans-military-affairs",
+              "subtopic": null,
               "year": 2026,
               "role": "sponsor",
-              "outcome": "passed"
+              "outcome": "passed",
+              "topicLabel": "Veterans & Military Affairs",
+              "subtopicLabel": null
             },
             {
               "id": "B0187",
