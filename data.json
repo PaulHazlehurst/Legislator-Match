@@ -1396,11 +1396,13 @@
             {
               "id": "B0192",
               "title": "Income and Property Tax Incentives - Members and Veterans of the Space Force - Application",
-              "topic": "workforce",
-              "subtopic": "training-programs",
+              "topic": "veterans-military-affairs",
+              "subtopic": null,
               "year": 2026,
               "role": "sponsor",
-              "outcome": "passed"
+              "outcome": "passed",
+              "topicLabel": "Veterans & Military Affairs",
+              "subtopicLabel": null
             },
             {
               "id": "B0193",
