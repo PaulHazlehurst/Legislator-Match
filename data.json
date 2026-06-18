@@ -1351,6 +1351,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0191",
+              "title": "Department of Natural Resources - Licenses, Permits, Registrations, and Public Profiles - Notation of Veteran Status",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
             }
           ]
         }
@@ -1544,7 +1553,7 @@
   },
   "meta": {
     "nextLegislatorId": 35,
-    "nextBillId": 191
+    "nextBillId": 192
   },
   "sponsors": {
     "L017": {
