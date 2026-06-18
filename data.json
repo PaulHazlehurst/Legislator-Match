@@ -1544,11 +1544,13 @@
             {
               "id": "B0206",
               "title": "Local Government - Annapolis and Anne Arundel County Conference and Visitors Bureau Designation",
-              "topic": "workforce",
-              "subtopic": "training-programs",
+              "topic": null,
+              "subtopic": null,
               "year": 2025,
               "role": "sponsor",
-              "outcome": "passed"
+              "outcome": "passed",
+              "topicLabel": null,
+              "subtopicLabel": null
             },
             {
               "id": "B0207",
