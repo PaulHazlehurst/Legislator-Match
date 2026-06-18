@@ -1513,6 +1513,15 @@
               "year": 2025,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0209",
+              "title": "Chesapeake Conservation Corps Program - Renaming",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -1706,7 +1715,7 @@
   },
   "meta": {
     "nextLegislatorId": 35,
-    "nextBillId": 209
+    "nextBillId": 210
   },
   "sponsors": {
     "L017": {
