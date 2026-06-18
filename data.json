@@ -1231,11 +1231,13 @@
             {
               "id": "B0177",
               "title": "Alcoholic Beverages - License Fee Refund Requirements - Alterations",
-              "topic": "workforce",
+              "topic": "alcoholic-beverages-licensing",
               "subtopic": "training-programs",
               "year": 2026,
               "role": "sponsor",
-              "outcome": "passed"
+              "outcome": "passed",
+              "topicLabel": "Alcoholic Beverages Licensing",
+              "subtopicLabel": "training-programs"
             },
             {
               "id": "B0178",
