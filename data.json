@@ -1650,6 +1650,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "failed"
+            },
+            {
+              "id": "B0215",
+              "title": "Mel Noland Woodland Incentives and Fellowship Fund - Reporting",
+              "topic": "environment",
+              "subtopic": "funds",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -1679,7 +1688,8 @@
       "subtopics": {
         "clean-energy": "Clean energy",
         "conservation": "Conservation",
-        "waste-pollution": "Waste & pollution"
+        "waste-pollution": "Waste & pollution",
+        "funds": "Funds"
       }
     },
     "education": {
@@ -1847,7 +1857,7 @@
   },
   "meta": {
     "nextLegislatorId": 36,
-    "nextBillId": 215
+    "nextBillId": 216
   },
   "sponsors": {
     "L017": {
