@@ -1275,11 +1275,13 @@
             {
               "id": "B0181",
               "title": "State Veterans' Cemeteries - Interment",
-              "topic": "workforce",
-              "subtopic": "training-programs",
+              "topic": "veterans-military-affairs",
+              "subtopic": "veterans-cemetery-interment",
               "year": 2026,
               "role": "sponsor",
-              "outcome": "passed"
+              "outcome": "passed",
+              "topicLabel": "Veterans & Military Affairs",
+              "subtopicLabel": "Veterans cemetery interment"
             },
             {
               "id": "B0182",
