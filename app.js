@@ -3,7 +3,7 @@
 // See README.md "Deploying the serverless function" section.
 // Example: "https://legislator-matcher-api.vercel.app"
 // ===========================================================================
-const API_BASE = "https://legislator-match.vercel.app";
+const API_BASE = "PASTE_YOUR_VERCEL_FUNCTION_URL_HERE";
 
 // Track current filter state for the custom searchable dropdowns
 let currentIssue = null;
@@ -47,10 +47,12 @@ async function init() {
   setupAddPanel();
   setupDeletePanel();
   setupImportPanel();
+  setupSponsorPanel();
   populateImportStateDropdown();
 
   document.getElementById('print-btn').addEventListener('click', () => window.print());
   document.getElementById('export-btn').addEventListener('click', handleExport);
+  document.getElementById('copy-btn').addEventListener('click', handleCopyResults);
 
   render();
   renderSidebar();
@@ -58,6 +60,7 @@ async function init() {
 }
 
 function normalizePendingToFailed() {
+  if (!DATA.sponsors) DATA.sponsors = {};
   Object.values(DATA.states).forEach(st => {
     st.legislators.forEach(l => {
       l.bills.forEach(b => { if (b.outcome === 'pending') b.outcome = 'failed'; });
@@ -313,7 +316,7 @@ function populateExistingLegislatorDropdown(filterText) {
 // ---------------------------------------------------------------------------
 // Scoring + rendering
 // ---------------------------------------------------------------------------
-function computeScore(bills, issue, subtopic) {
+function computeScore(bills, issue, subtopic, legId) {
   let relevant = bills.filter(b => b.topic === issue);
   if (subtopic && subtopic !== 'any') {
     relevant = relevant.filter(b => b.subtopic === subtopic);
@@ -322,40 +325,34 @@ function computeScore(bills, issue, subtopic) {
 
   const currentYear = new Date().getFullYear();
 
-  // Recency-weighted "activity" — each bill contributes up to 1.0, decayed
-  // gently by age with a floor so older bills still count for something.
   const activityWeights = relevant.map(b => {
     const age = Math.max(0, currentYear - b.year);
     return Math.max(0.4, 1 - age * 0.1);
   });
   const totalActivity = activityWeights.reduce((a, b) => a + b, 0);
-
-  // Volume score uses a square-root curve rather than linear scaling, so a
-  // single recent bill already registers as a real signal (~45) instead of
-  // looking indistinguishable from "no activity," while a genuine track
-  // record of 4-5+ recent bills is what's needed to approach 100. This is
-  // the main lever that fixed everyone clustering at the same score
-  // regardless of how many bills they actually had.
   const volumeScore = Math.min(100, Math.sqrt(totalActivity / 5) * 100);
 
-  // Passage rate then nudges the score up or down by up to ~15%, but only
-  // once there are enough decided bills (passed/failed, excluding pending)
-  // for the rate to mean something — a single decided bill barely moves
-  // the needle, while 4+ decided bills apply the full effect.
   const decided = relevant.filter(b => b.outcome === 'passed' || b.outcome === 'failed');
   const passed = relevant.filter(b => b.outcome === 'passed').length;
   let passageMultiplier = 1.0;
   if (decided.length > 0) {
     const passRate = passed / decided.length;
     const confidence = Math.min(1, decided.length / 4);
-    const rawMultiplier = 0.85 + passRate * 0.30; // ranges 0.85x (never passes) to 1.15x (always passes)
+    const rawMultiplier = 0.85 + passRate * 0.30;
     passageMultiplier = 1 + (rawMultiplier - 1) * confidence;
   }
 
-  const score = Math.round(Math.min(100, volumeScore * passageMultiplier));
-  const rate = decided.length > 0 ? Math.round((passed / decided.length) * 100) : 0;
+  let baseScore = Math.round(Math.min(100, volumeScore * passageMultiplier));
 
-  return { score, relevant, passed, rate };
+  // Sponsor bonus: +8 points for legislators we have a relationship with,
+  // capped at 100. This nudges them up in rankings to reflect the real-world
+  // advantage of having an existing relationship.
+  if (legId && isSponsor(legId)) {
+    baseScore = Math.min(100, baseScore + 8);
+  }
+
+  const rate = decided.length > 0 ? Math.round((passed / decided.length) * 100) : 0;
+  return { score: baseScore, relevant, passed, rate };
 }
 
 function render() {
@@ -372,7 +369,7 @@ function render() {
   if (chamber !== 'any') legislators = legislators.filter(l => l.chamber === chamber);
 
   const scored = legislators
-    .map(l => ({ l, ...computeScore(l.bills, issue, subissue) }))
+    .map(l => ({ l, ...computeScore(l.bills, issue, subissue, l.id) }))
     .filter(item => item.relevant.length > 0)
     .sort((a, b) => b.score - a.score);
 
@@ -404,6 +401,8 @@ function render() {
     const decidedCount = relevant.filter(b => b.outcome === 'passed' || b.outcome === 'failed').length;
     const scoreClass = scoreColorClass(score);
     const notes = (l.notes || '').trim();
+    const sponsorData = DATA.sponsors && DATA.sponsors[l.id];
+    const cardSponsorClass = sponsorData ? ' is-sponsor' : '';
 
     const billsHtml = [...relevant]
       .sort((a, b) => b.year - a.year)
@@ -424,15 +423,18 @@ function render() {
       }).join('');
 
     return `
-    <div class="card" data-legid="${l.id}">
+    <div class="card${cardSponsorClass}" data-legid="${l.id}">
       <div class="card-top">
         <div class="card-identity">
-          <p class="name">${escapeHtml(l.name)}<span class="party-badge party-${l.party || ''}">${l.party || ''}</span></p>
-          <p class="meta">${chamberLabel}${districtLabel ? ' &middot; ' + districtLabel : ''} &middot; ${partyLabel}</p>
+          <p class="card-name">${escapeHtml(l.name)}
+            <span class="party-badge ${l.party || ''}">${l.party || ''}</span>
+            ${sponsorData ? '<span class="star-badge">⭐ Sponsor</span>' : ''}
+          </p>
+          <p class="card-meta">${chamberLabel}${districtLabel ? ' &middot; ' + districtLabel : ''} &middot; ${partyLabel}</p>
         </div>
         <div class="score-col">
           <div class="score-ring ${scoreClass}">${score}</div>
-          <span class="label">Interest</span>
+          <span class="score-label">Interest</span>
         </div>
       </div>
       <div class="meter"><div class="meter-fill ${scoreClass}" style="width:${score}%;"></div></div>
@@ -492,7 +494,7 @@ function handleExport() {
   if (chamber !== 'any') legislators = legislators.filter(l => l.chamber === chamber);
 
   const scored = legislators
-    .map(l => ({ l, ...computeScore(l.bills, issue, subissue) }))
+    .map(l => ({ l, ...computeScore(l.bills, issue, subissue, l.id) }))
     .filter(item => item.relevant.length > 0)
     .sort((a, b) => b.score - a.score);
 
@@ -560,6 +562,7 @@ function setupTabs() {
       tab.classList.add('active');
       document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
       if (tab.dataset.tab === 'stats') renderStats();
+      if (tab.dataset.tab === 'sponsors') renderSponsorsTab();
     });
   });
 }
@@ -588,7 +591,8 @@ function renderSidebar(filter = '') {
     const chamberAbbr = l.chamber === 'senate' ? 'Sen.' : 'Del.';
     return `<div class="sidebar-leg" data-legid="${l.id}">
       <span class="leg-party ${l.party || ''}">${l.party || '?'}</span>
-      <span>${escapeHtml(l.name.replace(/^(sen\.|del\.|rep\.)\s*/i, ''))}</span>
+      <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(l.name.replace(/^(sen\.|del\.|rep\.)\s*/i, ''))}</span>
+      ${isSponsor(l.id) ? '<span title="Our sponsor" style="font-size:11px;flex-shrink:0;">⭐</span>' : ''}
     </div>`;
   }).join('');
 
@@ -621,68 +625,145 @@ function renderStats() {
     return;
   }
 
-  // Aggregate all bills across all legislators in this state
   const allBills = [];
   let totalLegs = 0, legsWithBills = 0;
   stateData.legislators.forEach(l => {
     totalLegs++;
     if (l.bills.length > 0) legsWithBills++;
-    l.bills.forEach(b => allBills.push({ ...b, party: l.party, chamber: l.chamber }));
+    l.bills.forEach(b => allBills.push({ ...b, legId: l.id, legName: l.name, party: l.party, chamber: l.chamber }));
   });
 
   const decided = allBills.filter(b => b.outcome === 'passed' || b.outcome === 'failed');
   const passed = allBills.filter(b => b.outcome === 'passed');
   const overallRate = decided.length > 0 ? Math.round((passed.length / decided.length) * 100) : 0;
 
-  // By party
-  const byParty = {};
-  allBills.forEach(b => {
-    const p = b.party || 'Unknown';
-    if (!byParty[p]) byParty[p] = { total: 0, passed: 0, decided: 0 };
-    byParty[p].total++;
-    if (b.outcome === 'passed') byParty[p].passed++;
-    if (b.outcome === 'passed' || b.outcome === 'failed') byParty[p].decided++;
-  });
-
-  // By topic
-  const byTopic = {};
-  allBills.forEach(b => {
-    const topicLabel = (DATA.topics[b.topic] && DATA.topics[b.topic].label) || b.topic || 'Unknown';
-    if (!byTopic[topicLabel]) byTopic[topicLabel] = { total: 0, passed: 0, decided: 0 };
-    byTopic[topicLabel].total++;
-    if (b.outcome === 'passed') byTopic[topicLabel].passed++;
-    if (b.outcome === 'passed' || b.outcome === 'failed') byTopic[topicLabel].decided++;
-  });
-
-  // By chamber
-  const byChamber = {};
-  allBills.forEach(b => {
-    const c = b.chamber === 'senate' ? 'Senate' : 'House / Delegates';
-    if (!byChamber[c]) byChamber[c] = { total: 0, passed: 0, decided: 0 };
-    byChamber[c].total++;
-    if (b.outcome === 'passed') byChamber[c].passed++;
-    if (b.outcome === 'passed' || b.outcome === 'failed') byChamber[c].decided++;
-  });
-
-  function barRows(obj, maxTotal) {
-    return Object.entries(obj)
-      .sort((a, b) => b[1].total - a[1].total)
-      .map(([label, d]) => {
-        const rate = d.decided > 0 ? Math.round((d.passed / d.decided) * 100) : null;
-        const barPct = Math.round((d.total / maxTotal) * 100);
-        const rateDisplay = rate !== null ? `${rate}% passage` : 'no decided bills';
-        return `<div class="bar-row">
-          <span class="bar-row-label" title="${escapeHtml(label)}">${escapeHtml(label)}</span>
-          <div class="bar-track"><div class="bar-fill" style="width:${barPct}%"></div></div>
-          <span class="bar-val">${d.total} bills</span>
-          <span style="font-size:11.5px;color:var(--text-secondary);width:90px;flex-shrink:0;">${rateDisplay}</span>
-        </div>`;
-      }).join('');
+  // ── AGGREGATE BY DIMENSION ──────────────────────────────────────────────
+  function agg(bills, keyFn) {
+    const m = {};
+    bills.forEach(b => {
+      const k = keyFn(b);
+      if (!k) return;
+      if (!m[k]) m[k] = { total: 0, passed: 0, decided: 0 };
+      m[k].total++;
+      if (b.outcome === 'passed') m[k].passed++;
+      if (b.outcome === 'passed' || b.outcome === 'failed') m[k].decided++;
+    });
+    return m;
   }
 
-  const maxTopicTotal = Math.max(...Object.values(byTopic).map(d => d.total), 1);
+  const byParty = agg(allBills, b => b.party === 'D' ? 'Democrat' : b.party === 'R' ? 'Republican' : null);
+  const byChamber = agg(allBills, b => b.chamber === 'senate' ? 'Senate' : 'House / Delegates');
+  const byTopic = agg(allBills, b => (DATA.topics[b.topic] && DATA.topics[b.topic].label) || b.topic || 'Unknown');
 
+  // ── CROSSTAB: party × chamber ──────────────────────────────────────────
+  const crosstab = {};
+  allBills.forEach(b => {
+    const party = b.party === 'D' ? 'Democrat' : b.party === 'R' ? 'Republican' : 'Other';
+    const ch = b.chamber === 'senate' ? 'Senate' : 'House';
+    const key = `${party}|${ch}`;
+    if (!crosstab[key]) crosstab[key] = { total: 0, passed: 0, decided: 0 };
+    crosstab[key].total++;
+    if (b.outcome === 'passed') crosstab[key].passed++;
+    if (b.outcome === 'passed' || b.outcome === 'failed') crosstab[key].decided++;
+  });
+
+  // ── LEADERBOARD: top sponsors by pass rate (min 2 decided bills) ───────
+  const legStats = stateData.legislators.map(l => {
+    const lb = l.bills.filter(b => b.outcome === 'passed' || b.outcome === 'failed');
+    const lp = l.bills.filter(b => b.outcome === 'passed');
+    return {
+      id: l.id, name: l.name, party: l.party, chamber: l.chamber,
+      total: l.bills.length, passed: lp.length, decided: lb.length,
+      rate: lb.length >= 2 ? Math.round((lp.length / lb.length) * 100) : null
+    };
+  });
+
+  const topByPassRate = legStats
+    .filter(l => l.rate !== null && l.decided >= 2)
+    .sort((a, b) => b.rate - a.rate || b.total - a.total)
+    .slice(0, 8);
+
+  const topByVolume = legStats
+    .filter(l => l.total > 0)
+    .sort((a, b) => b.total - a.total)
+    .slice(0, 8);
+
+  // ── SPONSOR INSIGHTS ────────────────────────────────────────────────────
+  const sponsors = DATA.sponsors || {};
+  const sponsorIds = Object.keys(sponsors);
+  const sponsorBills = allBills.filter(b => sponsorIds.includes(b.legId));
+  const sponsorDecided = sponsorBills.filter(b => b.outcome === 'passed' || b.outcome === 'failed');
+  const sponsorPassed = sponsorBills.filter(b => b.outcome === 'passed');
+  const sponsorRate = sponsorDecided.length > 0 ? Math.round((sponsorPassed.length / sponsorDecided.length) * 100) : null;
+
+  // ── HELPER: render bar rows ─────────────────────────────────────────────
+  function barRows(obj, fillClass = '') {
+    const entries = Object.entries(obj).sort((a, b) => b[1].total - a[1].total);
+    const maxTotal = Math.max(...entries.map(e => e[1].total), 1);
+    return entries.map(([label, d]) => {
+      const rate = d.decided > 0 ? Math.round((d.passed / d.decided) * 100) : null;
+      const barPct = Math.round((d.total / maxTotal) * 100);
+      return `<div class="bar-row">
+        <span class="bar-row-label" title="${escapeHtml(label)}">${escapeHtml(label)}</span>
+        <div class="bar-track"><div class="bar-fill ${fillClass}" style="width:${barPct}%"></div></div>
+        <span class="bar-val">${d.total} bill${d.total === 1 ? '' : 's'}</span>
+        <span class="bar-rate">${rate !== null ? rate + '% pass' : '—'}</span>
+      </div>`;
+    }).join('');
+  }
+
+  function leaderboardRow(l, rank) {
+    const rankLabel = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `<span class="lb-rank">${rank}</span>`;
+    const partyClass = l.party === 'D' ? 'D' : 'R';
+    const chamberAbbr = l.chamber === 'senate' ? 'Sen.' : 'Del.';
+    const isSponsor = sponsorIds.includes(l.id);
+    return `<div class="leaderboard-row">
+      <span style="font-size:${rank <= 3 ? '18' : '13'}px;width:24px;flex-shrink:0;text-align:center;">${rankLabel}</span>
+      <span class="lb-name">${isSponsor ? '⭐ ' : ''}${escapeHtml(l.name)}${isSponsor ? '' : ''}</span>
+      <span class="lb-badge party-badge ${partyClass}">${l.party}</span>
+      <span class="lb-badge" style="background:var(--blue-50);color:var(--blue-700);font-size:9.5px;">${chamberAbbr}</span>
+      <span class="lb-val">${l.total} bills</span>
+    </div>`;
+  }
+
+  function passRateRow(l, rank) {
+    const rankLabel = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `<span class="lb-rank">${rank}</span>`;
+    const partyClass = l.party === 'D' ? 'D' : 'R';
+    const isSponsor = sponsorIds.includes(l.id);
+    const chipClass = l.rate >= 60 ? 'high' : l.rate >= 35 ? 'mid' : 'low';
+    return `<div class="leaderboard-row">
+      <span style="font-size:${rank <= 3 ? '18' : '13'}px;width:24px;flex-shrink:0;text-align:center;">${rankLabel}</span>
+      <span class="lb-name">${isSponsor ? '⭐ ' : ''}${escapeHtml(l.name)}</span>
+      <span class="lb-badge party-badge ${partyClass}">${l.party}</span>
+      <span class="lb-val">${l.decided} decided</span>
+      <span class="lb-score ${chipClass}">${l.rate}%</span>
+    </div>`;
+  }
+
+  function crosstabRow(party, cells) {
+    return `<tr>
+      <td style="font-weight:600;color:${party === 'Democrat' ? '#1448A0' : party === 'Republican' ? '#A01414' : 'inherit'}">${party}</td>
+      ${cells.map(k => {
+        const d = crosstab[k] || { total: 0, passed: 0, decided: 0 };
+        const rate = d.decided > 0 ? Math.round((d.passed / d.decided) * 100) : null;
+        const chipClass = rate === null ? 'na' : rate >= 60 ? 'high' : rate >= 35 ? 'mid' : 'low';
+        return `<td><span class="rate-chip ${chipClass}">${rate !== null ? rate + '%' : '—'}</span> <span style="font-size:11px;color:var(--text-secondary)">(${d.total})</span></td>`;
+      }).join('')}
+    </tr>`;
+  }
+
+  // ── TOPIC HEAT: which topics are getting the most action ────────────────
+  const topicHeat = Object.entries(byTopic).sort((a, b) => b[1].total - a[1].total);
+  const hotTopic = topicHeat[0];
+  const topPartyByBills = Object.entries(byParty).sort((a, b) => b[1].total - a[1].total)[0];
+  const topPartyByRate = Object.entries(byParty)
+    .filter(([, d]) => d.decided >= 3)
+    .sort((a, b) => (b[1].passed / b[1].decided) - (a[1].passed / a[1].decided))[0];
+
+  // ── RENDER ──────────────────────────────────────────────────────────────
   container.innerHTML = `
+
+    <!-- Key numbers -->
     <div class="stats-grid">
       <div class="stat-card">
         <div class="stat-card-label">Total bills tracked</div>
@@ -692,7 +773,7 @@ function renderStats() {
       <div class="stat-card">
         <div class="stat-card-label">Overall passage rate</div>
         <div class="stat-card-value">${overallRate}%</div>
-        <div class="stat-card-sub">${passed.length} of ${decided.length} decided bills passed</div>
+        <div class="stat-card-sub">${passed.length} of ${decided.length} decided bills</div>
       </div>
       <div class="stat-card">
         <div class="stat-card-label">Legislators tracked</div>
@@ -700,52 +781,89 @@ function renderStats() {
         <div class="stat-card-sub">${totalLegs} total in system</div>
       </div>
       <div class="stat-card">
-        <div class="stat-card-label">Topics covered</div>
-        <div class="stat-card-value">${Object.keys(byTopic).length}</div>
-        <div class="stat-card-sub">across ${Object.keys(DATA.topics).length} defined topic areas</div>
+        <div class="stat-card-label">Our sponsors</div>
+        <div class="stat-card-value">${sponsorIds.length}</div>
+        <div class="stat-card-sub">${sponsorRate !== null ? sponsorRate + '% pass rate' : 'No decided bills yet'}</div>
       </div>
     </div>
 
+    <!-- Insight banner -->
+    ${(hotTopic || topPartyByRate) ? `
+    <div class="insight-card">
+      <h3>Key insights</h3>
+      ${hotTopic ? `<div class="insight-item">
+        <span class="i-label">Most active topic</span>
+        <span class="i-value">${escapeHtml(hotTopic[0])} <span class="insight-tag">${hotTopic[1].total} bills</span></span>
+      </div>` : ''}
+      ${topPartyByRate ? `<div class="insight-item">
+        <span class="i-label">Best passage rate by party (3+ bills)</span>
+        <span class="i-value">${escapeHtml(topPartyByRate[0])} <span class="insight-tag">${Math.round((topPartyByRate[1].passed / topPartyByRate[1].decided) * 100)}%</span></span>
+      </div>` : ''}
+      ${topPartyByBills ? `<div class="insight-item">
+        <span class="i-label">Most bills sponsored by party</span>
+        <span class="i-value">${escapeHtml(topPartyByBills[0])} <span class="insight-tag">${topPartyByBills[1].total} bills</span></span>
+      </div>` : ''}
+      ${sponsorIds.length > 0 && sponsorRate !== null ? `<div class="insight-item">
+        <span class="i-label">Sponsor network passage rate</span>
+        <span class="i-value">${sponsorRate}% <span class="insight-tag">${sponsorPassed.length} of ${sponsorDecided.length} bills</span></span>
+      </div>` : ''}
+    </div>` : ''}
+
+    <!-- Party × Chamber crosstab -->
     <div class="stats-section">
-      <h3>Bills by topic</h3>
-      ${Object.keys(byTopic).length === 0 ? '<p class="empty" style="padding:.5rem 0;">No bills added yet.</p>' : barRows(byTopic, maxTopicTotal)}
+      <h3>Passage rate by party &amp; chamber</h3>
+      <p class="section-sub">What percentage of decided bills pass, broken down by who's sponsoring and where.</p>
+      ${decided.length < 3 ? '<p class="empty" style="padding:.5rem 0;font-size:13px;">Not enough decided bills yet to show a meaningful crosstab.</p>' : `
+      <table class="crosstab">
+        <thead><tr>
+          <th>Party</th>
+          <th>Senate</th>
+          <th>House / Del.</th>
+        </tr></thead>
+        <tbody>
+          ${crosstabRow('Democrat', ['Democrat|Senate', 'Democrat|House'])}
+          ${crosstabRow('Republican', ['Republican|Senate', 'Republican|House'])}
+        </tbody>
+      </table>`}
     </div>
 
-    <div class="stats-section">
-      <h3>By party</h3>
-      ${Object.keys(byParty).length === 0 ? '<p class="empty" style="padding:.5rem 0;">No data.</p>' : (() => {
-        const maxP = Math.max(...Object.values(byParty).map(d => d.total), 1);
-        return Object.entries(byParty).sort((a,b) => b[1].total - a[1].total).map(([label, d]) => {
-          const rate = d.decided > 0 ? Math.round((d.passed / d.decided) * 100) : null;
-          const rateDisplay = rate !== null ? `${rate}% passage` : 'no decided bills';
-          const barPct = Math.round((d.total / maxP) * 100);
-          const fillClass = label === 'D' ? '' : label === 'R' ? 'amber' : '';
-          return `<div class="bar-row">
-            <span class="bar-row-label">${label === 'D' ? 'Democrat' : label === 'R' ? 'Republican' : escapeHtml(label)}</span>
-            <div class="bar-track"><div class="bar-fill ${fillClass}" style="width:${barPct}%"></div></div>
-            <span class="bar-val">${d.total} bills</span>
-            <span style="font-size:11.5px;color:var(--text-secondary);width:90px;flex-shrink:0;">${rateDisplay}</span>
-          </div>`;
-        }).join('');
-      })()}
+    <!-- Leaderboards side by side -->
+    <div class="stats-2col">
+      <div class="stats-section">
+        <h3>Most bills sponsored</h3>
+        <p class="section-sub">By volume of primary-sponsored bills tracked.</p>
+        ${topByVolume.length === 0
+          ? '<p class="empty" style="padding:.5rem 0;font-size:13px;">No data yet.</p>'
+          : topByVolume.map((l, i) => leaderboardRow(l, i + 1)).join('')}
+      </div>
+      <div class="stats-section">
+        <h3>Best passage rate</h3>
+        <p class="section-sub">Minimum 2 decided bills required.</p>
+        ${topByPassRate.length === 0
+          ? '<p class="empty" style="padding:.5rem 0;font-size:13px;">Not enough decided bills yet.</p>'
+          : topByPassRate.map((l, i) => passRateRow(l, i + 1)).join('')}
+      </div>
     </div>
 
+    <!-- Bills by topic -->
     <div class="stats-section">
-      <h3>By chamber</h3>
-      ${Object.keys(byChamber).length === 0 ? '<p class="empty" style="padding:.5rem 0;">No data.</p>' : (() => {
-        const maxC = Math.max(...Object.values(byChamber).map(d => d.total), 1);
-        return Object.entries(byChamber).sort((a,b) => b[1].total - a[1].total).map(([label, d]) => {
-          const rate = d.decided > 0 ? Math.round((d.passed / d.decided) * 100) : null;
-          const rateDisplay = rate !== null ? `${rate}% passage` : 'no decided bills';
-          const barPct = Math.round((d.total / maxC) * 100);
-          return `<div class="bar-row">
-            <span class="bar-row-label">${escapeHtml(label)}</span>
-            <div class="bar-track"><div class="bar-fill green" style="width:${barPct}%"></div></div>
-            <span class="bar-val">${d.total} bills</span>
-            <span style="font-size:11.5px;color:var(--text-secondary);width:90px;flex-shrink:0;">${rateDisplay}</span>
-          </div>`;
-        }).join('');
-      })()}
+      <h3>Activity by topic</h3>
+      <p class="section-sub">Bill volume and passage rate per issue area.</p>
+      ${Object.keys(byTopic).length === 0
+        ? '<p class="empty" style="padding:.5rem 0;">No bills added yet.</p>'
+        : barRows(byTopic)}
+    </div>
+
+    <!-- Party + Chamber side by side -->
+    <div class="stats-2col">
+      <div class="stats-section">
+        <h3>By party</h3>
+        ${Object.keys(byParty).length === 0 ? '<p class="empty" style="padding:.5rem 0;">No data.</p>' : barRows(byParty, 'amber')}
+      </div>
+      <div class="stats-section">
+        <h3>By chamber</h3>
+        ${Object.keys(byChamber).length === 0 ? '<p class="empty" style="padding:.5rem 0;">No data.</p>' : barRows(byChamber, 'green')}
+      </div>
     </div>
   `;
 }
@@ -1423,6 +1541,7 @@ async function handleDeleteBill(stateCode, legislatorId, billId) {
 // ---------------------------------------------------------------------------
 function setStatus(elId, msg, type) {
   const el = document.getElementById(elId);
+  if (!el) return;
   el.textContent = msg;
   el.className = 'status-msg' + (type ? ' ' + type : '');
 }
@@ -1433,6 +1552,190 @@ function apiConfigured() {
     return false;
   }
   return true;
+}
+
+// ---------------------------------------------------------------------------
+// SPONSORS SYSTEM
+// ---------------------------------------------------------------------------
+function isSponsor(legId) {
+  return !!(DATA.sponsors && DATA.sponsors[legId]);
+}
+
+function renderSponsorsTab() {
+  const container = document.getElementById('sponsors-list');
+  const sponsors = DATA.sponsors || {};
+  const stateCode = document.getElementById('state').value;
+  const stateData = DATA.states[stateCode];
+
+  if (Object.keys(sponsors).length === 0) {
+    container.innerHTML = '<p class="empty">No sponsors added yet. Add legislators you\'ve worked with to highlight them across the app.</p>';
+    return;
+  }
+
+  // Find the legislator objects for all sponsor IDs
+  const allLegs = {};
+  Object.values(DATA.states).forEach(st => {
+    st.legislators.forEach(l => { allLegs[l.id] = l; });
+  });
+
+  container.innerHTML = Object.entries(sponsors).map(([legId, sponsorData]) => {
+    const l = allLegs[legId];
+    if (!l) return '';
+    const partyLabel = l.party === 'D' ? 'Democrat' : l.party === 'R' ? 'Republican' : l.party;
+    const chamberLabel = l.chamber === 'senate' ? 'Senator' : 'Delegate';
+    return `<div class="sponsor-card">
+      <div class="sponsor-star">⭐</div>
+      <div class="sponsor-body">
+        <p class="sponsor-name">${escapeHtml(l.name)}</p>
+        <p class="sponsor-meta">${partyLabel} &middot; ${chamberLabel}${l.district ? ' &middot; District ' + escapeHtml(l.district) : ''}</p>
+        ${sponsorData.note ? `<div class="sponsor-note">${escapeHtml(sponsorData.note)}</div>` : ''}
+        <div class="sponsor-actions">
+          <button class="sponsor-remove-btn" data-legid="${legId}">Remove</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  container.querySelectorAll('.sponsor-remove-btn').forEach(btn => {
+    btn.addEventListener('click', () => handleRemoveSponsor(btn.dataset.legid));
+  });
+}
+
+async function handleRemoveSponsor(legId) {
+  if (!apiConfigured()) return;
+  if (!confirm('Remove this legislator from sponsors?')) return;
+  if (!DATA.sponsors) return;
+  delete DATA.sponsors[legId];
+  renderSponsorsTab();
+  renderSidebar();
+  render();
+  renderStats();
+  try {
+    await fetch(`${API_BASE}/api/save-sponsors`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sponsors: DATA.sponsors })
+    });
+  } catch { /* optimistic — will sync on next save */ }
+}
+
+function setupSponsorPanel() {
+  const overlay = document.getElementById('sponsor-overlay');
+
+  document.getElementById('open-add-sponsor').addEventListener('click', () => {
+    document.getElementById('sponsor-status').textContent = '';
+    document.getElementById('sponsor-relationship').value = '';
+    document.getElementById('sponsor-search').value = '';
+    populateSponsorDropdown();
+    overlay.classList.add('open');
+  });
+  document.getElementById('close-sponsor').addEventListener('click', () => overlay.classList.remove('open'));
+  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('open'); });
+
+  document.getElementById('sponsor-state').innerHTML = '';
+  Object.entries(DATA.states).forEach(([code, st]) => {
+    const opt = document.createElement('option');
+    opt.value = code;
+    opt.textContent = st.name;
+    document.getElementById('sponsor-state').appendChild(opt);
+  });
+  document.getElementById('sponsor-state').addEventListener('change', () => {
+    document.getElementById('sponsor-search').value = '';
+    populateSponsorDropdown();
+  });
+  document.getElementById('sponsor-search').addEventListener('input', e => populateSponsorDropdown(e.target.value));
+  document.getElementById('save-sponsor-btn').addEventListener('click', handleSaveSponsor);
+  populateSponsorDropdown();
+}
+
+function populateSponsorDropdown(filter = '') {
+  const stateCode = document.getElementById('sponsor-state').value;
+  const sel = document.getElementById('sponsor-leg');
+  sel.innerHTML = '';
+  const stateData = DATA.states[stateCode];
+  if (!stateData) return;
+  const needle = filter.toLowerCase();
+  stateData.legislators
+    .slice().sort((a, b) => a.name.localeCompare(b.name))
+    .filter(l => !needle || l.name.toLowerCase().includes(needle))
+    .forEach(l => {
+      const opt = document.createElement('option');
+      opt.value = l.id;
+      const alreadySponsor = isSponsor(l.id);
+      opt.textContent = `${alreadySponsor ? '⭐ ' : ''}${l.name} (${l.party}, ${l.chamber === 'senate' ? 'Sen.' : 'Del.'})`;
+      sel.appendChild(opt);
+    });
+  if (sel.options.length === 0) {
+    const opt = document.createElement('option');
+    opt.disabled = true;
+    opt.textContent = 'No matches';
+    sel.appendChild(opt);
+  }
+}
+
+async function handleSaveSponsor() {
+  if (!apiConfigured()) return;
+  const legId = document.getElementById('sponsor-leg').value;
+  const note = document.getElementById('sponsor-relationship').value.trim();
+  if (!legId) { setStatus('sponsor-status', 'Select a legislator.', 'error'); return; }
+
+  if (!DATA.sponsors) DATA.sponsors = {};
+  DATA.sponsors[legId] = { addedAt: new Date().toISOString(), note };
+
+  setStatus('sponsor-status', 'Saving…', 'loading');
+  try {
+    const res = await fetch(`${API_BASE}/api/save-sponsors`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sponsors: DATA.sponsors })
+    });
+    if (!res.ok) throw new Error('save failed');
+    setStatus('sponsor-status', 'Added!', 'success');
+    setTimeout(() => {
+      document.getElementById('sponsor-overlay').classList.remove('open');
+      renderSponsorsTab();
+      renderSidebar();
+      render();
+      renderStats();
+    }, 700);
+  } catch (err) {
+    setStatus('sponsor-status', `Save failed: ${err.message}`, 'error');
+  }
+}
+
+// ---------------------------------------------------------------------------
+// COPY RESULTS TO CLIPBOARD
+// ---------------------------------------------------------------------------
+function handleCopyResults() {
+  const cards = document.querySelectorAll('.card');
+  if (!cards.length) { alert('No results to copy.'); return; }
+
+  const stateCode = document.getElementById('state').value;
+  const stateName = DATA.states[stateCode]?.name || stateCode;
+  const lines = [`Legislator Match Results — ${stateName}`, `Generated ${new Date().toLocaleDateString()}`, ''];
+
+  cards.forEach((card, i) => {
+    const name = card.querySelector('.card-name')?.textContent?.trim() || '';
+    const meta = card.querySelector('.card-meta')?.textContent?.trim() || '';
+    const score = card.querySelector('.score-ring')?.textContent?.trim() || '';
+    const stats = card.querySelector('.stats-row')?.textContent?.replace(/\s+/g, ' ').trim() || '';
+    const notes = card.querySelector('.notes-text')?.textContent?.replace('Edit', '').trim();
+    lines.push(`${i + 1}. ${name}`);
+    lines.push(`   ${meta}`);
+    lines.push(`   Interest Score: ${score}/100`);
+    lines.push(`   ${stats}`);
+    if (notes && !notes.includes('Add note')) lines.push(`   Note: ${notes}`);
+    lines.push('');
+  });
+
+  navigator.clipboard.writeText(lines.join('\n'))
+    .then(() => {
+      const btn = document.getElementById('copy-btn');
+      const orig = btn.textContent;
+      btn.textContent = '✓ Copied!';
+      setTimeout(() => { btn.textContent = orig; }, 2000);
+    })
+    .catch(() => alert('Could not copy to clipboard.'));
 }
 
 init();
