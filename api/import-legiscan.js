@@ -169,23 +169,29 @@ async function fetchBills(req, res, legiscanKey, anthropicKey) {
 async function classifyBillsWithClaude(bills, knownTopics, apiKey) {
   const topicList = Object.entries(knownTopics || {}).map(([code, t]) => {
     const subs = Object.entries(t.subtopics || {}).map(([sc, sl]) => `${sc} (${sl})`).join(', ');
-    return `- ${code} (${t.label}): subtopics = ${subs}`;
+    return `- ${code} (${t.label})${subs ? ': subtopics = ' + subs : ''}`;
   }).join('\n');
 
-  const systemPrompt = `You classify a batch of state legislative bill titles into topics/subtopics.
+  const systemPrompt = `You classify state legislative bill titles into topic categories for a consulting firm's lobbying database.
 
-The existing topics and subtopics in this system are:
-${topicList || '(none yet)'}
+CRITICAL RULES — read carefully:
+1. Only match a topic if the bill is CLEARLY and DIRECTLY about that topic. A bill about tax credits for veterans is NOT a workforce bill. A bill about nursing home membership is NOT a healthcare bill unless it's about patient care access or insurance.
+2. If the bill title is ambiguous, administrative, or doesn't clearly fit any topic: return null for topicMatch.
+3. NEVER guess. A null is far better than a wrong classification — the user will classify unmatched bills manually.
+4. Return a confidence: "high" means clearly relevant, "low" means loosely relevant (user should double-check), null means no match.
+5. Do NOT try to suggest new topic labels unless the bill is clearly about a real policy area not covered at all.
 
-You will receive a JSON array of bills, each with a "title". Respond with ONLY a JSON array, same length and order, no other text, no markdown fences. Each element:
-{
-  "topicMatch": "an existing topic code if one fits well, otherwise null",
-  "subtopicMatch": "an existing subtopic code under that topic if one fits well, otherwise null",
-  "suggestedTopicLabel": "if no existing topic fits, a short new topic label, otherwise null",
-  "suggestedSubtopicLabel": "if no existing subtopic fits, a short new subtopic label, otherwise null"
-}
+The available topics in this system are:
+${topicList || '(none yet — return null for all)'}
 
-Prefer matching an existing topic/subtopic over suggesting a new one whenever the fit is reasonable.`;
+You will receive a JSON array of bill titles. Respond with ONLY a JSON array, same length and order, no markdown fences:
+[{
+  "topicMatch": "existing topic code or null",
+  "subtopicMatch": "existing subtopic code or null",
+  "confidence": "high" | "low" | null,
+  "suggestedTopicLabel": "only if clearly a new distinct policy area, otherwise null",
+  "suggestedSubtopicLabel": "only if clearly a new subtopic, otherwise null"
+}]`;
 
   const userPayload = bills.map(b => ({ title: b.title }));
 
@@ -204,11 +210,7 @@ Prefer matching an existing topic/subtopic over suggesting a new one whenever th
     })
   });
 
-  if (!response.ok) {
-    // Classification failing shouldn't block the import — just return
-    // bills unclassified so the user can pick topics manually.
-    return bills;
-  }
+  if (!response.ok) return bills; // classification failing shouldn't block the import
 
   const data = await response.json();
   const rawText = data.content.find(b => b.type === 'text')?.text || '[]';
@@ -216,8 +218,20 @@ Prefer matching an existing topic/subtopic over suggesting a new one whenever th
 
   try {
     const classifications = JSON.parse(cleaned);
-    return bills.map((b, i) => ({ ...b, ...(classifications[i] || {}) }));
+    return bills.map((b, i) => {
+      const c = classifications[i] || {};
+      return {
+        ...b,
+        topicMatch: c.topicMatch || null,
+        subtopicMatch: c.subtopicMatch || null,
+        confidence: c.confidence || null,
+        suggestedTopicLabel: c.suggestedTopicLabel || null,
+        suggestedSubtopicLabel: c.suggestedSubtopicLabel || null,
+        // Flag for review if no match OR low confidence
+        needsReview: !c.topicMatch || c.confidence === 'low'
+      };
+    });
   } catch {
-    return bills;
+    return bills.map(b => ({ ...b, needsReview: true }));
   }
 }
