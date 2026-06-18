@@ -1270,6 +1270,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0182",
+              "title": "Maryland Port Administration - Acquisition of Land in Anne Arundel County - Notice of Public Hearing",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -1463,7 +1472,7 @@
   },
   "meta": {
     "nextLegislatorId": 35,
-    "nextBillId": 182
+    "nextBillId": 183
   },
   "sponsors": {
     "L017": {
