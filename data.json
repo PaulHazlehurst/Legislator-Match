@@ -1610,11 +1610,13 @@
             {
               "id": "B0212",
               "title": "Boating Accidents - Reporting Requirement - Property Damage",
-              "topic": "workforce",
-              "subtopic": "training-programs",
+              "topic": "land-use-property-rights",
+              "subtopic": null,
               "year": 2025,
               "role": "sponsor",
-              "outcome": "passed"
+              "outcome": "passed",
+              "topicLabel": "Land Use & Property Rights",
+              "subtopicLabel": null
             }
           ]
         }
