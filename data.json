@@ -1423,6 +1423,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0199",
+              "title": "Income Tax - Subtraction Modification for Classroom Supplies Purchased by Teachers - Alteration",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -1616,7 +1625,7 @@
   },
   "meta": {
     "nextLegislatorId": 35,
-    "nextBillId": 199
+    "nextBillId": 200
   },
   "sponsors": {
     "L017": {
