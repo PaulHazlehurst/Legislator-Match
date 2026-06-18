@@ -1531,6 +1531,15 @@
               "year": 2025,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0211",
+              "title": "Department of the Environment - Notation of Veteran Status",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -1724,7 +1733,7 @@
   },
   "meta": {
     "nextLegislatorId": 35,
-    "nextBillId": 211
+    "nextBillId": 212
   },
   "sponsors": {
     "L017": {
