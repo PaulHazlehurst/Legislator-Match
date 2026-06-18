@@ -1486,6 +1486,15 @@
               "year": 2025,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0206",
+              "title": "Local Government - Annapolis and Anne Arundel County Conference and Visitors Bureau Designation",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -1679,7 +1688,7 @@
   },
   "meta": {
     "nextLegislatorId": 35,
-    "nextBillId": 206
+    "nextBillId": 207
   },
   "sponsors": {
     "L017": {
