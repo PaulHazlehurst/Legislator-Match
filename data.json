@@ -1342,6 +1342,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0190",
+              "title": "Natural Resources - State Park Entry Fee - Exemptions",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -1535,7 +1544,7 @@
   },
   "meta": {
     "nextLegislatorId": 35,
-    "nextBillId": 190
+    "nextBillId": 191
   },
   "sponsors": {
     "L017": {
