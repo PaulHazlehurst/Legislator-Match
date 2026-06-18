@@ -1451,11 +1451,13 @@
             {
               "id": "B0197",
               "title": "Estates - Maryland Uniform Simultaneous Death Act",
-              "topic": "workforce",
-              "subtopic": "training-programs",
+              "topic": "estates-probate",
+              "subtopic": "uniform-simultaneous-death",
               "year": 2026,
               "role": "sponsor",
-              "outcome": "passed"
+              "outcome": "passed",
+              "topicLabel": "Estates & Probate",
+              "subtopicLabel": "uniform-simultaneous-death"
             },
             {
               "id": "B0198",
