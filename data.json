@@ -1686,6 +1686,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0219",
+              "title": "Electronic Device Producer Responsibility Program - Established",
+              "topic": "consumer-protection",
+              "subtopic": "producer-regulation",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
             }
           ]
         }
@@ -1794,7 +1803,8 @@
       "subtopics": {
         "app-store-regulation": "App Store Regulation",
         "fair-pricing-market-competition": "Fair pricing & market competition",
-        "surveillance-based-pricing-prohibition": "Surveillance-based pricing prohibition"
+        "surveillance-based-pricing-prohibition": "Surveillance-based pricing prohibition",
+        "producer-regulation": "Producer Regulation"
       }
     },
     "family-law": {
@@ -1890,7 +1900,7 @@
   },
   "meta": {
     "nextLegislatorId": 36,
-    "nextBillId": 219
+    "nextBillId": 220
   },
   "sponsors": {
     "L017": {
