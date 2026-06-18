@@ -1540,6 +1540,15 @@
               "year": 2025,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0212",
+              "title": "Boating Accidents - Reporting Requirement - Property Damage",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -1733,7 +1742,7 @@
   },
   "meta": {
     "nextLegislatorId": 35,
-    "nextBillId": 212
+    "nextBillId": 213
   },
   "sponsors": {
     "L017": {
