@@ -1704,6 +1704,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "failed"
+            },
+            {
+              "id": "B0221",
+              "title": "Net Energy Metering, SUNRISE Program, and Community Solar Energy Generating Systems Program (SUNRISE Act)",
+              "topic": "environment",
+              "subtopic": "clean-energy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
             }
           ]
         }
@@ -1909,7 +1918,7 @@
   },
   "meta": {
     "nextLegislatorId": 36,
-    "nextBillId": 221
+    "nextBillId": 222
   },
   "sponsors": {
     "L017": {
