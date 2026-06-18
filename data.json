@@ -1297,11 +1297,13 @@
             {
               "id": "B0183",
               "title": "Primary and Secondary Educators - Licenses and Public Profiles - Notation of Veteran Status",
-              "topic": "workforce",
-              "subtopic": "training-programs",
+              "topic": "veterans-military-affairs",
+              "subtopic": null,
               "year": 2026,
               "role": "sponsor",
-              "outcome": "failed"
+              "outcome": "failed",
+              "topicLabel": "Veterans & Military Affairs",
+              "subtopicLabel": null
             },
             {
               "id": "B0184",
