@@ -1288,6 +1288,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "failed"
+            },
+            {
+              "id": "B0184",
+              "title": "Anne Arundel County - Alcoholic Beverages - Class C (Veterans' Organization) Licenses - Membership",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -1481,7 +1490,7 @@
   },
   "meta": {
     "nextLegislatorId": 35,
-    "nextBillId": 184
+    "nextBillId": 185
   },
   "sponsors": {
     "L017": {
