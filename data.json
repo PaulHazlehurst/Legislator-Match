@@ -1209,6 +1209,24 @@
               "outcome": "passed"
             }
           ]
+        },
+        {
+          "id": "L034",
+          "name": "Bryan Simonaire",
+          "party": "R",
+          "chamber": "senate",
+          "district": "SD-031",
+          "bills": [
+            {
+              "id": "B0176",
+              "title": "Higher Education - Douglas J. J. Peters Veterans of the Afghanistan and Iraq Conflicts Scholarship - Repeal of Termination Date",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            }
+          ]
         }
       ]
     }
@@ -1399,8 +1417,8 @@
     }
   },
   "meta": {
-    "nextLegislatorId": 34,
-    "nextBillId": 176
+    "nextLegislatorId": 35,
+    "nextBillId": 177
   },
   "sponsors": {
     "L017": {
