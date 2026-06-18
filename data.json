@@ -1252,6 +1252,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0180",
+              "title": "Reduction Facilities and Veterans Service Organizations - Hydrolyzed and Soil Remains - Immunity",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -1445,7 +1454,7 @@
   },
   "meta": {
     "nextLegislatorId": 35,
-    "nextBillId": 180
+    "nextBillId": 181
   },
   "sponsors": {
     "L017": {
