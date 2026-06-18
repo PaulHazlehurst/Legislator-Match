@@ -349,8 +349,8 @@
         {
           "id": "L027",
           "name": "Frank Conaway",
-          "party": "",
-          "chamber": "",
+          "party": "R",
+          "chamber": "house",
           "district": "",
           "bills": [
             {
@@ -511,8 +511,8 @@
         {
           "id": "L028",
           "name": "Kathy Szeliga",
-          "party": "",
-          "chamber": "",
+          "party": "R",
+          "chamber": "house",
           "district": "",
           "bills": [
             {
@@ -547,8 +547,8 @@
         {
           "id": "L029",
           "name": "Kevin Hornberger",
-          "party": "",
-          "chamber": "",
+          "party": "R",
+          "chamber": "house",
           "district": "",
           "bills": [
             {
@@ -628,8 +628,8 @@
         {
           "id": "L030",
           "name": "Joe Vogel",
-          "party": "",
-          "chamber": "",
+          "party": "D",
+          "chamber": "house",
           "district": "",
           "bills": [
             {
@@ -889,8 +889,8 @@
         {
           "id": "L031",
           "name": "Johnny Salling",
-          "party": "",
-          "chamber": "",
+          "party": "R",
+          "chamber": "senate",
           "district": "",
           "bills": [
             {
@@ -1006,8 +1006,8 @@
         {
           "id": "L032",
           "name": "Jim Rosapepe",
-          "party": "",
-          "chamber": "",
+          "party": "D",
+          "chamber": "senate",
           "district": "",
           "bills": [
             {
