@@ -1659,6 +1659,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0216",
+              "title": "Public Safety – State Fire Prevention Code – Trash and Recyclable Materials",
+              "topic": "environment",
+              "subtopic": "waste-pollution",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -1857,7 +1866,7 @@
   },
   "meta": {
     "nextLegislatorId": 36,
-    "nextBillId": 216
+    "nextBillId": 217
   },
   "sponsors": {
     "L017": {
