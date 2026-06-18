@@ -1286,11 +1286,13 @@
             {
               "id": "B0182",
               "title": "Maryland Port Administration - Acquisition of Land in Anne Arundel County - Notice of Public Hearing",
-              "topic": "workforce",
+              "topic": "land-use-property-rights",
               "subtopic": "training-programs",
               "year": 2026,
               "role": "sponsor",
-              "outcome": "passed"
+              "outcome": "passed",
+              "topicLabel": "Land Use & Property Rights",
+              "subtopicLabel": "training-programs"
             },
             {
               "id": "B0183",
