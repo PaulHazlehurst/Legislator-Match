@@ -1261,6 +1261,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0181",
+              "title": "State Veterans' Cemeteries - Interment",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -1454,7 +1463,7 @@
   },
   "meta": {
     "nextLegislatorId": 35,
-    "nextBillId": 181
+    "nextBillId": 182
   },
   "sponsors": {
     "L017": {
