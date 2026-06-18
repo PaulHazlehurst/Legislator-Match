@@ -1459,6 +1459,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0203",
+              "title": "Natural Resources - Complimentary Fishing and Hunting Licenses - Alterations",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
             }
           ]
         }
@@ -1652,7 +1661,7 @@
   },
   "meta": {
     "nextLegislatorId": 35,
-    "nextBillId": 203
+    "nextBillId": 204
   },
   "sponsors": {
     "L017": {
