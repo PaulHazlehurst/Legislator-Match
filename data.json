@@ -1324,6 +1324,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0188",
+              "title": "Oversight Committee on Quality of Care in Nursing Homes and Assisted Living Facilities - Membership",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -1517,7 +1526,7 @@
   },
   "meta": {
     "nextLegislatorId": 35,
-    "nextBillId": 188
+    "nextBillId": 189
   },
   "sponsors": {
     "L017": {
