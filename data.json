@@ -1522,6 +1522,15 @@
               "year": 2025,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0210",
+              "title": "Braille Flag Memorial Act of 2025",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -1715,7 +1724,7 @@
   },
   "meta": {
     "nextLegislatorId": 35,
-    "nextBillId": 210
+    "nextBillId": 211
   },
   "sponsors": {
     "L017": {
