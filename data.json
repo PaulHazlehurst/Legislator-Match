@@ -1155,6 +1155,24 @@
               "outcome": "pending"
             }
           ]
+        },
+        {
+          "id": "L033",
+          "name": "Nicholaus Kipke",
+          "party": "R",
+          "chamber": "house",
+          "district": "HD-031",
+          "bills": [
+            {
+              "id": "B0171",
+              "title": "Maryland Port Administration - Acquisition of Land in Anne Arundel County - Notice of Public Hearing",
+              "topic": "land-use-property-rights",
+              "subtopic": "public-land-acquisition",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            }
+          ]
         }
       ]
     }
@@ -1238,7 +1256,8 @@
       "label": "Land Use & Property Rights",
       "subtopics": {
         "training-programs": "training-programs",
-        "residential-lease-fee-disclosures": "Residential lease fee disclosures"
+        "residential-lease-fee-disclosures": "Residential lease fee disclosures",
+        "public-land-acquisition": "Public land acquisition"
       }
     },
     "alcoholic-beverages-licensing": {
@@ -1343,8 +1362,8 @@
     }
   },
   "meta": {
-    "nextLegislatorId": 33,
-    "nextBillId": 171
+    "nextLegislatorId": 34,
+    "nextBillId": 172
   },
   "sponsors": {
     "L017": {
