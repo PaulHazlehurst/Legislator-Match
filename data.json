@@ -1198,6 +1198,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "failed"
+            },
+            {
+              "id": "B0175",
+              "title": "Oversight Committee on Quality of Care in Nursing Homes and Assisted Living Facilities – Membership",
+              "topic": "healthcare",
+              "subtopic": "access-equity",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -1391,7 +1400,7 @@
   },
   "meta": {
     "nextLegislatorId": 34,
-    "nextBillId": 175
+    "nextBillId": 176
   },
   "sponsors": {
     "L017": {
