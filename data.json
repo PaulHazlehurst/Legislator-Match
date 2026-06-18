@@ -1588,11 +1588,13 @@
             {
               "id": "B0210",
               "title": "Braille Flag Memorial Act of 2025",
-              "topic": "workforce",
-              "subtopic": "training-programs",
+              "topic": null,
+              "subtopic": null,
               "year": 2025,
               "role": "sponsor",
-              "outcome": "passed"
+              "outcome": "passed",
+              "topicLabel": null,
+              "subtopicLabel": null
             },
             {
               "id": "B0211",
