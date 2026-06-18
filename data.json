@@ -1625,6 +1625,24 @@
               "subtopicLabel": null
             }
           ]
+        },
+        {
+          "id": "L035",
+          "name": "Dana Stein",
+          "party": "D",
+          "chamber": "house",
+          "district": "HD-011",
+          "bills": [
+            {
+              "id": "B0213",
+              "title": "Election Law - Presidential Electors - Selection and Voting",
+              "topic": "election-law-voter-registration",
+              "subtopic": "district-election-administration",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            }
+          ]
         }
       ]
     }
@@ -1815,8 +1833,8 @@
     }
   },
   "meta": {
-    "nextLegislatorId": 35,
-    "nextBillId": 213
+    "nextLegislatorId": 36,
+    "nextBillId": 214
   },
   "sponsors": {
     "L017": {
