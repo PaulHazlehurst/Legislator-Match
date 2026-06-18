@@ -1279,6 +1279,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0183",
+              "title": "Primary and Secondary Educators - Licenses and Public Profiles - Notation of Veteran Status",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
             }
           ]
         }
@@ -1472,7 +1481,7 @@
   },
   "meta": {
     "nextLegislatorId": 35,
-    "nextBillId": 183
+    "nextBillId": 184
   },
   "sponsors": {
     "L017": {
