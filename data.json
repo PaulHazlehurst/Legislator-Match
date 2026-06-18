@@ -1695,6 +1695,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "failed"
+            },
+            {
+              "id": "B0220",
+              "title": "Maryland Strategic Energy Investment Fund - Mandated Uses - Climate Change Programs",
+              "topic": "environment",
+              "subtopic": "clean-energy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
             }
           ]
         }
@@ -1900,7 +1909,7 @@
   },
   "meta": {
     "nextLegislatorId": 36,
-    "nextBillId": 220
+    "nextBillId": 221
   },
   "sponsors": {
     "L017": {
