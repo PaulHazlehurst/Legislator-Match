@@ -1511,11 +1511,13 @@
             {
               "id": "B0203",
               "title": "Natural Resources - Complimentary Fishing and Hunting Licenses - Alterations",
-              "topic": "workforce",
-              "subtopic": "training-programs",
+              "topic": null,
+              "subtopic": null,
               "year": 2026,
               "role": "sponsor",
-              "outcome": "failed"
+              "outcome": "failed",
+              "topicLabel": null,
+              "subtopicLabel": null
             },
             {
               "id": "B0204",
