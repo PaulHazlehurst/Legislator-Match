@@ -1520,11 +1520,13 @@
             {
               "id": "B0204",
               "title": "Anne Arundel County - Alcoholic Beverages Licenses - Veterans' Organizations",
-              "topic": "workforce",
-              "subtopic": "training-programs",
+              "topic": "veterans-military-affairs",
+              "subtopic": null,
               "year": 2025,
               "role": "sponsor",
-              "outcome": "passed"
+              "outcome": "passed",
+              "topicLabel": "Veterans & Military Affairs",
+              "subtopicLabel": null
             },
             {
               "id": "B0205",
