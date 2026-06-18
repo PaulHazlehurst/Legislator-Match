@@ -1225,6 +1225,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0177",
+              "title": "Alcoholic Beverages - License Fee Refund Requirements - Alterations",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -1418,7 +1427,7 @@
   },
   "meta": {
     "nextLegislatorId": 35,
-    "nextBillId": 177
+    "nextBillId": 178
   },
   "sponsors": {
     "L017": {
