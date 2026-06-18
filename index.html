@@ -258,10 +258,12 @@
   @media(max-width:520px){.fab-row{flex-direction:column-reverse;align-items:flex-end;bottom:16px;right:12px;}.fab-ghost{height:36px;font-size:11.5px;}}
 
   /* ── PANELS ──────────────────────────────────────────────────────────── */
-  .overlay{position:fixed;inset:0;background:rgba(11,42,74,0.4);display:none;align-items:flex-end;justify-content:center;z-index:50;}
+  .overlay{position:fixed;inset:0;background:rgba(11,42,74,0.5);display:none;align-items:flex-end;justify-content:center;z-index:50;}
   .overlay.open{display:flex;}
-  .panel{background:var(--surface);width:100%;max-width:560px;max-height:90vh;overflow-y:auto;border-radius:20px 20px 0 0;padding:1.5rem 1.5rem 2rem;box-shadow:var(--shadow-lg);}
-  @media(min-width:640px){.overlay{align-items:center;}.panel{border-radius:20px;max-height:82vh;}}
+  .panel{background:var(--surface);width:100%;max-width:600px;max-height:92vh;overflow-y:auto;border-radius:20px 20px 0 0;padding:1.5rem 1.5rem 2rem;box-shadow:var(--shadow-lg);}
+  .panel.wide{max-width:880px;}
+  @media(min-width:640px){.overlay{align-items:center;}.panel{border-radius:20px;max-height:88vh;}}
+  @media(min-width:960px){.panel.wide{max-height:90vh;}}
   .panel-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem;}
   .panel-header h2{font-size:17px;font-weight:700;margin:0;color:var(--blue-900);}
   .panel-close{background:var(--surface-raised);border:1px solid var(--border);border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--text-secondary);cursor:pointer;}
@@ -394,7 +396,64 @@
   .crosstab .rate-chip.low{background:var(--red-bg);color:var(--red);}
   .crosstab .rate-chip.na{background:var(--bg);color:var(--text-tertiary);}
 
-  /* ── AUDIT TABLE ─────────────────────────────────────────────────────── */
+  /* ── TEAM FEED ───────────────────────────────────────────────────────── */
+  .feed-entry{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border);}
+  .feed-entry:last-child{border-bottom:none;}
+  .feed-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--blue-600),var(--blue-900));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;flex-shrink:0;}
+  .feed-body{flex:1;min-width:0;}
+  .feed-who{font-size:12.5px;font-weight:600;color:var(--blue-900);}
+  .feed-what{font-size:12.5px;color:var(--text-secondary);margin:1px 0;}
+  .feed-when{font-size:11px;color:var(--text-tertiary);}
+  .feed-icon{font-size:14px;margin-right:4px;}
+  .feed-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.2rem;box-shadow:var(--shadow-sm);}
+
+  /* ── CONFIDENCE INDICATOR ────────────────────────────────────────────── */
+  .data-quality{display:inline-flex;align-items:center;gap:3px;font-size:10px;padding:1px 6px;border-radius:100px;font-weight:600;}
+  .dq-strong{background:var(--green-bg);color:var(--green);}
+  .dq-thin{background:var(--amber-bg);color:var(--amber);}
+  .dq-minimal{background:var(--red-bg);color:var(--red);}
+
+  /* ── PRINT / PDF REPORT MODE ─────────────────────────────────────────── */
+  @media print {
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .topnav,.fab-row,.overlay,.legend,footer,.header-actions,.sidebar,
+    .main-tabs,.filter-card .legend,.notes-row,.details,
+    .btn-outline,.audit-edit-btn { display:none !important; }
+    .app-shell { display:block; }
+    .main { padding:0; }
+    body { background:white; font-size:11pt; }
+    .page-header h1 { font-size:18pt; }
+    .filter-card {
+      box-shadow:none; border:1px solid #ddd;
+      page-break-inside:avoid;
+    }
+    .card {
+      box-shadow:none; border:1px solid #ddd;
+      page-break-inside:avoid; margin-bottom:8pt;
+    }
+    .card:hover { box-shadow:none; }
+    /* Report header */
+    .print-header {
+      display:flex !important; justify-content:space-between; align-items:center;
+      padding-bottom:12pt; margin-bottom:16pt;
+      border-bottom:2pt solid #0B2A4A;
+    }
+    .print-header img { height:40pt; }
+    .print-header .print-meta { text-align:right; font-size:9pt; color:#4A5F7A; }
+    .score-ring { border:2pt solid currentColor !important; }
+    @page { margin:0.75in; }
+  }
+  .print-header { display:none; }
+
+  /* ── KEYBOARD SHORTCUT TOAST ─────────────────────────────────────────── */
+  .shortcut-toast{
+    position:fixed;bottom:80px;left:50%;transform:translateX(-50%);
+    background:var(--blue-900);color:white;padding:8px 16px;border-radius:100px;
+    font-size:12.5px;font-weight:500;z-index:100;opacity:0;
+    transition:opacity 0.2s;pointer-events:none;white-space:nowrap;
+  }
+  .shortcut-toast.show{opacity:1;}
+</style>
   .audit-row{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:.7rem 1rem;margin-bottom:6px;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:start;transition:box-shadow 0.1s;}
   .audit-row:hover{box-shadow:var(--shadow-sm);}
   .audit-row.unclassified{border-left:3px solid var(--amber);}
@@ -422,7 +481,14 @@
 <div class="topnav">
   <img src="logo.png" alt="Pinnacle Strategies LLC" class="brand-mark"
     onerror="this.outerHTML='<div class=&quot;brand-mark brand-mark-fallback&quot;></div><span style=&quot;font-size:13px;font-weight:700;color:var(--blue-900);margin-left:8px;&quot;>PINNACLE STRATEGIES</span>'" />
-  <span class="built-by">Built by Paul Hazlehurst</span>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div style="display:flex;align-items:center;gap:6px;">
+      <span style="font-size:11px;color:var(--text-tertiary);">You are:</span>
+      <input type="text" id="user-name" placeholder="Your name" style="height:26px;width:120px;font-size:11.5px;border:1px solid var(--border-strong);border-radius:20px;padding:0 10px;background:var(--surface-raised);color:var(--text);" />
+    </div>
+    <span title="Keyboard shortcuts: / = focus search, A = add bill, I = import, E = audit tab, S = stats tab" style="font-size:11px;color:var(--text-tertiary);cursor:help;border:1px solid var(--border-strong);border-radius:100px;padding:1px 7px;">⌨ ?</span>
+    <span class="built-by">Built by Paul Hazlehurst</span>
+  </div>
 </div>
 
 <div class="app-shell">
@@ -457,6 +523,7 @@
       <button class="main-tab" data-tab="stats">Statistics</button>
       <button class="main-tab" data-tab="sponsors">⭐ Our Sponsors</button>
       <button class="main-tab" data-tab="audit">✏️ Audit</button>
+      <button class="main-tab" data-tab="feed">📋 Team Feed</button>
     </div>
 
     <!-- MATCHER TAB -->
@@ -554,9 +621,34 @@
       <div id="audit-content"><p class="empty">Loading…</p></div>
     </div>
 
-    <footer>Data lives in <code>data.json</code> on GitHub.</footer>
+    <!-- TEAM FEED TAB -->
+    <div class="tab-pane" id="tab-feed">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:10px;">
+        <div>
+          <h2 style="font-size:18px;font-weight:700;color:var(--blue-900);margin:0 0 3px;">Team Activity Feed</h2>
+          <p style="font-size:13px;color:var(--text-secondary);margin:0;">A log of everything added, edited, or changed by the team. Refreshes when you switch to this tab.</p>
+        </div>
+        <button class="btn-outline" id="refresh-feed-btn">↻ Refresh</button>
+      </div>
+      <div id="feed-content"><p class="empty">Loading activity…</p></div>
+    </div>
+
+    <footer>Data lives in <code>data.json</code> on GitHub. Press <code>?</code> in the top bar for keyboard shortcuts.</footer>
   </div>
 </div>
+
+<!-- PRINT HEADER (visible only when printing) -->
+<div class="print-header">
+  <img src="logo.png" alt="Pinnacle Strategies LLC" />
+  <div class="print-meta">
+    <div style="font-weight:700;font-size:11pt;color:#0B2A4A;">Legislator Target Report</div>
+    <div id="print-date"></div>
+    <div id="print-filters"></div>
+  </div>
+</div>
+
+<!-- KEYBOARD SHORTCUT TOAST -->
+<div class="shortcut-toast" id="shortcut-toast"></div>
 
 <!-- FAB ROW -->
 <div class="fab-row">
@@ -666,7 +758,7 @@
 
 <!-- LEGISCAN IMPORT PANEL -->
 <div class="overlay" id="import-overlay">
-  <div class="panel">
+  <div class="panel wide">
     <div class="panel-header">
       <h2>Import from LegiScan</h2>
       <button class="panel-close" id="close-import">✕</button>
@@ -690,7 +782,7 @@
         <span id="import-bill-count"></span> primary-sponsored bill(s) found this session.
         Review each one's topic/subtopic, then save the ones you want.
       </p>
-      <div id="import-bill-list" style="display:flex;flex-direction:column;gap:12px;margin-top:12px;"></div>
+      <div id="import-bill-list" style="display:flex;flex-direction:column;gap:8px;margin-top:12px;max-height:52vh;overflow-y:auto;padding-right:4px;"></div>
       <div class="status-msg" id="import-save-status"></div>
       <div style="display:flex;gap:8px;margin-top:14px;">
         <button class="btn btn-secondary" id="import-back-btn" style="flex:1;">← Back</button>

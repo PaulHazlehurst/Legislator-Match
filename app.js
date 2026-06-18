@@ -3,7 +3,7 @@
 // See README.md "Deploying the serverless function" section.
 // Example: "https://legislator-matcher-api.vercel.app"
 // ===========================================================================
-const API_BASE = "https://legislator-match.vercel.app";
+const API_BASE = "PASTE_YOUR_VERCEL_FUNCTION_URL_HERE";
 
 // Track current filter state for the custom searchable dropdowns
 let currentIssue = null;
@@ -52,9 +52,25 @@ async function init() {
   setupDeletePanel();
   setupImportPanel();
   setupSponsorPanel();
+  setupKeyboardShortcuts();
   populateImportStateDropdown();
 
-  document.getElementById('print-btn').addEventListener('click', () => window.print());
+  // Restore user name from localStorage
+  const savedName = localStorage.getItem('pinnacle_user_name');
+  if (savedName) document.getElementById('user-name').value = savedName;
+  document.getElementById('user-name').addEventListener('change', e => {
+    localStorage.setItem('pinnacle_user_name', e.target.value.trim());
+  });
+
+  document.getElementById('print-btn').addEventListener('click', () => {
+    // Populate print header before printing
+    document.getElementById('print-date').textContent = new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+    const stateCode = document.getElementById('state').value;
+    const stateName = DATA.states[stateCode]?.name || stateCode;
+    const issueTopic = currentIssue ? DATA.topics[currentIssue]?.label : 'All topics';
+    document.getElementById('print-filters').textContent = `${stateName} · ${issueTopic}`;
+    setTimeout(() => window.print(), 50);
+  });
   document.getElementById('export-btn').addEventListener('click', handleExport);
   document.getElementById('copy-btn').addEventListener('click', handleCopyResults);
 
@@ -391,7 +407,15 @@ function render() {
 
   if (scored.length === 0) {
     meta.textContent = '';
-    results.innerHTML = '<p class="empty">No legislators with a record on this issue match these filters.</p>';
+    results.innerHTML = `<div style="text-align:center;padding:2.5rem 1rem;">
+      <div style="font-size:32px;margin-bottom:12px;">🔍</div>
+      <p style="font-size:15px;font-weight:600;color:var(--blue-900);margin:0 0 6px;">No legislators found for this combination</p>
+      <p style="font-size:13px;color:var(--text-secondary);margin:0 0 16px;">Try broadening your filters, or import bills for legislators in this topic area.</p>
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+        <button class="btn-outline" onclick="document.getElementById('open-import').click()">⬇ Import from LegiScan</button>
+        <button class="btn-outline" onclick="document.getElementById('open-add').click()">+ Add a bill manually</button>
+      </div>
+    </div>`;
     return;
   }
 
@@ -407,6 +431,14 @@ function render() {
     const notes = (l.notes || '').trim();
     const sponsorData = DATA.sponsors && DATA.sponsors[l.id];
     const cardSponsorClass = sponsorData ? ' is-sponsor' : '';
+
+    // Data quality indicator — tells the team how much to trust the score
+    const billCount = relevant.length;
+    const dataQuality = billCount >= 4
+      ? { cls: 'dq-strong', label: 'Strong data' }
+      : billCount >= 2
+        ? { cls: 'dq-thin', label: 'Thin data' }
+        : { cls: 'dq-minimal', label: 'Minimal data' };
 
     const billsHtml = [...relevant]
       .sort((a, b) => b.year - a.year)
@@ -445,6 +477,7 @@ function render() {
       <div class="stats-row">
         <span class="stat">📋 ${relevant.length} bill${relevant.length === 1 ? '' : 's'} on this issue</span>
         <span class="stat">${decidedCount > 0 ? `✅ ${passed}/${decidedCount} passed (${rate}%)` : '⏳ No decided bills yet'}</span>
+        <span class="data-quality ${dataQuality.cls}" title="Score confidence based on number of bills tracked">${dataQuality.label}</span>
       </div>
       <div class="notes-row">
         ${notes
@@ -568,6 +601,7 @@ function setupTabs() {
       if (tab.dataset.tab === 'stats') renderStats();
       if (tab.dataset.tab === 'sponsors') renderSponsorsTab();
       if (tab.dataset.tab === 'audit') { setupAudit(); }
+      if (tab.dataset.tab === 'feed') { renderFeed(); }
     });
   });
 }
@@ -1083,6 +1117,12 @@ async function handleSaveBill(e) {
     setStatus('save-status', savedMsg, 'loading');
     document.getElementById('add-form').reset();
 
+    // Log the activity (fire-and-forget)
+    const legName = (legislatorPayload.mode === 'existing')
+      ? (document.getElementById('f-existing-leg').options[document.getElementById('f-existing-leg').selectedIndex]?.text || 'a legislator')
+      : legislatorPayload.name;
+    logActivity('add_bill', `Added "${bill.title}" for ${legName} (${topicLabel || 'unclassified'})`);
+
     const appeared = await waitForBillToAppear(result.billId);
     if (appeared) {
       setStatus('save-status', 'Saved and live — refreshing the page now.', 'success');
@@ -1351,37 +1391,35 @@ function renderImportReview() {
     const checked = isHighConf ? 'checked' : '';
 
     return `
-    <div class="card" data-bill-idx="${i}" data-needs-review="${needsReview ? '1' : '0'}" style="border-left:3px solid ${borderColor};">
-      <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:10px;">
-        <input type="checkbox" class="import-bill-checkbox" ${checked} style="margin-top:4px;flex-shrink:0;" />
+    <div class="card" data-bill-idx="${i}" data-needs-review="${needsReview ? '1' : '0'}" style="border-left:3px solid ${borderColor};padding:.75rem 1rem;">
+      <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;">
+        <input type="checkbox" class="import-bill-checkbox" ${checked} style="margin-top:3px;flex-shrink:0;" />
         <div style="flex:1;min-width:0;">
-          <div style="font-weight:600;font-size:13px;color:var(--blue-900);margin-bottom:4px;">${escapeHtml(b.title)}</div>
+          <div style="font-weight:600;font-size:12.5px;color:var(--blue-900);line-height:1.35;margin-bottom:3px;">${escapeHtml(b.title)}</div>
           <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
             ${confidenceBadge}
             <span style="font-size:11px;color:var(--text-tertiary);">${b.billNumber || ''} &middot; ${b.year || ''}</span>
           </div>
         </div>
       </div>
-      <div class="form-row">
+      <div style="display:grid;grid-template-columns:1fr 1fr auto auto;gap:8px;align-items:end;">
         <div>
-          <label>Topic</label>
-          <select class="import-topic-select">${topicOptionsHtml(topicCode)}</select>
-          <input type="text" class="import-topic-new" placeholder="New topic name" value="${escapeHtml(b.suggestedTopicLabel || '')}" style="display:${topicCode === '__new__' ? 'block' : 'none'};margin-top:6px;" />
+          <label style="font-size:9.5px;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:3px;">Topic</label>
+          <select class="import-topic-select" style="height:30px;font-size:12px;">${topicOptionsHtml(topicCode)}</select>
+          <input type="text" class="import-topic-new" placeholder="New topic name" value="${escapeHtml(b.suggestedTopicLabel || '')}" style="display:${topicCode === '__new__' ? 'block' : 'none'};margin-top:4px;height:30px;font-size:12px;" />
         </div>
         <div>
-          <label>Subtopic <span style="font-weight:400;color:var(--text-tertiary)">(optional)</span></label>
-          <select class="import-subtopic-select">${subtopicOptionsHtml(topicCode, subtopicCode)}</select>
-          <input type="text" class="import-subtopic-new" placeholder="New subtopic name" value="${escapeHtml(b.suggestedSubtopicLabel || '')}" style="display:${subtopicCode === '__new__' ? 'block' : 'none'};margin-top:6px;" />
-        </div>
-      </div>
-      <div class="form-row" style="margin-top:10px;">
-        <div>
-          <label>Year</label>
-          <input type="number" class="import-year" value="${b.year || new Date().getFullYear()}" />
+          <label style="font-size:9.5px;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:3px;">Subtopic</label>
+          <select class="import-subtopic-select" style="height:30px;font-size:12px;">${subtopicOptionsHtml(topicCode, subtopicCode)}</select>
+          <input type="text" class="import-subtopic-new" placeholder="New subtopic" value="${escapeHtml(b.suggestedSubtopicLabel || '')}" style="display:${subtopicCode === '__new__' ? 'block' : 'none'};margin-top:4px;height:30px;font-size:12px;" />
         </div>
         <div>
-          <label>Outcome</label>
-          <select class="import-outcome">
+          <label style="font-size:9.5px;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:3px;">Year</label>
+          <input type="number" class="import-year" value="${b.year || new Date().getFullYear()}" style="height:30px;font-size:12px;width:74px;" />
+        </div>
+        <div>
+          <label style="font-size:9.5px;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:3px;">Outcome</label>
+          <select class="import-outcome" style="height:30px;font-size:12px;">
             <option value="passed" ${defaultOutcome === 'passed' ? 'selected' : ''}>Passed</option>
             <option value="failed" ${defaultOutcome === 'failed' ? 'selected' : ''}>Did not pass</option>
           </select>
@@ -1521,6 +1559,7 @@ async function handleImportSaveAll() {
     setStatus('import-save-status', `Saved ${savedCount} bill${savedCount === 1 ? '' : 's'}${failedCount > 0 ? `, ${failedCount} failed` : ''}. Waiting for the live site to update…`, 'loading');
     await waitForBillToAppear(lastBillId);
     setStatus('import-save-status', `Done — ${savedCount} bill${savedCount === 1 ? '' : 's'} saved and live.`, 'success');
+    logActivity('import', `Imported ${savedCount} bill${savedCount === 1 ? '' : 's'} for ${importState.matchedName}`);
     setTimeout(() => {
       document.getElementById('import-overlay').classList.remove('open');
       init();
@@ -1610,9 +1649,9 @@ function setStatus(elId, msg, type) {
   el.className = 'status-msg' + (type ? ' ' + type : '');
 }
 
-function apiConfigured() {
+function apiConfigured(silent = false) {
   if (!API_BASE || API_BASE === "PASTE_YOUR_VERCEL_FUNCTION_URL_HERE") {
-    alert('The serverless function URL is not set yet. See README.md to deploy it, then paste the URL into app.js (API_BASE).');
+    if (!silent) alert('The serverless function URL is not set yet. See README.md to deploy it, then paste the URL into app.js (API_BASE).');
     return false;
   }
   return true;
@@ -1825,6 +1864,7 @@ function openAuditInlineForm(row) {
       if (!res.ok) throw new Error('save failed');
       // Update local DATA so re-render reflects the change
       Object.assign(bill, updates);
+      logActivity('edit_bill', `Edited "${bill.title}" for ${leg.name}`);
       statusEl.textContent = 'Saved!';
       statusEl.className = 'status-msg success';
       setTimeout(() => { form.remove(); renderAudit(); render(); }, 700);
@@ -2009,7 +2049,144 @@ async function handleSaveSponsor() {
 }
 
 // ---------------------------------------------------------------------------
-// COPY RESULTS TO CLIPBOARD
+// TEAM ACTIVITY FEED
+// ---------------------------------------------------------------------------
+function renderFeed() {
+  const container = document.getElementById('feed-content');
+  const log = DATA.activityLog;
+
+  if (!log || log.length === 0) {
+    container.innerHTML = `<div class="feed-card"><p style="font-size:13px;color:var(--text-secondary);text-align:center;padding:1rem 0;">No activity yet. When you add bills, import legislators, or edit data, it will appear here for the whole team to see.</p></div>`;
+    return;
+  }
+
+  const icons = {
+    add_bill: '📋',
+    edit_bill: '✏️',
+    delete_bill: '🗑',
+    import: '⬇',
+    add_sponsor: '⭐',
+    add_note: '📝',
+    default: '•'
+  };
+
+  function timeAgo(ts) {
+    const diff = Date.now() - new Date(ts).getTime();
+    const m = Math.floor(diff / 60000);
+    const h = Math.floor(m / 60);
+    const d = Math.floor(h / 24);
+    if (m < 1) return 'just now';
+    if (m < 60) return `${m}m ago`;
+    if (h < 24) return `${h}h ago`;
+    if (d < 7) return `${d}d ago`;
+    return new Date(ts).toLocaleDateString();
+  }
+
+  function initials(name) {
+    return name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+  }
+
+  container.innerHTML = `<div class="feed-card">${log.slice(0, 50).map(entry => `
+    <div class="feed-entry">
+      <div class="feed-avatar" title="${escapeHtml(entry.user)}">${initials(entry.user || 'TM')}</div>
+      <div class="feed-body">
+        <div class="feed-who">${escapeHtml(entry.user || 'Team member')}</div>
+        <div class="feed-what"><span class="feed-icon">${icons[entry.action] || icons.default}</span>${escapeHtml(entry.detail)}</div>
+        <div class="feed-when">${timeAgo(entry.ts)}</div>
+      </div>
+    </div>`).join('')}</div>`;
+
+  document.getElementById('refresh-feed-btn').onclick = async () => {
+    try {
+      const res = await fetch('data.json?_=' + Date.now());
+      DATA = await res.json();
+      normalizePendingToFailed();
+      renderFeed();
+    } catch { /* silent */ }
+  };
+}
+
+// Fire-and-forget activity log — never blocks the user action
+function logActivity(action, detail) {
+  if (!apiConfigured(true)) return; // silent check
+  const user = document.getElementById('user-name')?.value.trim() || 'Team member';
+  fetch(`${API_BASE}/api/log-activity`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action, detail, user })
+  }).catch(() => {}); // completely fire-and-forget
+}
+
+// ---------------------------------------------------------------------------
+// KEYBOARD SHORTCUTS
+// ---------------------------------------------------------------------------
+function setupKeyboardShortcuts() {
+  const toast = document.getElementById('shortcut-toast');
+  let toastTimer;
+
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 1800);
+  }
+
+  document.addEventListener('keydown', e => {
+    // Don't fire shortcuts when typing in an input/textarea/select
+    const tag = document.activeElement?.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+    // Don't fire if a panel is open
+    if (document.querySelector('.overlay.open')) return;
+
+    switch(e.key) {
+      case '/':
+        e.preventDefault();
+        // Focus the issue search trigger
+        document.getElementById('ss-issue-trigger')?.click();
+        showToast('/ — Search topics');
+        break;
+      case 'a':
+        e.preventDefault();
+        document.getElementById('open-add')?.click();
+        showToast('A — Add bill');
+        break;
+      case 'i':
+        e.preventDefault();
+        document.getElementById('open-import')?.click();
+        showToast('I — Import from LegiScan');
+        break;
+      case 's':
+        e.preventDefault();
+        document.querySelector('.main-tab[data-tab="stats"]')?.click();
+        showToast('S — Statistics');
+        break;
+      case 'e':
+        e.preventDefault();
+        document.querySelector('.main-tab[data-tab="audit"]')?.click();
+        showToast('E — Edit / Audit');
+        break;
+      case 'm':
+        e.preventDefault();
+        document.querySelector('.main-tab[data-tab="matcher"]')?.click();
+        showToast('M — Matcher');
+        break;
+      case 'f':
+        e.preventDefault();
+        document.querySelector('.main-tab[data-tab="feed"]')?.click();
+        showToast('F — Team Feed');
+        break;
+      case 'p':
+        if (e.ctrlKey || e.metaKey) return; // let browser Ctrl+P handle itself
+        e.preventDefault();
+        document.getElementById('print-btn')?.click();
+        showToast('P — Print report');
+        break;
+      case 'Escape':
+        document.querySelectorAll('.overlay.open').forEach(o => o.classList.remove('open'));
+        break;
+    }
+  });
+}
 // ---------------------------------------------------------------------------
 function handleCopyResults() {
   const cards = document.querySelectorAll('.card');
