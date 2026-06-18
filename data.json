@@ -1378,6 +1378,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0194",
+              "title": "Veterans and Uniformed Services - Maryland Veterans Trust Fund and Application of Laws",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -1571,7 +1580,7 @@
   },
   "meta": {
     "nextLegislatorId": 35,
-    "nextBillId": 194
+    "nextBillId": 195
   },
   "sponsors": {
     "L017": {
