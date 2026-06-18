@@ -1253,11 +1253,13 @@
             {
               "id": "B0179",
               "title": "Maryland Service Animal Programs - Participant Disqualification - Revisions",
-              "topic": "workforce",
-              "subtopic": "training-programs",
+              "topic": null,
+              "subtopic": null,
               "year": 2026,
               "role": "sponsor",
-              "outcome": "passed"
+              "outcome": "passed",
+              "topicLabel": null,
+              "subtopicLabel": null
             },
             {
               "id": "B0180",
