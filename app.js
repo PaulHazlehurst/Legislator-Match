@@ -3,7 +3,7 @@
 // See README.md "Deploying the serverless function" section.
 // Example: "https://legislator-matcher-api.vercel.app"
 // ===========================================================================
-const API_BASE = "https://legislator-match.vercel.app";
+const API_BASE = "PASTE_YOUR_VERCEL_FUNCTION_URL_HERE";
 
 let DATA = null;
 
@@ -23,12 +23,15 @@ async function init() {
   populateSubtopicDropdown('f-topic', 'f-subtopic');
   populateExistingLegislatorDropdown();
 
-  ['state', 'issue', 'subissue', 'party', 'chamber'].forEach(id => {
-    document.getElementById(id).addEventListener('change', () => {
-      if (id === 'issue') populateSubtopicDropdown('issue', 'subissue');
-      render();
-    });
+  // Filter controls — issue/subissue are now datalist inputs, so 'input' event
+  ['state', 'party', 'chamber'].forEach(id => {
+    document.getElementById(id).addEventListener('change', render);
   });
+  document.getElementById('issue').addEventListener('input', () => {
+    populateSubtopicDropdown('issue', 'subissue');
+    render();
+  });
+  document.getElementById('subissue').addEventListener('input', render);
 
   document.getElementById('f-topic').addEventListener('change', () => {
     populateSubtopicDropdown('f-topic', 'f-subtopic');
@@ -44,6 +47,9 @@ async function init() {
   setupDeletePanel();
   setupImportPanel();
   populateImportStateDropdown();
+
+  document.getElementById('print-btn').addEventListener('click', () => window.print());
+  document.getElementById('export-btn').addEventListener('click', handleExport);
 
   render();
 }
@@ -62,17 +68,27 @@ function populateStateDropdowns() {
 }
 
 function populateTopicDropdowns() {
-  // Filter dropdown — topics only, no "create new" option
-  const filterSel = document.getElementById('issue');
-  filterSel.innerHTML = '';
+  // Filter input — backed by a <datalist> so it's type-to-search, not a
+  // plain dropdown. The input's value is the human-readable label typed
+  // by the user; resolveTopicFilterValue() maps that back to a topic code.
+  const filterDatalist = document.getElementById('issue-options');
+  filterDatalist.innerHTML = '';
   Object.entries(DATA.topics).forEach(([code, t]) => {
     const opt = document.createElement('option');
-    opt.value = code;
-    opt.textContent = t.label;
-    filterSel.appendChild(opt);
+    opt.value = t.label;
+    filterDatalist.appendChild(opt);
   });
 
-  // Form dropdown — topics plus a "create new" option
+  // Default the filter input to the first topic's label if it's currently empty
+  const issueInput = document.getElementById('issue');
+  if (!issueInput.value) {
+    const firstLabel = Object.values(DATA.topics)[0]?.label;
+    if (firstLabel) issueInput.value = firstLabel;
+  }
+
+  // Form dropdown — topics plus a "create new" option (unchanged: this one
+  // stays a real <select> since the add-bill form's "+ Add new topic…"
+  // logic relies on <select> semantics)
   const formSel = document.getElementById('f-topic');
   formSel.innerHTML = '';
   Object.entries(DATA.topics).forEach(([code, t]) => {
@@ -87,22 +103,58 @@ function populateTopicDropdowns() {
   formSel.appendChild(newOpt);
 }
 
+// Resolves the currently-typed text in the #issue filter input back to its
+// topic code, since the input holds a human label, not a code.
+function resolveTopicFilterValue() {
+  const typed = document.getElementById('issue').value.trim().toLowerCase();
+  const match = Object.entries(DATA.topics).find(([code, t]) => t.label.toLowerCase() === typed);
+  return match ? match[0] : null;
+}
+
+// Same idea for the #subissue filter input.
+function resolveSubtopicFilterValue(topicCode) {
+  const typed = document.getElementById('subissue').value.trim().toLowerCase();
+  if (!typed || typed === 'all subtopics') return 'any';
+  const topic = DATA.topics[topicCode];
+  if (!topic) return 'any';
+  const match = Object.entries(topic.subtopics).find(([code, label]) => label.toLowerCase() === typed);
+  return match ? match[0] : 'any';
+}
+
 function populateSubtopicDropdown(topicSelId, subSelId) {
+  // The filter path (#issue → #subissue) uses datalist inputs.
+  // The form path (#f-topic → #f-subtopic) uses real <select> elements.
+  if (subSelId === 'subissue') {
+    populateSubtopicFilterDatalist(topicSelId);
+  } else {
+    populateSubtopicFormSelect(topicSelId, subSelId);
+  }
+}
+
+function populateSubtopicFilterDatalist(topicSelId) {
+  // Resolve the topic code from the filter input's current typed value
+  const topicCode = resolveTopicFilterValue();
+  const datalist = document.getElementById('subissue-options');
+  datalist.innerHTML = '';
+  const subInput = document.getElementById('subissue');
+  subInput.value = ''; // clear subtopic when topic changes
+
+  const topic = topicCode && DATA.topics[topicCode];
+  if (!topic) return;
+  Object.entries(topic.subtopics).forEach(([code, label]) => {
+    const opt = document.createElement('option');
+    opt.value = label;
+    datalist.appendChild(opt);
+  });
+}
+
+function populateSubtopicFormSelect(topicSelId, subSelId) {
   const topicCode = document.getElementById(topicSelId).value;
   const sel = document.getElementById(subSelId);
-  const isFilter = subSelId === 'subissue';
-  const isFormTopic = topicSelId === 'f-topic';
   sel.innerHTML = '';
 
-  if (isFilter) {
-    const anyOpt = document.createElement('option');
-    anyOpt.value = 'any';
-    anyOpt.textContent = 'All subtopics';
-    sel.appendChild(anyOpt);
-  }
-
   // Form's topic select is on "+ Add new topic…" — subtopic must also be new
-  if (isFormTopic && topicCode === '__new__') {
+  if (topicCode === '__new__') {
     const newOpt = document.createElement('option');
     newOpt.value = '__new__';
     newOpt.textContent = '+ Add new subtopic…';
@@ -120,12 +172,10 @@ function populateSubtopicDropdown(topicSelId, subSelId) {
     sel.appendChild(opt);
   });
 
-  if (isFormTopic) {
-    const newOpt = document.createElement('option');
-    newOpt.value = '__new__';
-    newOpt.textContent = '+ Add new subtopic…';
-    sel.appendChild(newOpt);
-  }
+  const newOpt = document.createElement('option');
+  newOpt.value = '__new__';
+  newOpt.textContent = '+ Add new subtopic…';
+  sel.appendChild(newOpt);
 }
 
 function toggleNewTopicInput() {
@@ -234,8 +284,8 @@ function computeScore(bills, issue, subtopic) {
 
 function render() {
   const state = document.getElementById('state').value;
-  const issue = document.getElementById('issue').value;
-  const subissue = document.getElementById('subissue').value;
+  const issue = resolveTopicFilterValue();
+  const subissue = issue ? resolveSubtopicFilterValue(issue) : 'any';
   const party = document.getElementById('party').value;
   const chamber = document.getElementById('chamber').value;
 
@@ -252,6 +302,12 @@ function render() {
 
   const meta = document.getElementById('results-meta');
   const results = document.getElementById('results');
+
+  if (!issue) {
+    meta.textContent = '';
+    results.innerHTML = '<p class="empty">Type a topic in the Issue area field to get started.</p>';
+    return;
+  }
 
   const topicLabel = DATA.topics[issue] ? DATA.topics[issue].label.toLowerCase() : '';
   const subLabel = (subissue !== 'any' && DATA.topics[issue]) ? DATA.topics[issue].subtopics[subissue] : null;
@@ -270,6 +326,8 @@ function render() {
     const chamberLabel = l.chamber === 'senate' ? 'Senate' : 'House';
     const districtLabel = l.district ? `District ${l.district}` : '';
     const decidedCount = relevant.filter(b => b.outcome === 'passed' || b.outcome === 'failed').length;
+    const scoreClass = scoreColorClass(score);
+    const notes = (l.notes || '').trim();
 
     const billsHtml = [...relevant]
       .sort((a, b) => b.year - a.year)
@@ -277,7 +335,7 @@ function render() {
         const roleLabel = b.role === 'sponsor' ? 'Sponsor' : 'Co-sponsor';
         const subLabelInner = DATA.topics[b.topic] && DATA.topics[b.topic].subtopics[b.subtopic]
           ? DATA.topics[b.topic].subtopics[b.subtopic] : null;
-        let tagClass = 'tag-failed', tagLabel = 'Pending';
+        let tagClass = 'tag-pending', tagLabel = 'Pending';
         if (b.outcome === 'passed') { tagClass = 'tag-passed'; tagLabel = 'Passed'; }
         else if (b.outcome === 'failed') { tagClass = 'tag-failed'; tagLabel = 'Did not pass'; }
         return `<li>
@@ -292,26 +350,120 @@ function render() {
     return `
     <div class="card">
       <div class="card-top">
-        <div>
-          <p class="name">${escapeHtml(l.name)}</p>
-          <p class="meta">${partyLabel} &middot; ${chamberLabel}${districtLabel ? ' &middot; ' + districtLabel : ''}</p>
+        <div class="card-identity">
+          <p class="name">${escapeHtml(l.name)}<span class="party-badge party-${l.party || ''}">${l.party || ''}</span></p>
+          <p class="meta">${chamberLabel}${districtLabel ? ' &middot; ' + districtLabel : ''} &middot; ${partyLabel}</p>
         </div>
-        <div class="score-box">
-          <p class="label">Interest score</p>
-          <p class="value">${score}</p>
+        <div class="score-col">
+          <div class="score-ring ${scoreClass}">${score}</div>
+          <span class="label">Interest</span>
         </div>
       </div>
-      <div class="meter"><div class="meter-fill" style="width:${score}%;"></div></div>
+      <div class="meter"><div class="meter-fill ${scoreClass}" style="width:${score}%;"></div></div>
       <div class="stats-row">
-        <span>${relevant.length} bill${relevant.length === 1 ? '' : 's'} on this issue</span>
-        <span>${decidedCount > 0 ? `${passed} of ${decidedCount} decided bills passed (${rate}%)` : 'No decided bills yet'}</span>
+        <span class="stat">📋 ${relevant.length} bill${relevant.length === 1 ? '' : 's'} on this issue</span>
+        <span class="stat">${decidedCount > 0 ? `✅ ${passed}/${decidedCount} passed (${rate}%)` : '⏳ No decided bills yet'}</span>
+      </div>
+      <div class="notes-row">
+        ${notes
+          ? `<p class="notes-text">📝 ${escapeHtml(notes)} <button class="notes-edit-btn" data-legid="${l.id}">Edit</button></p>`
+          : `<button class="notes-edit-btn" data-legid="${l.id}">+ Add note</button>`
+        }
+        <div class="notes-input-row" id="notes-input-${l.id}" style="display:none;">
+          <input type="text" placeholder="e.g. Spoke with aide Oct 2025, interested in workforce angle" value="${escapeHtml(notes)}" />
+          <button class="notes-save-btn" data-legid="${l.id}" data-statecode="${state}">Save</button>
+        </div>
       </div>
       <details>
-        <summary>Show bill history</summary>
+        <summary>Bill history (${relevant.length})</summary>
         <ul class="bill-list">${billsHtml}</ul>
       </details>
     </div>`;
   }).join('');
+
+  // Wire up notes toggle/save on each newly rendered card
+  document.querySelectorAll('.notes-edit-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const row = document.getElementById('notes-input-' + btn.dataset.legid);
+      row.style.display = row.style.display === 'none' ? 'flex' : 'none';
+      if (row.style.display === 'flex') row.querySelector('input').focus();
+    });
+  });
+  document.querySelectorAll('.notes-save-btn').forEach(btn => {
+    btn.addEventListener('click', () => saveNote(btn.dataset.statecode, btn.dataset.legid, btn));
+  });
+}
+
+function scoreColorClass(score) {
+  if (score <= 50) return 'score-low';
+  if (score <= 80) return 'score-mid';
+  return 'score-high';
+}
+
+// Export current results as a CSV the team can open in Excel
+function handleExport() {
+  const state = document.getElementById('state').value;
+  const issue = resolveTopicFilterValue();
+  const subissue = issue ? resolveSubtopicFilterValue(issue) : 'any';
+  const party = document.getElementById('party').value;
+  const chamber = document.getElementById('chamber').value;
+
+  const stateData = DATA.states[state];
+  if (!stateData || !issue) { alert('Select a state and topic first.'); return; }
+
+  let legislators = stateData.legislators;
+  if (party !== 'any') legislators = legislators.filter(l => l.party === party);
+  if (chamber !== 'any') legislators = legislators.filter(l => l.chamber === chamber);
+
+  const scored = legislators
+    .map(l => ({ l, ...computeScore(l.bills, issue, subissue) }))
+    .filter(item => item.relevant.length > 0)
+    .sort((a, b) => b.score - a.score);
+
+  const topicLabel = DATA.topics[issue]?.label || issue;
+  const rows = [
+    ['Name', 'Party', 'Chamber', 'District', 'Interest Score', 'Bills on Topic', 'Passed', 'Passage Rate (%)', 'Notes']
+  ];
+  scored.forEach(({ l, score, relevant, passed, rate }) => {
+    rows.push([
+      l.name, l.party, l.chamber, l.district || '',
+      score, relevant.length, passed, rate, l.notes || ''
+    ]);
+  });
+
+  const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `legislator-match-${topicLabel.replace(/\s+/g, '-').toLowerCase()}-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// Save a note for a legislator directly to GitHub via the backend
+async function saveNote(stateCode, legislatorId, btn) {
+  if (!apiConfigured()) return;
+  const row = document.getElementById('notes-input-' + legislatorId);
+  const note = row.querySelector('input').value.trim();
+  btn.textContent = 'Saving…';
+  btn.disabled = true;
+  try {
+    const res = await fetch(`${API_BASE}/api/save-note`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ stateCode, legislatorId, note })
+    });
+    if (!res.ok) throw new Error('save failed');
+    // Optimistically update local DATA so re-render shows the note
+    const legObj = DATA.states[stateCode]?.legislators.find(l => l.id === legislatorId);
+    if (legObj) legObj.notes = note;
+    render();
+  } catch {
+    btn.textContent = 'Save';
+    btn.disabled = false;
+    alert('Could not save note. Check Vercel logs.');
+  }
 }
 
 function escapeHtml(str) {

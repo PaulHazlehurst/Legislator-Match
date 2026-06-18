@@ -6,478 +6,398 @@
 <title>Legislator Bill Matcher — Pinnacle Strategies</title>
 <style>
   :root {
-    --bg: #F4F7FB;
+    --bg: #EEF2F7;
     --surface: #FFFFFF;
-    --border: rgba(15, 40, 75, 0.10);
-    --border-strong: rgba(15, 40, 75, 0.20);
-    --text: #14213D;
-    --text-secondary: #5B6B85;
-    --text-tertiary: #93A0B5;
+    --surface-raised: #F8FAFD;
+    --border: rgba(15, 40, 75, 0.09);
+    --border-strong: rgba(15, 40, 75, 0.18);
+    --text: #0E1E35;
+    --text-secondary: #4A5F7A;
+    --text-tertiary: #8A9BB2;
     --blue-900: #0B2A4A;
     --blue-700: #154D85;
     --blue-600: #1B63AC;
     --blue-500: #2C7BCB;
-    --blue-100: #E6F0FA;
+    --blue-100: #E0EDF8;
+    --blue-50: #F0F6FC;
+    --red: #B3261E;
+    --red-bg: #FDF2F2;
+    --amber: #9A6700;
+    --amber-bg: #FDF8EE;
+    --green: #146C43;
+    --green-bg: #EDF7F2;
+    --radius-sm: 6px;
     --radius-md: 8px;
-    --radius-lg: 12px;
+    --radius-lg: 14px;
+    --shadow-sm: 0 1px 3px rgba(11,42,74,0.07), 0 1px 2px rgba(11,42,74,0.04);
+    --shadow-md: 0 4px 12px rgba(11,42,74,0.10), 0 1px 3px rgba(11,42,74,0.06);
+    --shadow-lg: 0 8px 24px rgba(11,42,74,0.14), 0 2px 6px rgba(11,42,74,0.08);
     --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
   }
   * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    font-family: var(--font-sans);
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.5;
-  }
-  .page {
-    max-width: 780px;
-    margin: 0 auto;
-    padding: 1.75rem 1.5rem 5rem;
-  }
-  .brand-bar {
+  body { margin: 0; font-family: var(--font-sans); background: var(--bg); color: var(--text); line-height: 1.5; -webkit-font-smoothing: antialiased; }
+
+  /* ── PAGE SHELL ─────────────────────────────────────────────────────────── */
+  .page { max-width: 820px; margin: 0 auto; padding: 0 1.5rem 5rem; }
+
+  /* ── TOP NAV ─────────────────────────────────────────────────────────────── */
+  .topnav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1.5rem;
-    padding-bottom: 12px;
+    padding: 12px 0 12px;
+    margin-bottom: 0;
     border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 30;
   }
-  .brand-bar .brand {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-  }
-  .brand-mark {
-    width: 26px;
-    height: 26px;
-    border-radius: 6px;
+  .brand-mark { height: 36px; width: auto; object-fit: contain; }
+  .brand-mark-fallback {
+    height: 28px; width: 28px; border-radius: 6px;
     background: linear-gradient(135deg, var(--blue-600), var(--blue-900));
-    flex-shrink: 0;
+    display: inline-block;
   }
-  .brand-name {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--blue-900);
-    letter-spacing: 0.01em;
-  }
-  .built-by {
-    font-size: 11.5px;
-    color: var(--text-tertiary);
-  }
-  header h1 {
-    font-size: 22px;
-    font-weight: 600;
-    margin: 0 0 4px;
-    letter-spacing: -0.01em;
-    color: var(--blue-900);
-  }
-  header p {
-    font-size: 14px;
-    color: var(--text-secondary);
-    margin: 0 0 1.75rem;
-  }
-  .controls {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 12px;
-    margin-bottom: 1.75rem;
-  }
-  .field label {
-    display: block;
-    font-size: 11.5px;
-    color: var(--text-secondary);
-    margin-bottom: 5px;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-  }
-  select, input, textarea {
-    width: 100%;
-    padding: 0 10px;
-    border-radius: var(--radius-md);
-    border: 1px solid var(--border-strong);
-    background: var(--surface);
-    color: var(--text);
-    font-size: 14px;
-    font-family: inherit;
-  }
-  select { height: 38px; appearance: none; }
-  input { height: 38px; }
-  textarea { padding: 8px 10px; resize: vertical; min-height: 70px; }
-  select:focus, input:focus, textarea:focus {
-    outline: 2px solid var(--blue-500);
-    outline-offset: 1px;
-  }
-  .results-meta {
-    font-size: 13px;
-    color: var(--text-secondary);
-    margin-bottom: 12px;
-  }
-  .results {
+  .built-by { font-size: 11px; color: var(--text-tertiary); letter-spacing: 0.01em; }
+
+  /* ── PAGE HEADER ─────────────────────────────────────────────────────────── */
+  .page-header {
+    padding: 1.5rem 0 1rem;
     display: flex;
-    flex-direction: column;
-    gap: 10px;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 12px;
+    flex-wrap: wrap;
   }
-  .card {
+  .page-header h1 {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 0 3px;
+    letter-spacing: -0.02em;
+    color: var(--blue-900);
+  }
+  .page-header p { font-size: 13.5px; color: var(--text-secondary); margin: 0; }
+  .header-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+
+  /* ── FILTER PANEL ─────────────────────────────────────────────────────────── */
+  .filter-card {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     padding: 1rem 1.25rem;
+    margin-bottom: 1.25rem;
+    box-shadow: var(--shadow-sm);
   }
-  .card-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 12px;
-    margin-bottom: 10px;
+  .controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); gap: 12px; }
+  .field label {
+    display: block; font-size: 10.5px; font-weight: 600;
+    color: var(--text-tertiary); margin-bottom: 5px;
+    text-transform: uppercase; letter-spacing: 0.06em;
   }
-  .card-top .name {
-    font-weight: 600;
-    font-size: 15px;
-    margin: 0;
-    color: var(--blue-900);
+  select, input, textarea {
+    width: 100%; padding: 0 10px; border-radius: var(--radius-md);
+    border: 1px solid var(--border-strong); background: var(--surface-raised);
+    color: var(--text); font-size: 13.5px; font-family: inherit;
+    transition: border-color 0.15s, box-shadow 0.15s;
   }
-  .card-top .meta {
-    font-size: 13px;
-    color: var(--text-secondary);
-    margin: 2px 0 0;
+  select { height: 36px; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%234A5F7A' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
+  input { height: 36px; }
+  textarea { padding: 8px 10px; resize: vertical; min-height: 70px; }
+  select:focus, input:focus, textarea:focus {
+    outline: none; border-color: var(--blue-500);
+    box-shadow: 0 0 0 3px rgba(44, 123, 203, 0.15);
   }
-  .score-box { text-align: right; flex-shrink: 0; }
-  .score-box .label {
-    font-size: 10.5px;
-    color: var(--text-tertiary);
-    margin: 0;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-  }
-  .score-box .value {
-    font-size: 24px;
-    font-weight: 600;
-    margin: 0;
-    color: var(--blue-600);
-  }
-  .meter {
-    height: 6px;
-    background: var(--blue-100);
-    border-radius: 3px;
-    overflow: hidden;
-    margin-bottom: 10px;
-  }
-  .meter-fill { height: 100%; background: var(--blue-600); }
-  .stats-row {
-    display: flex;
-    gap: 18px;
+
+  /* ── SCORE LEGEND ──────────────────────────────────────────────────────────── */
+  .legend {
+    display: flex; gap: 14px; align-items: center;
+    padding: 8px 0 0; border-top: 1px solid var(--border); margin-top: 10px;
     flex-wrap: wrap;
-    font-size: 13px;
-    color: var(--text-secondary);
-    margin-bottom: 10px;
   }
+  .legend-label { font-size: 10.5px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.05em; margin-right: 2px; }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 500; }
+  .legend-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+  .legend-dot.low { background: #C5362D; }
+  .legend-dot.mid { background: #C28C00; }
+  .legend-dot.high { background: #1B8754; }
+
+  /* ── RESULTS ─────────────────────────────────────────────────────────────── */
+  .results-meta { font-size: 12.5px; color: var(--text-secondary); margin-bottom: 10px; font-weight: 500; }
+  .results { display: flex; flex-direction: column; gap: 10px; }
+  .empty { font-size: 14px; color: var(--text-secondary); padding: 1.5rem 0; text-align: center; }
+
+  /* ── LEGISLATOR CARD ─────────────────────────────────────────────────────── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.1rem 1.25rem;
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.15s;
+  }
+  .card:hover { box-shadow: var(--shadow-md); }
+  .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 10px; }
+  .card-identity { flex: 1; min-width: 0; }
+  .card-top .name { font-weight: 700; font-size: 15.5px; margin: 0 0 3px; color: var(--blue-900); }
+  .card-top .meta { font-size: 12.5px; color: var(--text-secondary); margin: 0; }
+  .card-top .party-badge {
+    display: inline-flex; align-items: center; font-size: 10.5px; font-weight: 700;
+    padding: 1px 7px; border-radius: 100px; letter-spacing: 0.03em; margin-left: 6px;
+  }
+  .party-D { background: #DCEFFE; color: #1448A0; }
+  .party-R { background: #FFE8E6; color: #A01414; }
+
+  .score-col { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; gap: 2px; }
+  .score-ring {
+    width: 54px; height: 54px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 700;
+  }
+  .score-ring.score-low { background: var(--red-bg); color: var(--red); border: 2px solid #E8ADA9; }
+  .score-ring.score-mid { background: var(--amber-bg); color: var(--amber); border: 2px solid #E8CFA0; }
+  .score-ring.score-high { background: var(--green-bg); color: var(--green); border: 2px solid #97D4B5; }
+  .score-col .label { font-size: 9.5px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.05em; }
+
+  .meter { height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; margin-bottom: 10px; }
+  .meter-fill { height: 100%; border-radius: 3px; transition: width 0.4s ease; }
+  .meter-fill.score-low { background: #C5362D; }
+  .meter-fill.score-mid { background: #C28C00; }
+  .meter-fill.score-high { background: #1B8754; }
+
+  .stats-row { display: flex; gap: 16px; flex-wrap: wrap; font-size: 12.5px; color: var(--text-secondary); margin-bottom: 10px; }
+  .stats-row .stat { display: flex; align-items: center; gap: 4px; }
+
+  /* Notes row */
+  .notes-row { margin-bottom: 8px; }
+  .notes-text { font-size: 12.5px; color: var(--text-secondary); font-style: italic; margin: 0; }
+  .notes-edit-btn {
+    background: none; border: none; color: var(--blue-600); font-size: 12px;
+    cursor: pointer; padding: 0; text-decoration: underline; font-family: inherit;
+  }
+  .notes-input-row { display: flex; gap: 6px; margin-top: 6px; }
+  .notes-input-row input { flex: 1; height: 32px; font-size: 12.5px; }
+  .notes-save-btn { flex-shrink: 0; height: 32px; padding: 0 12px; font-size: 12px; font-weight: 600; background: var(--blue-600); color: white; border: none; border-radius: var(--radius-md); cursor: pointer; font-family: inherit; }
+  .notes-save-btn:hover { background: var(--blue-700); }
+
   details { border-top: 1px solid var(--border); padding-top: 8px; }
-  details summary { font-size: 13px; color: var(--blue-700); cursor: pointer; }
-  .bill-list { list-style: none; margin: 8px 0 0; padding: 0; font-size: 13px; color: var(--text-secondary); }
-  .bill-list li {
-    padding: 5px 0;
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-    border-bottom: 1px solid var(--border);
-  }
+  details summary { font-size: 12.5px; color: var(--blue-700); cursor: pointer; font-weight: 500; user-select: none; }
+  details summary:hover { color: var(--blue-500); }
+  .bill-list { list-style: none; margin: 8px 0 0; padding: 0; font-size: 12.5px; color: var(--text-secondary); }
+  .bill-list li { padding: 6px 0; display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--border); align-items: flex-start; }
   .bill-list li:last-child { border-bottom: none; }
-  .bill-list .bill-tags { display: flex; gap: 6px; flex-shrink: 0; }
-  .tag {
-    font-size: 10.5px;
-    padding: 2px 7px;
-    border-radius: 100px;
-    font-weight: 600;
-    white-space: nowrap;
-  }
-  .tag-passed { background: var(--blue-100); color: var(--blue-700); }
-  .tag-failed { background: rgba(15, 40, 75, 0.08); color: var(--text-secondary); }
-  .tag-sub { background: rgba(15, 40, 75, 0.06); color: var(--text-secondary); }
-  .empty { font-size: 14px; color: var(--text-secondary); padding: 1rem 0; }
-  footer { margin-top: 2.5rem; font-size: 12px; color: var(--text-tertiary); text-align: center; }
-  footer code { background: var(--blue-100); padding: 2px 5px; border-radius: 4px; }
+  .bill-list .bill-tags { display: flex; gap: 5px; flex-shrink: 0; align-items: center; }
+  .tag { font-size: 10px; padding: 2px 7px; border-radius: 100px; font-weight: 700; white-space: nowrap; letter-spacing: 0.02em; }
+  .tag-passed { background: var(--green-bg); color: var(--green); }
+  .tag-failed { background: rgba(15, 40, 75, 0.07); color: var(--text-tertiary); }
+  .tag-pending { background: var(--amber-bg); color: var(--amber); }
+  .tag-sub { background: var(--blue-50); color: var(--blue-600); }
 
-  /* Floating add button */
+  /* ── UTILITY BUTTONS ─────────────────────────────────────────────────────── */
+  .btn-outline {
+    height: 34px; padding: 0 14px; border-radius: var(--radius-md);
+    border: 1px solid var(--border-strong); background: var(--surface);
+    color: var(--blue-700); font-size: 12.5px; font-weight: 600;
+    cursor: pointer; font-family: inherit; white-space: nowrap;
+    display: inline-flex; align-items: center; gap: 5px;
+    transition: background 0.12s, box-shadow 0.12s;
+  }
+  .btn-outline:hover { background: var(--blue-50); box-shadow: var(--shadow-sm); }
+
+  /* ── FABs ────────────────────────────────────────────────────────────────── */
+  .fab-row { position: fixed; bottom: 24px; right: 24px; display: flex; gap: 10px; align-items: center; z-index: 40; }
   .fab {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    width: 54px;
-    height: 54px;
-    border-radius: 50%;
-    background: var(--blue-600);
-    color: white;
-    border: none;
-    font-size: 26px;
-    line-height: 1;
-    cursor: pointer;
-    box-shadow: 0 6px 18px rgba(11, 42, 74, 0.35);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 40;
+    width: 52px; height: 52px; border-radius: 50%;
+    background: var(--blue-600); color: white; border: none;
+    font-size: 24px; cursor: pointer;
+    box-shadow: var(--shadow-lg);
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.12s, transform 0.1s;
   }
-  .fab:hover { background: var(--blue-700); }
-  .fab-delete {
-    position: fixed;
-    bottom: 24px;
-    right: 90px;
-    width: 54px;
-    height: 54px;
-    border-radius: 50%;
-    background: var(--surface);
-    color: var(--blue-900);
-    border: 1px solid var(--border-strong);
-    font-size: 20px;
-    cursor: pointer;
-    box-shadow: 0 6px 18px rgba(11, 42, 74, 0.18);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 40;
+  .fab:hover { background: var(--blue-700); transform: scale(1.05); }
+  .fab-ghost {
+    height: 42px; padding: 0 16px; border-radius: 21px;
+    background: var(--surface); color: var(--blue-700);
+    border: 1px solid var(--border-strong); font-size: 12.5px; font-weight: 600;
+    cursor: pointer; box-shadow: var(--shadow-md);
+    display: flex; align-items: center; gap: 5px; white-space: nowrap;
+    transition: background 0.12s;
   }
-  .fab-delete:hover { background: var(--blue-100); }
-  .fab-import {
-    position: fixed;
-    bottom: 24px;
-    right: 156px;
-    height: 54px;
-    border-radius: 27px;
-    background: var(--surface);
-    color: var(--blue-700);
-    border: 1px solid var(--border-strong);
-    font-size: 13px;
-    font-weight: 600;
-    padding: 0 18px;
-    cursor: pointer;
-    box-shadow: 0 6px 18px rgba(11, 42, 74, 0.18);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 40;
-    white-space: nowrap;
-  }
-  .fab-import:hover { background: var(--blue-100); }
-
-  @media (max-width: 480px) {
-    .fab { bottom: 24px; right: 20px; }
-    .fab-delete { bottom: 24px; right: 86px; }
-    .fab-import { bottom: 90px; right: 20px; }
+  .fab-ghost:hover { background: var(--blue-50); }
+  @media (max-width: 520px) {
+    .fab-row { flex-direction: column-reverse; align-items: flex-end; bottom: 20px; right: 16px; }
+    .fab-ghost { height: 38px; font-size: 12px; }
   }
 
-  /* Modal/panel overlay */
-  .overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(11, 42, 74, 0.35);
-    display: none;
-    align-items: flex-end;
-    justify-content: center;
-    z-index: 50;
-  }
+  /* ── PANELS ─────────────────────────────────────────────────────────────── */
+  .overlay { position: fixed; inset: 0; background: rgba(11,42,74,0.4); display: none; align-items: flex-end; justify-content: center; z-index: 50; }
   .overlay.open { display: flex; }
   .panel {
-    background: var(--surface);
-    width: 100%;
-    max-width: 540px;
-    max-height: 88vh;
-    overflow-y: auto;
-    border-radius: 16px 16px 0 0;
-    padding: 1.5rem 1.5rem 2rem;
+    background: var(--surface); width: 100%; max-width: 560px;
+    max-height: 90vh; overflow-y: auto;
+    border-radius: 20px 20px 0 0; padding: 1.5rem 1.5rem 2rem;
+    box-shadow: var(--shadow-lg);
   }
   @media (min-width: 640px) {
     .overlay { align-items: center; }
-    .panel { border-radius: 16px; max-height: 80vh; }
+    .panel { border-radius: 20px; max-height: 82vh; }
   }
-  .panel-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.25rem;
-  }
-  .panel-header h2 {
-    font-size: 17px;
-    font-weight: 600;
-    margin: 0;
-    color: var(--blue-900);
-  }
+  .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
+  .panel-header h2 { font-size: 17px; font-weight: 700; margin: 0; color: var(--blue-900); }
   .panel-close {
-    background: none;
-    border: none;
-    font-size: 20px;
-    color: var(--text-tertiary);
-    cursor: pointer;
-    padding: 4px;
+    background: var(--surface-raised); border: 1px solid var(--border);
+    border-radius: 50%; width: 30px; height: 30px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; color: var(--text-secondary); cursor: pointer;
   }
-  .tab-row { display: flex; gap: 6px; margin-bottom: 1.25rem; }
-  .tab-btn {
-    flex: 1;
-    padding: 8px 0;
-    border-radius: var(--radius-md);
-    border: 1px solid var(--border-strong);
-    background: var(--surface);
-    color: var(--text-secondary);
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-  }
-  .tab-btn.active { background: var(--blue-600); color: white; border-color: var(--blue-600); }
+  .panel-close:hover { background: var(--blue-50); }
+
+  /* Panel form elements */
   .form-group { margin-bottom: 14px; }
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .form-row + .form-row { margin-top: 14px; }
   .form-group label, .form-row label {
-    display: block;
-    font-size: 11.5px;
-    color: var(--text-secondary);
-    margin-bottom: 5px;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
+    display: block; font-size: 10.5px; font-weight: 600;
+    color: var(--text-secondary); margin-bottom: 5px;
+    text-transform: uppercase; letter-spacing: 0.05em;
   }
   .radio-row { display: flex; gap: 14px; font-size: 13px; color: var(--text); margin-top: 4px; }
   .radio-row label { text-transform: none; font-size: 13px; display: flex; align-items: center; gap: 5px; margin: 0; }
   .btn {
-    width: 100%;
-    height: 42px;
-    border-radius: var(--radius-md);
-    border: none;
-    background: var(--blue-600);
-    color: white;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: inherit;
+    width: 100%; height: 42px; border-radius: var(--radius-md); border: none;
+    background: var(--blue-600); color: white; font-size: 14px; font-weight: 600;
+    cursor: pointer; font-family: inherit; transition: background 0.12s;
   }
   .btn:hover { background: var(--blue-700); }
   .btn:disabled { background: var(--text-tertiary); cursor: not-allowed; }
-  .btn-secondary {
-    background: var(--surface);
-    color: var(--blue-700);
-    border: 1px solid var(--border-strong);
-  }
-  .btn-secondary:hover { background: var(--blue-100); }
-  .btn-danger { background: #B3261E; }
+  .btn-secondary { background: var(--surface); color: var(--blue-700); border: 1px solid var(--border-strong); }
+  .btn-secondary:hover { background: var(--blue-50); }
+  .btn-danger { background: var(--red); }
   .btn-danger:hover { background: #8E1E18; }
+
   .ai-box {
-    background: var(--blue-100);
-    border-radius: var(--radius-md);
-    padding: 12px;
-    margin-bottom: 16px;
+    background: var(--blue-50); border: 1px solid var(--blue-100);
+    border-radius: var(--radius-md); padding: 12px; margin-bottom: 16px;
   }
-  .ai-box label {
-    font-size: 11.5px;
-    color: var(--blue-700);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    display: block;
-    margin-bottom: 6px;
-    font-weight: 600;
-  }
+  .ai-box label { font-size: 10.5px; color: var(--blue-700); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 6px; font-weight: 700; }
   .ai-row { display: flex; gap: 8px; }
   .ai-row input { flex: 1; }
   .ai-row .btn { width: auto; padding: 0 16px; flex-shrink: 0; }
   .file-drop {
-    border: 1.5px dashed var(--border-strong);
-    border-radius: var(--radius-md);
-    padding: 14px;
-    text-align: center;
-    font-size: 12.5px;
-    color: var(--text-secondary);
-    margin-top: 8px;
-    cursor: pointer;
-    background: var(--surface);
+    border: 1.5px dashed var(--border-strong); border-radius: var(--radius-md);
+    padding: 14px; text-align: center; font-size: 12.5px; color: var(--text-secondary);
+    margin-top: 8px; cursor: pointer; background: var(--surface);
   }
-  .file-drop.dragover { background: var(--blue-100); border-color: var(--blue-500); }
+  .file-drop.dragover { background: var(--blue-50); border-color: var(--blue-500); }
+
   .status-msg { font-size: 12.5px; margin-top: 8px; min-height: 16px; }
-  .status-msg.error { color: #B3261E; }
-  .status-msg.success { color: #146C43; }
+  .status-msg.error { color: var(--red); }
+  .status-msg.success { color: var(--green); }
   .status-msg.loading { color: var(--text-secondary); animation: pulse 1.4s ease-in-out infinite; }
-  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+
   .delete-list { display: flex; flex-direction: column; gap: 8px; }
-  .delete-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    padding: 10px 12px;
-  }
+  .delete-item { display: flex; justify-content: space-between; align-items: center; gap: 10px; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 10px 12px; }
   .delete-item .info { font-size: 13px; }
-  .delete-item .info .who { color: var(--text-secondary); font-size: 12px; margin-top: 2px; }
-  .delete-item button {
-    flex-shrink: 0;
-    background: none;
-    border: 1px solid rgba(179, 38, 30, 0.4);
-    color: #B3261E;
-    border-radius: var(--radius-md);
-    font-size: 12px;
-    padding: 6px 10px;
-    cursor: pointer;
+  .delete-item .info .who { color: var(--text-secondary); font-size: 11.5px; margin-top: 2px; }
+  .delete-item .del-btn { flex-shrink: 0; background: none; border: 1px solid rgba(179,38,30,0.35); color: var(--red); border-radius: var(--radius-sm); font-size: 12px; padding: 5px 10px; cursor: pointer; }
+  .delete-item .del-btn:hover { background: var(--red-bg); }
+  .sub-divider { font-size: 10.5px; color: var(--text-tertiary); margin: 16px 0 8px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+  /* Existing-leg search */
+  select[size] { height: auto; appearance: auto; padding: 4px; background-image: none; }
+
+  /* ── PRINT STYLES ────────────────────────────────────────────────────────── */
+  @media print {
+    .topnav, .fab-row, .overlay, .filter-card .legend, footer { display: none !important; }
+    .filter-card { box-shadow: none; border: 1px solid #ccc; }
+    .card { box-shadow: none; border: 1px solid #ccc; break-inside: avoid; }
+    .page { padding: 0; }
+    body { background: white; }
   }
-  .delete-item button:hover { background: rgba(179, 38, 30, 0.08); }
-  .sub-divider { font-size: 11px; color: var(--text-tertiary); margin: 16px 0 8px; text-transform: uppercase; letter-spacing: 0.04em; }
+
+  footer { margin-top: 3rem; font-size: 11.5px; color: var(--text-tertiary); text-align: center; }
+  footer code { background: var(--blue-50); padding: 2px 5px; border-radius: 4px; }
 </style>
 </head>
 <body>
 <div class="page">
-  <div class="brand-bar">
-    <div class="brand">
-      <div class="brand-mark"></div>
-      <span class="brand-name">PINNACLE STRATEGIES LLC</span>
+
+  <!-- TOP NAV -->
+  <div class="topnav">
+    <div>
+      <img src="logo.png" alt="Pinnacle Strategies LLC" class="brand-mark"
+        onerror="this.outerHTML='<div class=&quot;brand-mark brand-mark-fallback&quot;></div><span style=&quot;font-size:13px;font-weight:700;color:var(--blue-900);margin-left:8px;&quot;>PINNACLE STRATEGIES</span>'" />
     </div>
     <span class="built-by">Built by Paul Hazlehurst</span>
   </div>
 
-  <header>
-    <h1>Legislator bill matcher</h1>
-    <p>Find legislators with a track record on your issue, ranked by interest and passage rate.</p>
-  </header>
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <div>
+      <h1>Legislator Bill Matcher</h1>
+      <p>Find the right champion for your bill — ranked by track record and passage rate.</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-outline" id="export-btn">⬇ Export</button>
+      <button class="btn-outline" id="print-btn">🖨 Print</button>
+    </div>
+  </div>
 
-  <div class="controls">
-    <div class="field">
-      <label for="state">State</label>
-      <select id="state"></select>
+  <!-- FILTER CARD -->
+  <div class="filter-card">
+    <div class="controls">
+      <div class="field">
+        <label for="state">State</label>
+        <select id="state"></select>
+      </div>
+      <div class="field">
+        <label for="issue">Issue area</label>
+        <input type="text" id="issue" list="issue-options" placeholder="Type or pick a topic…" autocomplete="off" />
+        <datalist id="issue-options"></datalist>
+      </div>
+      <div class="field">
+        <label for="subissue">Subtopic</label>
+        <input type="text" id="subissue" list="subissue-options" placeholder="All subtopics" autocomplete="off" />
+        <datalist id="subissue-options"></datalist>
+      </div>
+      <div class="field">
+        <label for="party">Party</label>
+        <select id="party">
+          <option value="any">Any party</option>
+          <option value="D">Democrat</option>
+          <option value="R">Republican</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="chamber">Chamber</label>
+        <select id="chamber">
+          <option value="any">Both chambers</option>
+          <option value="senate">Senate</option>
+          <option value="house">House / Delegates</option>
+        </select>
+      </div>
     </div>
-    <div class="field">
-      <label for="issue">Issue area</label>
-      <select id="issue"></select>
-    </div>
-    <div class="field">
-      <label for="subissue">Subtopic</label>
-      <select id="subissue">
-        <option value="any">All subtopics</option>
-      </select>
-    </div>
-    <div class="field">
-      <label for="party">Party</label>
-      <select id="party">
-        <option value="any">Any party</option>
-        <option value="D">Democrat</option>
-        <option value="R">Republican</option>
-      </select>
-    </div>
-    <div class="field">
-      <label for="chamber">Chamber</label>
-      <select id="chamber">
-        <option value="any">Both chambers</option>
-        <option value="senate">Senate</option>
-        <option value="house">House / Delegates</option>
-      </select>
+    <!-- Score legend -->
+    <div class="legend">
+      <span class="legend-label">Interest score</span>
+      <span class="legend-item"><span class="legend-dot high"></span> 81–100 Strong</span>
+      <span class="legend-item"><span class="legend-dot mid"></span> 51–80 Moderate</span>
+      <span class="legend-item"><span class="legend-dot low"></span> 0–50 Low</span>
     </div>
   </div>
 
   <div class="results-meta" id="results-meta"></div>
   <div class="results" id="results"><p class="empty">Loading legislator data…</p></div>
 
-  <footer>
-    Data lives in <code>data.json</code> on GitHub. Use the + button to add, the trash button to remove recent entries.
-  </footer>
+  <footer>Data lives in <code>data.json</code> on GitHub. Use the buttons below to add, import, or remove entries.</footer>
 </div>
 
-<button class="fab-delete" id="open-delete" title="Delete recent entry">🗑</button>
-<button class="fab-import" id="open-import" title="Import from LegiScan">Import ⇩</button>
-<button class="fab" id="open-add" title="Add bill or legislator">+</button>
+<!-- FAB ROW -->
+<div class="fab-row">
+  <button class="fab-ghost" id="open-delete">🗑 Delete</button>
+  <button class="fab-ghost" id="open-import">⬇ Import</button>
+  <button class="fab" id="open-add" title="Add bill or legislator">+</button>
+</div>
 
 <!-- ADD PANEL -->
 <div class="overlay" id="add-overlay">
@@ -486,11 +406,10 @@
       <h2>Add a bill</h2>
       <button class="panel-close" id="close-add">✕</button>
     </div>
-
     <div class="ai-box">
       <label>AI auto-fill (optional)</label>
       <div class="ai-row">
-        <input type="text" id="ai-title-input" placeholder="Paste a bill title, e.g. 'HB 0412 Workforce Apprenticeship Expansion Act'" />
+        <input type="text" id="ai-title-input" placeholder="Paste a bill title or number…" />
         <button class="btn" id="ai-fill-btn">Fill</button>
       </div>
       <div class="file-drop" id="file-drop">
@@ -499,13 +418,11 @@
       </div>
       <div class="status-msg" id="ai-status"></div>
     </div>
-
     <form id="add-form">
       <div class="form-group">
         <label for="f-state">State</label>
         <select id="f-state"></select>
       </div>
-
       <div class="form-group">
         <label>Legislator</label>
         <div class="radio-row">
@@ -513,12 +430,10 @@
           <label><input type="radio" name="leg-mode" value="new" /> Create new</label>
         </div>
       </div>
-
       <div class="form-group" id="existing-leg-group">
         <input type="text" id="f-existing-leg-search" placeholder="Type to filter…" style="margin-bottom:8px;" />
-        <select id="f-existing-leg" size="6" style="height:auto;"></select>
+        <select id="f-existing-leg" size="5" style="height:auto;"></select>
       </div>
-
       <div id="new-leg-group" style="display:none;">
         <div class="form-group">
           <label for="f-leg-name">Name</label>
@@ -545,14 +460,11 @@
           <input type="text" id="f-leg-district" placeholder="e.g. 13" />
         </div>
       </div>
-
       <div class="sub-divider">Bill details</div>
-
       <div class="form-group">
         <label for="f-bill-title">Bill title</label>
         <input type="text" id="f-bill-title" placeholder="e.g. Workforce Apprenticeship Expansion Act" />
       </div>
-
       <div class="form-row">
         <div>
           <label for="f-topic">Topic</label>
@@ -565,8 +477,7 @@
           <input type="text" id="f-subtopic-new" placeholder="New subtopic name" style="display:none; margin-top:6px;" />
         </div>
       </div>
-
-      <div class="form-row">
+      <div class="form-row" style="margin-top:14px;">
         <div>
           <label for="f-year">Year</label>
           <input type="number" id="f-year" value="2026" />
@@ -579,7 +490,6 @@
           </select>
         </div>
       </div>
-
       <div class="form-group" style="margin-top:14px;">
         <label for="f-outcome">Outcome</label>
         <select id="f-outcome">
@@ -588,9 +498,8 @@
           <option value="pending">Pending</option>
         </select>
       </div>
-
       <div class="status-msg" id="save-status"></div>
-      <button type="submit" class="btn" style="margin-top:8px;">Save to GitHub</button>
+      <button type="submit" class="btn" style="margin-top:10px;">Save to GitHub</button>
     </form>
   </div>
 </div>
@@ -615,8 +524,6 @@
       <h2>Import from LegiScan</h2>
       <button class="panel-close" id="close-import">✕</button>
     </div>
-
-    <!-- Step 1: search for the legislator -->
     <div id="import-search-step">
       <div class="form-group">
         <label for="import-state">State</label>
@@ -630,20 +537,17 @@
       <button class="btn" id="import-search-btn">Search LegiScan</button>
       <div id="import-matches" style="margin-top:14px;"></div>
     </div>
-
-    <!-- Step 2: review fetched bills before saving -->
     <div id="import-review-step" style="display:none;">
       <p style="font-size:13px; color:var(--text-secondary); margin-top:-6px;">
         Matched to <strong id="import-matched-name"></strong> —
-        <span id="import-bill-count"></span> primary-sponsored bill(s) found
-        this session. Review each one's topic/subtopic below, then save the
-        ones you want.
+        <span id="import-bill-count"></span> primary-sponsored bill(s) found this session.
+        Review each one's topic/subtopic below, then save the ones you want.
       </p>
       <div id="import-bill-list" style="display:flex; flex-direction:column; gap:12px; margin-top:12px;"></div>
       <div class="status-msg" id="import-save-status"></div>
       <div style="display:flex; gap:8px; margin-top:14px;">
-        <button class="btn btn-secondary" id="import-back-btn" style="flex:1;">Back to search</button>
-        <button class="btn" id="import-save-all-btn" style="flex:1;">Save selected to GitHub</button>
+        <button class="btn btn-secondary" id="import-back-btn" style="flex:1;">← Back</button>
+        <button class="btn" id="import-save-all-btn" style="flex:2;">Save selected to GitHub</button>
       </div>
     </div>
   </div>
