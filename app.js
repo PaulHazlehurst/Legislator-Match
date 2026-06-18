@@ -3,7 +3,7 @@
 // See README.md "Deploying the serverless function" section.
 // Example: "https://legislator-matcher-api.vercel.app"
 // ===========================================================================
-const API_BASE = "https://legislator-match.vercel.app";
+const API_BASE = "PASTE_YOUR_VERCEL_FUNCTION_URL_HERE";
 
 // Track current filter state for the custom searchable dropdowns
 let currentIssue = null;
@@ -29,7 +29,11 @@ async function init() {
   populateExistingLegislatorDropdown();
 
   ['state', 'party', 'chamber'].forEach(id => {
-    document.getElementById(id).addEventListener('change', () => { render(); renderStats(); renderSidebar(); });
+    document.getElementById(id).addEventListener('change', () => {
+      render(); renderStats(); renderSidebar();
+      // Refresh audit filters if audit tab is active
+      if (document.getElementById('tab-audit')?.classList.contains('active')) setupAudit();
+    });
   });
 
   document.getElementById('f-topic').addEventListener('change', () => {
@@ -563,6 +567,7 @@ function setupTabs() {
       document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
       if (tab.dataset.tab === 'stats') renderStats();
       if (tab.dataset.tab === 'sponsors') renderSponsorsTab();
+      if (tab.dataset.tab === 'audit') { setupAudit(); }
     });
   });
 }
@@ -1286,16 +1291,35 @@ async function handleImportFetchBills(match, stateCode) {
 
 function renderImportReview() {
   const container = document.getElementById('import-bill-list');
+
+  const needsReviewCount = importState.bills.filter(b => b.needsReview).length;
+  const highConfCount = importState.bills.filter(b => b.topicMatch && b.confidence === 'high').length;
+
+  // Summary bar above the list
+  const summaryHtml = `<div style="background:var(--surface-raised);border:1px solid var(--border);border-radius:var(--radius-md);padding:10px 14px;margin-bottom:12px;font-size:12.5px;">
+    <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center;">
+      <span style="color:var(--green);font-weight:600;">✓ ${highConfCount} classified with high confidence</span>
+      ${needsReviewCount > 0 ? `<span style="color:var(--amber);font-weight:600;">⚠ ${needsReviewCount} need your review</span>` : ''}
+      <label style="margin-left:auto;display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text-secondary);text-transform:none;cursor:pointer;">
+        <input type="checkbox" id="filter-needs-review" /> Show only needs-review
+      </label>
+    </div>
+    ${needsReviewCount > 0 ? `<p style="margin:6px 0 0;color:var(--text-secondary);font-size:12px;">Bills marked ⚠ are unchecked by default. Assign them a topic before saving, or leave them unchecked to skip.</p>` : ''}
+  </div>`;
+
   const topicOptionsHtml = (selectedCode) => {
-    let html = Object.entries(DATA.topics).map(([code, t]) =>
+    let html = `<option value="">— Unclassified (skip this bill) —</option>`;
+    html += Object.entries(DATA.topics).map(([code, t]) =>
       `<option value="${code}" ${code === selectedCode ? 'selected' : ''}>${escapeHtml(t.label)}</option>`
     ).join('');
     html += `<option value="__new__" ${selectedCode === '__new__' ? 'selected' : ''}>+ Add new topic…</option>`;
     return html;
   };
+
   const subtopicOptionsHtml = (topicCode, selectedCode) => {
+    if (!topicCode) return `<option value="">—</option>`;
     const topic = DATA.topics[topicCode];
-    let html = '';
+    let html = `<option value="">— None —</option>`;
     if (topic) {
       html += Object.entries(topic.subtopics).map(([code, label]) =>
         `<option value="${code}" ${code === selectedCode ? 'selected' : ''}>${escapeHtml(label)}</option>`
@@ -1305,30 +1329,49 @@ function renderImportReview() {
     return html;
   };
 
-  container.innerHTML = importState.bills.map((b, i) => {
-    const topicCode = b.topicMatch || (b.suggestedTopicLabel ? '__new__' : Object.keys(DATA.topics)[0]);
-    const subtopicCode = b.subtopicMatch || (b.suggestedSubtopicLabel ? '__new__' : '');
-    // LegiScan status codes: 4 = Passed, 5 = Vetoed, 6 = Failed. Anything
-    // else (introduced/engrossed/enrolled-not-yet-passed) maps to pending.
-    let defaultOutcome = 'failed'; // historical bills — default to did not pass, user corrects passed ones
+  const billsHtml = importState.bills.map((b, i) => {
+    const isHighConf = b.topicMatch && b.confidence === 'high';
+    const isLowConf = b.topicMatch && b.confidence === 'low';
+    const needsReview = b.needsReview;
+    const topicCode = b.topicMatch || '';
+    const subtopicCode = b.subtopicMatch || '';
+
+    let defaultOutcome = 'failed';
     if (b.statusCode === 4) defaultOutcome = 'passed';
     else if (b.statusCode === 5 || b.statusCode === 6) defaultOutcome = 'failed';
+
+    const borderColor = isHighConf ? 'var(--green)' : needsReview ? 'var(--amber)' : 'var(--border)';
+    const confidenceBadge = isHighConf
+      ? `<span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:100px;background:var(--green-bg);color:var(--green);flex-shrink:0;">✓ High confidence</span>`
+      : isLowConf
+        ? `<span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:100px;background:var(--amber-bg);color:var(--amber);flex-shrink:0;">⚠ Low confidence — review</span>`
+        : `<span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:100px;background:var(--red-bg);color:var(--red);flex-shrink:0;">✕ Unclassified — assign topic</span>`;
+
+    // Only pre-check high-confidence bills; user must actively check low/unclassified ones
+    const checked = isHighConf ? 'checked' : '';
+
     return `
-    <div class="card" data-bill-idx="${i}">
-      <label style="display:flex; align-items:flex-start; gap:8px; margin-bottom:10px; text-transform:none; font-size:13px; color:var(--text);">
-        <input type="checkbox" class="import-bill-checkbox" checked style="margin-top:3px;" />
-        <span style="font-weight:600; color:var(--blue-900);">${escapeHtml(b.title)}</span>
-      </label>
+    <div class="card" data-bill-idx="${i}" data-needs-review="${needsReview ? '1' : '0'}" style="border-left:3px solid ${borderColor};">
+      <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:10px;">
+        <input type="checkbox" class="import-bill-checkbox" ${checked} style="margin-top:4px;flex-shrink:0;" />
+        <div style="flex:1;min-width:0;">
+          <div style="font-weight:600;font-size:13px;color:var(--blue-900);margin-bottom:4px;">${escapeHtml(b.title)}</div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            ${confidenceBadge}
+            <span style="font-size:11px;color:var(--text-tertiary);">${b.billNumber || ''} &middot; ${b.year || ''}</span>
+          </div>
+        </div>
+      </div>
       <div class="form-row">
         <div>
           <label>Topic</label>
           <select class="import-topic-select">${topicOptionsHtml(topicCode)}</select>
-          <input type="text" class="import-topic-new" placeholder="New topic name" value="${escapeHtml(b.suggestedTopicLabel || '')}" style="display:${topicCode === '__new__' ? 'block' : 'none'}; margin-top:6px;" />
+          <input type="text" class="import-topic-new" placeholder="New topic name" value="${escapeHtml(b.suggestedTopicLabel || '')}" style="display:${topicCode === '__new__' ? 'block' : 'none'};margin-top:6px;" />
         </div>
         <div>
-          <label>Subtopic</label>
+          <label>Subtopic <span style="font-weight:400;color:var(--text-tertiary)">(optional)</span></label>
           <select class="import-subtopic-select">${subtopicOptionsHtml(topicCode, subtopicCode)}</select>
-          <input type="text" class="import-subtopic-new" placeholder="New subtopic name" value="${escapeHtml(b.suggestedSubtopicLabel || '')}" style="display:${subtopicCode === '__new__' ? 'block' : 'none'}; margin-top:6px;" />
+          <input type="text" class="import-subtopic-new" placeholder="New subtopic name" value="${escapeHtml(b.suggestedSubtopicLabel || '')}" style="display:${subtopicCode === '__new__' ? 'block' : 'none'};margin-top:6px;" />
         </div>
       </div>
       <div class="form-row" style="margin-top:10px;">
@@ -1339,7 +1382,6 @@ function renderImportReview() {
         <div>
           <label>Outcome</label>
           <select class="import-outcome">
-            <option value="pending" ${defaultOutcome === 'pending' ? 'selected' : ''}>Pending</option>
             <option value="passed" ${defaultOutcome === 'passed' ? 'selected' : ''}>Passed</option>
             <option value="failed" ${defaultOutcome === 'failed' ? 'selected' : ''}>Did not pass</option>
           </select>
@@ -1348,17 +1390,33 @@ function renderImportReview() {
     </div>`;
   }).join('');
 
-  // Wire up each card's topic/subtopic select to toggle its own new-name input
+  container.innerHTML = summaryHtml + billsHtml;
+
+  // Filter toggle
+  document.getElementById('filter-needs-review').addEventListener('change', function() {
+    container.querySelectorAll('[data-bill-idx]').forEach(card => {
+      if (this.checked && card.dataset.needsReview !== '1') {
+        card.style.display = 'none';
+      } else {
+        card.style.display = 'block';
+      }
+    });
+  });
+
+  // Wire up each card's topic/subtopic select interactions
   container.querySelectorAll('[data-bill-idx]').forEach(card => {
     const topicSel = card.querySelector('.import-topic-select');
     const topicNew = card.querySelector('.import-topic-new');
     const subSel = card.querySelector('.import-subtopic-select');
     const subNew = card.querySelector('.import-subtopic-new');
+    const checkbox = card.querySelector('.import-bill-checkbox');
 
     topicSel.addEventListener('change', () => {
       topicNew.style.display = topicSel.value === '__new__' ? 'block' : 'none';
       subSel.innerHTML = subtopicOptionsHtml(topicSel.value, null);
-      subNew.style.display = subSel.value === '__new__' ? 'block' : 'none';
+      subNew.style.display = 'none';
+      // Auto-check when user assigns a topic
+      if (topicSel.value && topicSel.value !== '__new__') checkbox.checked = true;
     });
     subSel.addEventListener('change', () => {
       subNew.style.display = subSel.value === '__new__' ? 'block' : 'none';
@@ -1419,10 +1477,16 @@ async function handleImportSaveAll() {
     const subSel = card.querySelector('.import-subtopic-select').value;
     const subNewVal = card.querySelector('.import-subtopic-new').value.trim();
 
+    // Skip bills with no topic — user left them unclassified intentionally
+    if (!topicSel || topicSel === '') {
+      failedCount++;
+      continue;
+    }
+
     const topic = topicSel === '__new__' ? slugify(topicNewVal) : topicSel;
     const topicLabel = topicSel === '__new__' ? topicNewVal : DATA.topics[topicSel]?.label;
-    const subtopic = subSel === '__new__' ? slugify(subNewVal) : subSel;
-    const subtopicLabel = subSel === '__new__' ? subNewVal : (DATA.topics[topicSel]?.subtopics?.[subSel] || subSel);
+    const subtopic = subSel === '__new__' ? slugify(subNewVal) : (subSel || null);
+    const subtopicLabel = subSel === '__new__' ? subNewVal : (DATA.topics[topicSel]?.subtopics?.[subSel] || subSel || null);
 
     const bill = {
       title: original.title,
@@ -1552,6 +1616,247 @@ function apiConfigured() {
     return false;
   }
   return true;
+}
+
+// ---------------------------------------------------------------------------
+// AUDIT TAB
+// ---------------------------------------------------------------------------
+function setupAudit() {
+  const stateCode = document.getElementById('state').value;
+  const stateData = DATA.states[stateCode];
+
+  // Populate legislator filter
+  const legSel = document.getElementById('audit-filter-leg');
+  legSel.innerHTML = '<option value="">All legislators</option>';
+  if (stateData) {
+    stateData.legislators
+      .slice().sort((a, b) => a.name.localeCompare(b.name))
+      .forEach(l => {
+        const opt = document.createElement('option');
+        opt.value = l.id;
+        opt.textContent = l.name;
+        legSel.appendChild(opt);
+      });
+  }
+
+  // Populate topic filter
+  const topicSel = document.getElementById('audit-filter-topic');
+  topicSel.innerHTML = '<option value="">All topics</option>';
+  Object.entries(DATA.topics).forEach(([code, t]) => {
+    const opt = document.createElement('option');
+    opt.value = code;
+    opt.textContent = t.label;
+    topicSel.appendChild(opt);
+  });
+
+  legSel.addEventListener('change', renderAudit);
+  topicSel.addEventListener('change', renderAudit);
+  document.getElementById('audit-filter-unclassified').addEventListener('change', renderAudit);
+
+  renderAudit();
+}
+
+function renderAudit() {
+  const container = document.getElementById('audit-content');
+  const stateCode = document.getElementById('state').value;
+  const stateData = DATA.states[stateCode];
+  if (!stateData) { container.innerHTML = '<p class="empty">No data for this state.</p>'; return; }
+
+  const filterLeg = document.getElementById('audit-filter-leg').value;
+  const filterTopic = document.getElementById('audit-filter-topic').value;
+  const filterUnclassified = document.getElementById('audit-filter-unclassified').checked;
+
+  let legs = stateData.legislators.filter(l => !filterLeg || l.id === filterLeg);
+
+  const rows = [];
+  let totalBills = 0, unclassifiedCount = 0;
+
+  legs.forEach(l => {
+    let bills = l.bills.filter(b => {
+      if (filterTopic && b.topic !== filterTopic) return false;
+      if (filterUnclassified && b.topic) return false;
+      return true;
+    });
+    if (bills.length === 0) return;
+    totalBills += bills.length;
+    unclassifiedCount += bills.filter(b => !b.topic).length;
+
+    rows.push(`<div class="audit-leg-header">${escapeHtml(l.name)} <span style="font-weight:400;color:var(--text-tertiary)">&middot; ${bills.length} bill${bills.length === 1 ? '' : 's'}</span></div>`);
+
+    bills.slice().sort((a, b) => b.year - a.year).forEach(b => {
+      const topicLabel = b.topic && DATA.topics[b.topic] ? DATA.topics[b.topic].label : null;
+      const subtopicLabel = b.topic && b.subtopic && DATA.topics[b.topic]?.subtopics[b.subtopic]
+        ? DATA.topics[b.topic].subtopics[b.subtopic] : null;
+      const isUnclassified = !b.topic;
+      const outcomeLabel = b.outcome === 'passed' ? 'Passed' : b.outcome === 'failed' ? 'Did not pass' : 'Prior session';
+      const outcomeColor = b.outcome === 'passed' ? 'var(--green)' : 'var(--text-tertiary)';
+
+      rows.push(`<div class="audit-row${isUnclassified ? ' unclassified' : ''}" data-leg-id="${l.id}" data-bill-id="${b.id}" data-state="${stateCode}">
+        <div>
+          <p class="audit-title">${escapeHtml(b.title)}</p>
+          <div class="audit-meta">
+            <span>${b.year || '—'}</span>
+            ${isUnclassified
+              ? `<span style="color:var(--amber);font-weight:700;">⚠ No topic assigned</span>`
+              : `<span style="font-weight:600;color:var(--blue-700);">${escapeHtml(topicLabel || b.topic)}</span>${subtopicLabel ? `<span>${escapeHtml(subtopicLabel)}</span>` : ''}`
+            }
+            <span style="color:${outcomeColor}">${outcomeLabel}</span>
+          </div>
+        </div>
+        <button class="audit-edit-btn">Edit</button>
+      </div>`);
+    });
+  });
+
+  if (rows.length === 0) {
+    container.innerHTML = '<p class="empty">No bills match these filters.</p>';
+    return;
+  }
+
+  container.innerHTML = `<p style="font-size:12px;color:var(--text-secondary);margin:0 0 10px;">${totalBills} bill${totalBills === 1 ? '' : 's'}${unclassifiedCount > 0 ? ` &middot; <span style="color:var(--amber);font-weight:600;">${unclassifiedCount} unclassified</span>` : ''}</p>` + rows.join('');
+
+  container.querySelectorAll('.audit-edit-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const row = btn.closest('.audit-row');
+      if (row.querySelector('.audit-inline-form')) {
+        row.querySelector('.audit-inline-form').remove();
+        return;
+      }
+      openAuditInlineForm(row);
+    });
+  });
+}
+
+function openAuditInlineForm(row) {
+  const stateCode = row.dataset.state;
+  const legId = row.dataset.legId;
+  const billId = row.dataset.billId;
+  const stateData = DATA.states[stateCode];
+  if (!stateData) return;
+  const leg = stateData.legislators.find(l => l.id === legId);
+  if (!leg) return;
+  const bill = leg.bills.find(b => b.id === billId);
+  if (!bill) return;
+
+  const topicOptionsHtml = () => {
+    let html = `<option value="">— Unclassified —</option>`;
+    html += Object.entries(DATA.topics).map(([code, t]) =>
+      `<option value="${code}" ${code === bill.topic ? 'selected' : ''}>${escapeHtml(t.label)}</option>`
+    ).join('');
+    return html;
+  };
+
+  const subtopicOptionsHtml = (topicCode) => {
+    let html = `<option value="">— None —</option>`;
+    const topic = topicCode && DATA.topics[topicCode];
+    if (topic) {
+      html += Object.entries(topic.subtopics).map(([code, label]) =>
+        `<option value="${code}" ${code === bill.subtopic ? 'selected' : ''}>${escapeHtml(label)}</option>`
+      ).join('');
+    }
+    return html;
+  };
+
+  const form = document.createElement('div');
+  form.className = 'audit-inline-form';
+  form.innerHTML = `
+    <div class="fg" style="grid-column:1/-1;">
+      <label>Title</label>
+      <input type="text" class="af-title" value="${escapeHtml(bill.title)}" />
+    </div>
+    <div class="fg">
+      <label>Topic</label>
+      <select class="af-topic">${topicOptionsHtml()}</select>
+    </div>
+    <div class="fg">
+      <label>Subtopic</label>
+      <select class="af-subtopic">${subtopicOptionsHtml(bill.topic)}</select>
+    </div>
+    <div class="fg">
+      <label>Year</label>
+      <input type="number" class="af-year" value="${bill.year || ''}" />
+    </div>
+    <div class="fg">
+      <label>Outcome</label>
+      <select class="af-outcome">
+        <option value="passed" ${bill.outcome === 'passed' ? 'selected' : ''}>Passed</option>
+        <option value="failed" ${bill.outcome === 'failed' ? 'selected' : ''}>Did not pass</option>
+      </select>
+    </div>
+    <div class="audit-form-actions">
+      <button class="audit-save-btn">Save</button>
+      <button class="audit-cancel-btn">Cancel</button>
+      <button class="audit-delete-btn">Delete bill</button>
+    </div>
+    <div class="status-msg" id="audit-status-${billId}" style="grid-column:1/-1;"></div>
+  `;
+
+  // Wire up topic change to refresh subtopic
+  form.querySelector('.af-topic').addEventListener('change', function() {
+    form.querySelector('.af-subtopic').innerHTML = subtopicOptionsHtml(this.value);
+  });
+
+  form.querySelector('.audit-cancel-btn').addEventListener('click', () => form.remove());
+
+  form.querySelector('.audit-save-btn').addEventListener('click', async () => {
+    if (!apiConfigured()) return;
+    const topicCode = form.querySelector('.af-topic').value;
+    const subtopicCode = form.querySelector('.af-subtopic').value;
+    const updates = {
+      title: form.querySelector('.af-title').value.trim(),
+      topic: topicCode || null,
+      topicLabel: topicCode ? (DATA.topics[topicCode]?.label || topicCode) : null,
+      subtopic: subtopicCode || null,
+      subtopicLabel: subtopicCode ? (DATA.topics[topicCode]?.subtopics?.[subtopicCode] || subtopicCode) : null,
+      year: parseInt(form.querySelector('.af-year').value, 10) || bill.year,
+      outcome: form.querySelector('.af-outcome').value
+    };
+
+    const statusEl = document.getElementById(`audit-status-${billId}`);
+    statusEl.textContent = 'Saving…';
+    statusEl.className = 'status-msg loading';
+
+    try {
+      const res = await fetch(`${API_BASE}/api/edit-bill`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ stateCode, legislatorId: legId, billId, updates })
+      });
+      if (!res.ok) throw new Error('save failed');
+      // Update local DATA so re-render reflects the change
+      Object.assign(bill, updates);
+      statusEl.textContent = 'Saved!';
+      statusEl.className = 'status-msg success';
+      setTimeout(() => { form.remove(); renderAudit(); render(); }, 700);
+    } catch (err) {
+      statusEl.textContent = `Failed: ${err.message}`;
+      statusEl.className = 'status-msg error';
+    }
+  });
+
+  form.querySelector('.audit-delete-btn').addEventListener('click', async () => {
+    if (!confirm('Delete this bill permanently?')) return;
+    if (!apiConfigured()) return;
+    const statusEl = document.getElementById(`audit-status-${billId}`);
+    statusEl.textContent = 'Deleting…';
+    statusEl.className = 'status-msg loading';
+    try {
+      const res = await fetch(`${API_BASE}/api/delete-bill`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ stateCode, legislatorId: legId, billId })
+      });
+      if (!res.ok) throw new Error('delete failed');
+      leg.bills = leg.bills.filter(b => b.id !== billId);
+      renderAudit();
+      render();
+    } catch (err) {
+      statusEl.textContent = `Failed: ${err.message}`;
+      statusEl.className = 'status-msg error';
+    }
+  });
+
+  row.appendChild(form);
 }
 
 // ---------------------------------------------------------------------------

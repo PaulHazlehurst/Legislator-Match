@@ -393,6 +393,27 @@
   .crosstab .rate-chip.mid{background:var(--amber-bg);color:var(--amber);}
   .crosstab .rate-chip.low{background:var(--red-bg);color:var(--red);}
   .crosstab .rate-chip.na{background:var(--bg);color:var(--text-tertiary);}
+
+  /* ── AUDIT TABLE ─────────────────────────────────────────────────────── */
+  .audit-row{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:.7rem 1rem;margin-bottom:6px;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:start;transition:box-shadow 0.1s;}
+  .audit-row:hover{box-shadow:var(--shadow-sm);}
+  .audit-row.unclassified{border-left:3px solid var(--amber);}
+  .audit-title{font-size:13px;font-weight:600;color:var(--blue-900);margin:0 0 4px;}
+  .audit-meta{font-size:11.5px;color:var(--text-secondary);display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  .audit-edit-btn{background:var(--blue-50);border:1px solid var(--blue-100);color:var(--blue-700);border-radius:var(--radius-sm);font-size:11.5px;font-weight:600;padding:4px 10px;cursor:pointer;white-space:nowrap;font-family:var(--font);}
+  .audit-edit-btn:hover{background:var(--blue-100);}
+  .audit-inline-form{grid-column:1/-1;background:var(--surface-raised);border:1px solid var(--border);border-radius:var(--radius-md);padding:10px;margin-top:6px;display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .audit-inline-form .fg{margin-bottom:0;}
+  .audit-inline-form label{font-size:10px;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:4px;}
+  .audit-inline-form input,.audit-inline-form select{height:32px;font-size:12.5px;}
+  .audit-form-actions{grid-column:1/-1;display:flex;gap:8px;margin-top:4px;align-items:center;}
+  .audit-save-btn{height:32px;padding:0 14px;background:var(--blue-600);color:white;border:none;border-radius:var(--radius-sm);font-size:12.5px;font-weight:600;cursor:pointer;font-family:var(--font);}
+  .audit-save-btn:hover{background:var(--blue-700);}
+  .audit-cancel-btn{height:32px;padding:0 12px;background:var(--surface);color:var(--text-secondary);border:1px solid var(--border-strong);border-radius:var(--radius-sm);font-size:12.5px;cursor:pointer;font-family:var(--font);}
+  .audit-delete-btn{height:32px;padding:0 12px;background:none;color:var(--red);border:1px solid rgba(179,38,30,0.3);border-radius:var(--radius-sm);font-size:12.5px;cursor:pointer;font-family:var(--font);margin-left:auto;}
+  .audit-delete-btn:hover{background:var(--red-bg);}
+  .audit-leg-header{font-size:11px;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.05em;padding:12px 0 6px;border-top:1px solid var(--border);margin-top:6px;}
+  .audit-leg-header:first-child{border-top:none;margin-top:0;}
 </style>
 </head>
 <body>
@@ -435,6 +456,7 @@
       <button class="main-tab active" data-tab="matcher">Matcher</button>
       <button class="main-tab" data-tab="stats">Statistics</button>
       <button class="main-tab" data-tab="sponsors">⭐ Our Sponsors</button>
+      <button class="main-tab" data-tab="audit">✏️ Audit</button>
     </div>
 
     <!-- MATCHER TAB -->
@@ -508,8 +530,28 @@
         <button class="btn-outline" id="open-add-sponsor">+ Add sponsor</button>
       </div>
       <div id="sponsors-list" style="margin-top:1rem;display:flex;flex-direction:column;gap:10px;">
-        <p class="empty">No sponsors added yet. Add legislators you've worked with to highlight them across the app.</p>
+        <p class="empty">No sponsors added yet.</p>
       </div>
+    </div>
+
+    <!-- AUDIT TAB -->
+    <div class="tab-pane" id="tab-audit">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:1rem;">
+        <div>
+          <h2 style="font-size:18px;font-weight:700;color:var(--blue-900);margin:0 0 3px;">Bill Audit</h2>
+          <p style="font-size:13px;color:var(--text-secondary);margin:0;">Review and edit any bill's topic, subtopic, outcome, or title inline.</p>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <select id="audit-filter-leg" style="height:34px;font-size:12.5px;max-width:220px;"></select>
+          <select id="audit-filter-topic" style="height:34px;font-size:12.5px;max-width:180px;">
+            <option value="">All topics</option>
+          </select>
+          <label style="display:flex;align-items:center;gap:5px;font-size:12.5px;color:var(--text-secondary);white-space:nowrap;">
+            <input type="checkbox" id="audit-filter-unclassified" /> Unclassified only
+          </label>
+        </div>
+      </div>
+      <div id="audit-content"><p class="empty">Loading…</p></div>
     </div>
 
     <footer>Data lives in <code>data.json</code> on GitHub.</footer>
