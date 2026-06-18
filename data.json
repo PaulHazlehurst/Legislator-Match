@@ -1504,6 +1504,15 @@
               "year": 2025,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0208",
+              "title": "Health Occupations Boards - Notation of Veteran Status and Eligibility for Benefits",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -1697,7 +1706,7 @@
   },
   "meta": {
     "nextLegislatorId": 35,
-    "nextBillId": 208
+    "nextBillId": 209
   },
   "sponsors": {
     "L017": {
