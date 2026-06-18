@@ -1243,6 +1243,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0179",
+              "title": "Maryland Service Animal Programs - Participant Disqualification - Revisions",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -1436,7 +1445,7 @@
   },
   "meta": {
     "nextLegislatorId": 35,
-    "nextBillId": 179
+    "nextBillId": 180
   },
   "sponsors": {
     "L017": {
