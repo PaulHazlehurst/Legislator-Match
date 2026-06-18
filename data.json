@@ -1352,11 +1352,13 @@
             {
               "id": "B0188",
               "title": "Oversight Committee on Quality of Care in Nursing Homes and Assisted Living Facilities - Membership",
-              "topic": "workforce",
-              "subtopic": "training-programs",
+              "topic": "healthcare",
+              "subtopic": null,
               "year": 2026,
               "role": "sponsor",
-              "outcome": "passed"
+              "outcome": "passed",
+              "topicLabel": "Healthcare access",
+              "subtopicLabel": null
             },
             {
               "id": "B0189",
