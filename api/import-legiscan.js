@@ -76,11 +76,30 @@ async function findPerson(req, res, legiscanKey) {
     matches: matches.map(p => ({
       peopleId: p.people_id,
       name: p.name || `${p.first_name} ${p.last_name}`,
-      party: p.party,
-      role: p.role,
-      district: p.district
+      party: normalizeParty(p.party),
+      chamber: normalizeChamber(p.role),
+      district: p.district,
+      // Keep raw values for display purposes in the match list
+      partyRaw: p.party,
+      roleRaw: p.role
     }))
   });
+}
+
+function normalizeParty(raw) {
+  if (!raw) return '';
+  const r = raw.toLowerCase();
+  if (r.startsWith('d') || r === 'dem') return 'D';
+  if (r.startsWith('r') || r === 'rep' || r === 'gop') return 'R';
+  return ''; // Independent or unknown — leave blank for manual fill
+}
+
+function normalizeChamber(role) {
+  if (!role) return '';
+  const r = role.toLowerCase();
+  if (r.includes('sen')) return 'senate';
+  if (r.includes('del') || r.includes('rep') || r.includes('asm') || r.includes('house')) return 'house';
+  return '';
 }
 
 // ---------------------------------------------------------------------------
