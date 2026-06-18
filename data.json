@@ -1387,6 +1387,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0195",
+              "title": "Modernizing Civil Relief for Service Members Act",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -1580,7 +1589,7 @@
   },
   "meta": {
     "nextLegislatorId": 35,
-    "nextBillId": 195
+    "nextBillId": 196
   },
   "sponsors": {
     "L017": {
