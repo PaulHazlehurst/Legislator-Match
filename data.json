@@ -1577,11 +1577,13 @@
             {
               "id": "B0209",
               "title": "Chesapeake Conservation Corps Program - Renaming",
-              "topic": "workforce",
-              "subtopic": "training-programs",
+              "topic": "environment",
+              "subtopic": null,
               "year": 2025,
               "role": "sponsor",
-              "outcome": "passed"
+              "outcome": "passed",
+              "topicLabel": "Environment / energy",
+              "subtopicLabel": null
             },
             {
               "id": "B0210",
