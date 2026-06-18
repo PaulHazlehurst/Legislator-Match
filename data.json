@@ -1385,11 +1385,13 @@
             {
               "id": "B0191",
               "title": "Department of Natural Resources - Licenses, Permits, Registrations, and Public Profiles - Notation of Veteran Status",
-              "topic": "workforce",
-              "subtopic": "training-programs",
+              "topic": "veterans-military-affairs",
+              "subtopic": null,
               "year": 2026,
               "role": "sponsor",
-              "outcome": "failed"
+              "outcome": "failed",
+              "topicLabel": "Veterans & Military Affairs",
+              "subtopicLabel": null
             },
             {
               "id": "B0192",
