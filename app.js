@@ -3,13 +3,15 @@
 // See README.md "Deploying the serverless function" section.
 // Example: "https://legislator-matcher-api.vercel.app"
 // ===========================================================================
-const API_BASE = "https://legislator-match.vercel.app";
+const API_BASE = "PASTE_YOUR_VERCEL_FUNCTION_URL_HERE";
 
-let DATA = null;
+// Track current filter state for the custom searchable dropdowns
+let currentIssue = null;
+let currentSubissue = 'any';
 
 async function init() {
   try {
-    const res = await fetch('data.json?_=' + Date.now()); // cache-bust
+    const res = await fetch('data.json?_=' + Date.now());
     DATA = await res.json();
   } catch (err) {
     document.getElementById('results').innerHTML =
@@ -17,24 +19,21 @@ async function init() {
     return;
   }
 
+  // Normalize all "pending" outcomes to "failed" — we only log past bills
+  normalizePendingToFailed();
+
   populateStateDropdowns();
-  populateTopicDropdowns();
-  populateSubtopicDropdown('issue', 'subissue');
-  populateSubtopicDropdown('f-topic', 'f-subtopic');
+  buildSearchSelectDropdowns();
+  populateSubtopicFormSelect('f-topic', 'f-subtopic');
+  populateTopicFormDropdown();
   populateExistingLegislatorDropdown();
 
-  // Filter controls — issue/subissue are now datalist inputs, so 'input' event
   ['state', 'party', 'chamber'].forEach(id => {
-    document.getElementById(id).addEventListener('change', render);
+    document.getElementById(id).addEventListener('change', () => { render(); renderStats(); renderSidebar(); });
   });
-  document.getElementById('issue').addEventListener('input', () => {
-    populateSubtopicDropdown('issue', 'subissue');
-    render();
-  });
-  document.getElementById('subissue').addEventListener('input', render);
 
   document.getElementById('f-topic').addEventListener('change', () => {
-    populateSubtopicDropdown('f-topic', 'f-subtopic');
+    populateSubtopicFormSelect('f-topic', 'f-subtopic');
     toggleNewTopicInput();
   });
   document.getElementById('f-subtopic').addEventListener('change', toggleNewSubtopicInput);
@@ -43,6 +42,8 @@ async function init() {
     populateExistingLegislatorDropdown();
   });
 
+  setupTabs();
+  setupSidebar();
   setupAddPanel();
   setupDeletePanel();
   setupImportPanel();
@@ -52,7 +53,18 @@ async function init() {
   document.getElementById('export-btn').addEventListener('click', handleExport);
 
   render();
+  renderSidebar();
+  renderStats();
 }
+
+function normalizePendingToFailed() {
+  Object.values(DATA.states).forEach(st => {
+    st.legislators.forEach(l => {
+      l.bills.forEach(b => { if (b.outcome === 'pending') b.outcome = 'failed'; });
+    });
+  });
+}
+
 
 function populateStateDropdowns() {
   ['state', 'f-state'].forEach(selId => {
@@ -67,28 +79,129 @@ function populateStateDropdowns() {
   });
 }
 
-function populateTopicDropdowns() {
-  // Filter input — backed by a <datalist> so it's type-to-search, not a
-  // plain dropdown. The input's value is the human-readable label typed
-  // by the user; resolveTopicFilterValue() maps that back to a topic code.
-  const filterDatalist = document.getElementById('issue-options');
-  filterDatalist.innerHTML = '';
-  Object.entries(DATA.topics).forEach(([code, t]) => {
-    const opt = document.createElement('option');
-    opt.value = t.label;
-    filterDatalist.appendChild(opt);
+// ── CUSTOM SEARCHABLE DROPDOWN SYSTEM ──────────────────────────────────────
+// Builds two searchable dropdowns for the main filter (issue area + subtopic).
+// Each is a button that opens a panel with a search box at the top.
+
+function buildSearchSelectDropdowns() {
+  buildSearchSelect({
+    triggerId: 'ss-issue-trigger',
+    dropdownId: 'ss-issue-dropdown',
+    optionsId: 'ss-issue-options',
+    getOptions: () => Object.entries(DATA.topics).map(([code, t]) => ({ value: code, label: t.label })),
+    anyOption: null,
+    onSelect: (code, label) => {
+      currentIssue = code;
+      currentSubissue = 'any';
+      document.getElementById('ss-issue-trigger').textContent = label;
+      // Rebuild subtopic dropdown for this topic
+      buildSubissueOptions();
+      document.getElementById('ss-subissue-trigger').textContent = 'All subtopics';
+      render();
+      renderStats();
+    }
   });
 
-  // Default the filter input to the first topic's label if it's currently empty
-  const issueInput = document.getElementById('issue');
-  if (!issueInput.value) {
-    const firstLabel = Object.values(DATA.topics)[0]?.label;
-    if (firstLabel) issueInput.value = firstLabel;
+  buildSubissueOptions();
+
+  // Default to first topic
+  const firstEntry = Object.entries(DATA.topics)[0];
+  if (firstEntry) {
+    currentIssue = firstEntry[0];
+    document.getElementById('ss-issue-trigger').textContent = firstEntry[1].label;
+  }
+}
+
+function buildSubissueOptions() {
+  buildSearchSelect({
+    triggerId: 'ss-subissue-trigger',
+    dropdownId: 'ss-subissue-dropdown',
+    optionsId: 'ss-subissue-options',
+    getOptions: () => {
+      if (!currentIssue || !DATA.topics[currentIssue]) return [];
+      return Object.entries(DATA.topics[currentIssue].subtopics).map(([code, label]) => ({ value: code, label }));
+    },
+    anyOption: 'All subtopics',
+    onSelect: (code, label) => {
+      currentSubissue = code || 'any';
+      document.getElementById('ss-subissue-trigger').textContent = label;
+      render();
+    }
+  });
+}
+
+function buildSearchSelect({ triggerId, dropdownId, optionsId, getOptions, anyOption, onSelect }) {
+  const trigger = document.getElementById(triggerId);
+  const dropdown = document.getElementById(dropdownId);
+  const optionsContainer = document.getElementById(optionsId);
+  const searchInput = dropdown.querySelector('.search-select-search input');
+  let isOpen = false;
+
+  function openDropdown() {
+    // Close all other open dropdowns first
+    document.querySelectorAll('.search-select-dropdown.open').forEach(d => {
+      if (d !== dropdown) d.classList.remove('open');
+    });
+    document.querySelectorAll('.search-select-trigger.open').forEach(t => {
+      if (t !== trigger) t.classList.remove('open');
+    });
+    isOpen = true;
+    dropdown.classList.add('open');
+    trigger.classList.add('open');
+    searchInput.value = '';
+    renderOptions('');
+    searchInput.focus();
   }
 
-  // Form dropdown — topics plus a "create new" option (unchanged: this one
-  // stays a real <select> since the add-bill form's "+ Add new topic…"
-  // logic relies on <select> semantics)
+  function closeDropdown() {
+    isOpen = false;
+    dropdown.classList.remove('open');
+    trigger.classList.remove('open');
+  }
+
+  function renderOptions(filter) {
+    const opts = getOptions();
+    const needle = filter.toLowerCase();
+    const filtered = opts.filter(o => !needle || o.label.toLowerCase().includes(needle));
+    optionsContainer.innerHTML = '';
+
+    if (anyOption) {
+      const el = document.createElement('div');
+      el.className = 'search-select-option any-opt' + (currentSubissue === 'any' ? ' selected' : '');
+      el.textContent = anyOption;
+      el.addEventListener('click', () => { onSelect(null, anyOption); closeDropdown(); });
+      optionsContainer.appendChild(el);
+    }
+
+    if (filtered.length === 0) {
+      optionsContainer.innerHTML += '<div class="search-select-empty">No matches</div>';
+      return;
+    }
+
+    filtered.forEach(opt => {
+      const el = document.createElement('div');
+      el.className = 'search-select-option';
+      el.textContent = opt.label;
+      el.addEventListener('click', () => { onSelect(opt.value, opt.label); closeDropdown(); });
+      optionsContainer.appendChild(el);
+    });
+  }
+
+  trigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    isOpen ? closeDropdown() : openDropdown();
+  });
+  searchInput.addEventListener('input', e => renderOptions(e.target.value));
+  searchInput.addEventListener('click', e => e.stopPropagation());
+
+  // Close on outside click
+  document.addEventListener('click', () => { if (isOpen) closeDropdown(); });
+  dropdown.addEventListener('click', e => e.stopPropagation());
+}
+
+// ── FORM DROPDOWN POPULATION ─────────────────────────────────────────────────
+
+function populateTopicFormDropdown() {
   const formSel = document.getElementById('f-topic');
   formSel.innerHTML = '';
   Object.entries(DATA.topics).forEach(([code, t]) => {
@@ -103,57 +216,11 @@ function populateTopicDropdowns() {
   formSel.appendChild(newOpt);
 }
 
-// Resolves the currently-typed text in the #issue filter input back to its
-// topic code, since the input holds a human label, not a code.
-function resolveTopicFilterValue() {
-  const typed = document.getElementById('issue').value.trim().toLowerCase();
-  const match = Object.entries(DATA.topics).find(([code, t]) => t.label.toLowerCase() === typed);
-  return match ? match[0] : null;
-}
-
-// Same idea for the #subissue filter input.
-function resolveSubtopicFilterValue(topicCode) {
-  const typed = document.getElementById('subissue').value.trim().toLowerCase();
-  if (!typed || typed === 'all subtopics') return 'any';
-  const topic = DATA.topics[topicCode];
-  if (!topic) return 'any';
-  const match = Object.entries(topic.subtopics).find(([code, label]) => label.toLowerCase() === typed);
-  return match ? match[0] : 'any';
-}
-
-function populateSubtopicDropdown(topicSelId, subSelId) {
-  // The filter path (#issue → #subissue) uses datalist inputs.
-  // The form path (#f-topic → #f-subtopic) uses real <select> elements.
-  if (subSelId === 'subissue') {
-    populateSubtopicFilterDatalist(topicSelId);
-  } else {
-    populateSubtopicFormSelect(topicSelId, subSelId);
-  }
-}
-
-function populateSubtopicFilterDatalist(topicSelId) {
-  // Resolve the topic code from the filter input's current typed value
-  const topicCode = resolveTopicFilterValue();
-  const datalist = document.getElementById('subissue-options');
-  datalist.innerHTML = '';
-  const subInput = document.getElementById('subissue');
-  subInput.value = ''; // clear subtopic when topic changes
-
-  const topic = topicCode && DATA.topics[topicCode];
-  if (!topic) return;
-  Object.entries(topic.subtopics).forEach(([code, label]) => {
-    const opt = document.createElement('option');
-    opt.value = label;
-    datalist.appendChild(opt);
-  });
-}
-
 function populateSubtopicFormSelect(topicSelId, subSelId) {
   const topicCode = document.getElementById(topicSelId).value;
   const sel = document.getElementById(subSelId);
   sel.innerHTML = '';
 
-  // Form's topic select is on "+ Add new topic…" — subtopic must also be new
   if (topicCode === '__new__') {
     const newOpt = document.createElement('option');
     newOpt.value = '__new__';
@@ -176,6 +243,15 @@ function populateSubtopicFormSelect(topicSelId, subSelId) {
   newOpt.value = '__new__';
   newOpt.textContent = '+ Add new subtopic…';
   sel.appendChild(newOpt);
+}
+
+// Also call this after init so the form topic list stays in sync when new
+// topics are created via save
+function refreshTopicFormDropdown() {
+  const prev = document.getElementById('f-topic').value;
+  populateTopicFormDropdown();
+  if (prev) document.getElementById('f-topic').value = prev;
+  populateSubtopicFormSelect('f-topic', 'f-subtopic');
 }
 
 function toggleNewTopicInput() {
@@ -284,8 +360,8 @@ function computeScore(bills, issue, subtopic) {
 
 function render() {
   const state = document.getElementById('state').value;
-  const issue = resolveTopicFilterValue();
-  const subissue = issue ? resolveSubtopicFilterValue(issue) : 'any';
+  const issue = currentIssue;
+  const subissue = currentSubissue;
   const party = document.getElementById('party').value;
   const chamber = document.getElementById('chamber').value;
 
@@ -305,7 +381,7 @@ function render() {
 
   if (!issue) {
     meta.textContent = '';
-    results.innerHTML = '<p class="empty">Type a topic in the Issue area field to get started.</p>';
+    results.innerHTML = '<p class="empty">Select a topic to get started.</p>';
     return;
   }
 
@@ -335,7 +411,7 @@ function render() {
         const roleLabel = b.role === 'sponsor' ? 'Sponsor' : 'Co-sponsor';
         const subLabelInner = DATA.topics[b.topic] && DATA.topics[b.topic].subtopics[b.subtopic]
           ? DATA.topics[b.topic].subtopics[b.subtopic] : null;
-        let tagClass = 'tag-pending', tagLabel = 'Pending';
+        let tagClass = 'tag-pending', tagLabel = 'Prior session';
         if (b.outcome === 'passed') { tagClass = 'tag-passed'; tagLabel = 'Passed'; }
         else if (b.outcome === 'failed') { tagClass = 'tag-failed'; tagLabel = 'Did not pass'; }
         return `<li>
@@ -348,7 +424,7 @@ function render() {
       }).join('');
 
     return `
-    <div class="card">
+    <div class="card" data-legid="${l.id}">
       <div class="card-top">
         <div class="card-identity">
           <p class="name">${escapeHtml(l.name)}<span class="party-badge party-${l.party || ''}">${l.party || ''}</span></p>
@@ -403,8 +479,8 @@ function scoreColorClass(score) {
 // Export current results as a CSV the team can open in Excel
 function handleExport() {
   const state = document.getElementById('state').value;
-  const issue = resolveTopicFilterValue();
-  const subissue = issue ? resolveSubtopicFilterValue(issue) : 'any';
+  const issue = currentIssue;
+  const subissue = currentSubissue;
   const party = document.getElementById('party').value;
   const chamber = document.getElementById('chamber').value;
 
@@ -475,6 +551,205 @@ function escapeHtml(str) {
 // ---------------------------------------------------------------------------
 // ADD PANEL
 // ---------------------------------------------------------------------------
+// ── TABS ──────────────────────────────────────────────────────────────────────
+function setupTabs() {
+  document.querySelectorAll('.main-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.main-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+      if (tab.dataset.tab === 'stats') renderStats();
+    });
+  });
+}
+
+// ── SIDEBAR ────────────────────────────────────────────────────────────────────
+function setupSidebar() {
+  document.getElementById('sidebar-search').addEventListener('input', e => {
+    renderSidebar(e.target.value);
+  });
+}
+
+function renderSidebar(filter = '') {
+  const list = document.getElementById('sidebar-list');
+  const countEl = document.getElementById('sidebar-count');
+  const stateCode = document.getElementById('state').value;
+  const stateData = DATA.states[stateCode];
+  if (!stateData) { list.innerHTML = ''; return; }
+
+  const needle = filter.toLowerCase();
+  const legs = stateData.legislators
+    .slice()
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .filter(l => !needle || l.name.toLowerCase().includes(needle));
+
+  list.innerHTML = legs.map(l => {
+    const chamberAbbr = l.chamber === 'senate' ? 'Sen.' : 'Del.';
+    return `<div class="sidebar-leg" data-legid="${l.id}">
+      <span class="leg-party ${l.party || ''}">${l.party || '?'}</span>
+      <span>${escapeHtml(l.name.replace(/^(sen\.|del\.|rep\.)\s*/i, ''))}</span>
+    </div>`;
+  }).join('');
+
+  countEl.textContent = `${legs.length} of ${stateData.legislators.length} legislators`;
+
+  list.querySelectorAll('.sidebar-leg').forEach(el => {
+    el.addEventListener('click', () => {
+      const legId = el.dataset.legid;
+      // Highlight in sidebar
+      list.querySelectorAll('.sidebar-leg').forEach(e => e.classList.remove('active'));
+      el.classList.add('active');
+      // Scroll to the matching card in the results, or highlight legislator
+      const card = document.querySelector(`.card[data-legid="${legId}"]`);
+      if (card) {
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        card.style.outline = '2px solid var(--blue-500)';
+        setTimeout(() => card.style.outline = '', 1800);
+      }
+    });
+  });
+}
+
+// ── STATISTICS TAB ─────────────────────────────────────────────────────────────
+function renderStats() {
+  const container = document.getElementById('stats-content');
+  const stateCode = document.getElementById('state').value;
+  const stateData = DATA.states[stateCode];
+  if (!stateData || stateData.legislators.length === 0) {
+    container.innerHTML = '<p class="empty">No data yet for this state.</p>';
+    return;
+  }
+
+  // Aggregate all bills across all legislators in this state
+  const allBills = [];
+  let totalLegs = 0, legsWithBills = 0;
+  stateData.legislators.forEach(l => {
+    totalLegs++;
+    if (l.bills.length > 0) legsWithBills++;
+    l.bills.forEach(b => allBills.push({ ...b, party: l.party, chamber: l.chamber }));
+  });
+
+  const decided = allBills.filter(b => b.outcome === 'passed' || b.outcome === 'failed');
+  const passed = allBills.filter(b => b.outcome === 'passed');
+  const overallRate = decided.length > 0 ? Math.round((passed.length / decided.length) * 100) : 0;
+
+  // By party
+  const byParty = {};
+  allBills.forEach(b => {
+    const p = b.party || 'Unknown';
+    if (!byParty[p]) byParty[p] = { total: 0, passed: 0, decided: 0 };
+    byParty[p].total++;
+    if (b.outcome === 'passed') byParty[p].passed++;
+    if (b.outcome === 'passed' || b.outcome === 'failed') byParty[p].decided++;
+  });
+
+  // By topic
+  const byTopic = {};
+  allBills.forEach(b => {
+    const topicLabel = (DATA.topics[b.topic] && DATA.topics[b.topic].label) || b.topic || 'Unknown';
+    if (!byTopic[topicLabel]) byTopic[topicLabel] = { total: 0, passed: 0, decided: 0 };
+    byTopic[topicLabel].total++;
+    if (b.outcome === 'passed') byTopic[topicLabel].passed++;
+    if (b.outcome === 'passed' || b.outcome === 'failed') byTopic[topicLabel].decided++;
+  });
+
+  // By chamber
+  const byChamber = {};
+  allBills.forEach(b => {
+    const c = b.chamber === 'senate' ? 'Senate' : 'House / Delegates';
+    if (!byChamber[c]) byChamber[c] = { total: 0, passed: 0, decided: 0 };
+    byChamber[c].total++;
+    if (b.outcome === 'passed') byChamber[c].passed++;
+    if (b.outcome === 'passed' || b.outcome === 'failed') byChamber[c].decided++;
+  });
+
+  function barRows(obj, maxTotal) {
+    return Object.entries(obj)
+      .sort((a, b) => b[1].total - a[1].total)
+      .map(([label, d]) => {
+        const rate = d.decided > 0 ? Math.round((d.passed / d.decided) * 100) : null;
+        const barPct = Math.round((d.total / maxTotal) * 100);
+        const rateDisplay = rate !== null ? `${rate}% passage` : 'no decided bills';
+        return `<div class="bar-row">
+          <span class="bar-row-label" title="${escapeHtml(label)}">${escapeHtml(label)}</span>
+          <div class="bar-track"><div class="bar-fill" style="width:${barPct}%"></div></div>
+          <span class="bar-val">${d.total} bills</span>
+          <span style="font-size:11.5px;color:var(--text-secondary);width:90px;flex-shrink:0;">${rateDisplay}</span>
+        </div>`;
+      }).join('');
+  }
+
+  const maxTopicTotal = Math.max(...Object.values(byTopic).map(d => d.total), 1);
+
+  container.innerHTML = `
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-card-label">Total bills tracked</div>
+        <div class="stat-card-value">${allBills.length}</div>
+        <div class="stat-card-sub">${decided.length} with decided outcomes</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">Overall passage rate</div>
+        <div class="stat-card-value">${overallRate}%</div>
+        <div class="stat-card-sub">${passed.length} of ${decided.length} decided bills passed</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">Legislators tracked</div>
+        <div class="stat-card-value">${legsWithBills}</div>
+        <div class="stat-card-sub">${totalLegs} total in system</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">Topics covered</div>
+        <div class="stat-card-value">${Object.keys(byTopic).length}</div>
+        <div class="stat-card-sub">across ${Object.keys(DATA.topics).length} defined topic areas</div>
+      </div>
+    </div>
+
+    <div class="stats-section">
+      <h3>Bills by topic</h3>
+      ${Object.keys(byTopic).length === 0 ? '<p class="empty" style="padding:.5rem 0;">No bills added yet.</p>' : barRows(byTopic, maxTopicTotal)}
+    </div>
+
+    <div class="stats-section">
+      <h3>By party</h3>
+      ${Object.keys(byParty).length === 0 ? '<p class="empty" style="padding:.5rem 0;">No data.</p>' : (() => {
+        const maxP = Math.max(...Object.values(byParty).map(d => d.total), 1);
+        return Object.entries(byParty).sort((a,b) => b[1].total - a[1].total).map(([label, d]) => {
+          const rate = d.decided > 0 ? Math.round((d.passed / d.decided) * 100) : null;
+          const rateDisplay = rate !== null ? `${rate}% passage` : 'no decided bills';
+          const barPct = Math.round((d.total / maxP) * 100);
+          const fillClass = label === 'D' ? '' : label === 'R' ? 'amber' : '';
+          return `<div class="bar-row">
+            <span class="bar-row-label">${label === 'D' ? 'Democrat' : label === 'R' ? 'Republican' : escapeHtml(label)}</span>
+            <div class="bar-track"><div class="bar-fill ${fillClass}" style="width:${barPct}%"></div></div>
+            <span class="bar-val">${d.total} bills</span>
+            <span style="font-size:11.5px;color:var(--text-secondary);width:90px;flex-shrink:0;">${rateDisplay}</span>
+          </div>`;
+        }).join('');
+      })()}
+    </div>
+
+    <div class="stats-section">
+      <h3>By chamber</h3>
+      ${Object.keys(byChamber).length === 0 ? '<p class="empty" style="padding:.5rem 0;">No data.</p>' : (() => {
+        const maxC = Math.max(...Object.values(byChamber).map(d => d.total), 1);
+        return Object.entries(byChamber).sort((a,b) => b[1].total - a[1].total).map(([label, d]) => {
+          const rate = d.decided > 0 ? Math.round((d.passed / d.decided) * 100) : null;
+          const rateDisplay = rate !== null ? `${rate}% passage` : 'no decided bills';
+          const barPct = Math.round((d.total / maxC) * 100);
+          return `<div class="bar-row">
+            <span class="bar-row-label">${escapeHtml(label)}</span>
+            <div class="bar-track"><div class="bar-fill green" style="width:${barPct}%"></div></div>
+            <span class="bar-val">${d.total} bills</span>
+            <span style="font-size:11.5px;color:var(--text-secondary);width:90px;flex-shrink:0;">${rateDisplay}</span>
+          </div>`;
+        }).join('');
+      })()}
+    </div>
+  `;
+}
+
 function setupAddPanel() {
   const overlay = document.getElementById('add-overlay');
   document.getElementById('open-add').addEventListener('click', () => {
@@ -773,7 +1048,7 @@ function setupDeletePanel() {
 // ---------------------------------------------------------------------------
 // LEGISCAN IMPORT PANEL
 // ---------------------------------------------------------------------------
-let importState = { peopleId: null, matchedName: null, stateCode: null, bills: [] };
+let importState = { peopleId: null, matchedName: null, stateCode: null, party: '', chamber: '', district: '', bills: [] };
 
 function setupImportPanel() {
   const overlay = document.getElementById('import-overlay');
@@ -870,7 +1145,15 @@ async function handleImportFetchBills(match, stateCode) {
       return;
     }
 
-    importState = { peopleId: match.peopleId, matchedName: match.name, stateCode, bills: result.bills };
+    importState = {
+      peopleId: match.peopleId,
+      matchedName: match.name,
+      party: match.party || '',
+      chamber: match.chamber || '',
+      district: match.district || '',
+      stateCode,
+      bills: result.bills
+    };
     document.getElementById('import-matched-name').textContent = match.name;
     document.getElementById('import-bill-count').textContent = result.bills.length;
     renderImportReview();
@@ -909,7 +1192,7 @@ function renderImportReview() {
     const subtopicCode = b.subtopicMatch || (b.suggestedSubtopicLabel ? '__new__' : '');
     // LegiScan status codes: 4 = Passed, 5 = Vetoed, 6 = Failed. Anything
     // else (introduced/engrossed/enrolled-not-yet-passed) maps to pending.
-    let defaultOutcome = 'pending';
+    let defaultOutcome = 'failed'; // historical bills — default to did not pass, user corrects passed ones
     if (b.statusCode === 4) defaultOutcome = 'passed';
     else if (b.statusCode === 5 || b.statusCode === 6) defaultOutcome = 'failed';
     return `
@@ -990,11 +1273,19 @@ async function handleImportSaveAll() {
   const stateData = DATA.states[importState.stateCode];
   const existing = stateData.legislators.find(l =>
     l.name.toLowerCase().includes(importState.matchedName.toLowerCase()) ||
-    importState.matchedName.toLowerCase().includes(l.name.replace(/^(sen\.|del\.)\s*/i, '').toLowerCase())
+    importState.matchedName.toLowerCase().includes(l.name.replace(/^(sen\.|del\.|rep\.)\s*/i, '').toLowerCase())
   );
+
+
   const legislatorPayload = existing
     ? { mode: 'existing', legislatorId: existing.id }
-    : { mode: 'new', name: importState.matchedName, party: '', chamber: '', district: '' };
+    : {
+        mode: 'new',
+        name: importState.matchedName,
+        party: importState.party,
+        chamber: importState.chamber,
+        district: String(importState.district || '')
+      };
 
   let savedCount = 0, failedCount = 0;
   let lastBillId = null;
