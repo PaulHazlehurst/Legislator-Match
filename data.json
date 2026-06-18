@@ -1234,6 +1234,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0178",
+              "title": "Natural Resources - State Parks - Maryland Golden Age Pass",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -1427,7 +1436,7 @@
   },
   "meta": {
     "nextLegislatorId": 35,
-    "nextBillId": 178
+    "nextBillId": 179
   },
   "sponsors": {
     "L017": {
