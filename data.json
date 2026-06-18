@@ -1468,6 +1468,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "failed"
+            },
+            {
+              "id": "B0204",
+              "title": "Anne Arundel County - Alcoholic Beverages Licenses - Veterans' Organizations",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -1661,7 +1670,7 @@
   },
   "meta": {
     "nextLegislatorId": 35,
-    "nextBillId": 204
+    "nextBillId": 205
   },
   "sponsors": {
     "L017": {
