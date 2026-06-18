@@ -1555,11 +1555,13 @@
             {
               "id": "B0207",
               "title": "Funeral Establishments, Crematories, and Reduction Facilities - Disposition of Unclaimed Remains - Veterans",
-              "topic": "workforce",
-              "subtopic": "training-programs",
+              "topic": "funeral-burial-services",
+              "subtopic": null,
               "year": 2025,
               "role": "sponsor",
-              "outcome": "passed"
+              "outcome": "passed",
+              "topicLabel": "Funeral & Burial Services",
+              "subtopicLabel": null
             },
             {
               "id": "B0208",
