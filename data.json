@@ -1432,6 +1432,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0200",
+              "title": "Veterans' Discounts Act",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
             }
           ]
         }
@@ -1625,7 +1634,7 @@
   },
   "meta": {
     "nextLegislatorId": 35,
-    "nextBillId": 200
+    "nextBillId": 201
   },
   "sponsors": {
     "L017": {
