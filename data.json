@@ -1677,6 +1677,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "failed"
+            },
+            {
+              "id": "B0218",
+              "title": "Sewage Sludge - Per- and Polyfluoroalkyl Substances - Regulation",
+              "topic": "environment",
+              "subtopic": "waste-pollution",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -1881,7 +1890,7 @@
   },
   "meta": {
     "nextLegislatorId": 36,
-    "nextBillId": 218
+    "nextBillId": 219
   },
   "sponsors": {
     "L017": {
