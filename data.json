@@ -1418,11 +1418,13 @@
             {
               "id": "B0194",
               "title": "Veterans and Uniformed Services - Maryland Veterans Trust Fund and Application of Laws",
-              "topic": "workforce",
-              "subtopic": "training-programs",
+              "topic": "veterans-military-affairs",
+              "subtopic": null,
               "year": 2026,
               "role": "sponsor",
-              "outcome": "passed"
+              "outcome": "passed",
+              "topicLabel": "Veterans & Military Affairs",
+              "subtopicLabel": null
             },
             {
               "id": "B0195",
