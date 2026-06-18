@@ -1506,11 +1506,13 @@
             {
               "id": "B0202",
               "title": "Health Occupations - State Board of Massage Therapy Examiners - Revisions",
-              "topic": "workforce",
-              "subtopic": "training-programs",
+              "topic": "healthcare",
+              "subtopic": null,
               "year": 2026,
               "role": "sponsor",
-              "outcome": "passed"
+              "outcome": "passed",
+              "topicLabel": "Healthcare access",
+              "subtopicLabel": null
             },
             {
               "id": "B0203",
