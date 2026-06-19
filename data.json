@@ -1947,6 +1947,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "failed"
+            },
+            {
+              "id": "B0246",
+              "title": "Tobacco Product Licensees - Additional Licensure for Electronic Smoking Devices",
+              "topic": "consumer-protection",
+              "subtopic": "producer-regulation",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -2168,7 +2177,7 @@
   },
   "meta": {
     "nextLegislatorId": 38,
-    "nextBillId": 246
+    "nextBillId": 247
   },
   "sponsors": {
     "L017": {
