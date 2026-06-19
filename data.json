@@ -1785,6 +1785,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "failed"
+            },
+            {
+              "id": "B0229",
+              "title": "Vehicle Manufacturers and Dealers - Dealer and Manufacturer Associations - Administrative Hearings",
+              "topic": "consumer-protection",
+              "subtopic": "producer-regulation",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -2003,7 +2012,7 @@
   },
   "meta": {
     "nextLegislatorId": 37,
-    "nextBillId": 229
+    "nextBillId": 230
   },
   "sponsors": {
     "L017": {
