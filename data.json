@@ -2028,6 +2028,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0255",
+              "title": "Maryland Health Care Commission - Certificates of Need and Material Change Transactions",
+              "topic": "healthcare",
+              "subtopic": "hospital-funding",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
             }
           ]
         }
@@ -2251,7 +2260,7 @@
   },
   "meta": {
     "nextLegislatorId": 38,
-    "nextBillId": 255
+    "nextBillId": 256
   },
   "sponsors": {
     "L017": {
