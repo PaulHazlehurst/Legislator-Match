@@ -1992,6 +1992,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0251",
+              "title": "Anne Arundel County - Alcoholic Beverages - Consumption-Only Nonprofit Swim Club License",
+              "topic": "alcoholic-beverages-licensing",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -2214,7 +2223,7 @@
   },
   "meta": {
     "nextLegislatorId": 38,
-    "nextBillId": 251
+    "nextBillId": 252
   },
   "sponsors": {
     "L017": {
