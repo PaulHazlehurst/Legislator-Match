@@ -2055,6 +2055,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "failed"
+            },
+            {
+              "id": "B0258",
+              "title": "Cannabis - Advertising - Alterations",
+              "topic": "consumer-protection",
+              "subtopic": "advertising",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -2278,7 +2287,7 @@
   },
   "meta": {
     "nextLegislatorId": 38,
-    "nextBillId": 258
+    "nextBillId": 259
   },
   "sponsors": {
     "L017": {
