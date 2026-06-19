@@ -1848,6 +1848,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "failed"
+            },
+            {
+              "id": "B0236",
+              "title": "Maryland Illegal Online Gambling Enforcement Act",
+              "topic": "gambling-gaming",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
             }
           ]
         }
@@ -2068,7 +2077,7 @@
   },
   "meta": {
     "nextLegislatorId": 37,
-    "nextBillId": 236
+    "nextBillId": 237
   },
   "sponsors": {
     "L017": {
