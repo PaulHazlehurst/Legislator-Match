@@ -1821,6 +1821,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0233",
+              "title": "Motor Vehicles - Intelligent Speed Assistance System Pilot Program - Establishment",
+              "topic": "vehicle-transportation-law",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -2041,7 +2050,7 @@
   },
   "meta": {
     "nextLegislatorId": 37,
-    "nextBillId": 233
+    "nextBillId": 234
   },
   "sponsors": {
     "L017": {
