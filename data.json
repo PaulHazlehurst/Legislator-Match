@@ -1965,6 +1965,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0248",
+              "title": "Maryland Medical Assistance Program and Health Insurance - Coverage for Orthoses and Prostheses (So Every Body Can Move Act)",
+              "topic": "healthcare",
+              "subtopic": "insurance-coverage",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -2187,7 +2196,7 @@
   },
   "meta": {
     "nextLegislatorId": 38,
-    "nextBillId": 248
+    "nextBillId": 249
   },
   "sponsors": {
     "L017": {
