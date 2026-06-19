@@ -1830,6 +1830,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0234",
+              "title": "Law Enforcement - Protective Body Armor - Requirements and Reporting",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "police-accountability",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -2050,7 +2059,7 @@
   },
   "meta": {
     "nextLegislatorId": 37,
-    "nextBillId": 234
+    "nextBillId": 235
   },
   "sponsors": {
     "L017": {
