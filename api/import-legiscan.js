@@ -57,8 +57,13 @@ async function findPerson(req, res, legiscanKey) {
   const sessions = sessionData.sessions || [];
   if (sessions.length === 0) return res.status(404).json({ error: `No sessions found for state ${stateCode}.` });
 
-  // Most recent session is first in the list returned by LegiScan
-  const currentSession = sessions.find(s => s.session_id) || sessions[0];
+  // Pick the session that actually covers 2026, not just whichever is listed
+  // first — LegiScan can list a multi-year session (e.g. 2025-2026) where
+  // "most recent" doesn't necessarily mean "this year's session."
+  const TARGET_YEAR = 2026;
+  const currentSession = sessions.find(s =>
+    (s.year_start <= TARGET_YEAR && s.year_end >= TARGET_YEAR) || s.year_start === TARGET_YEAR
+  ) || sessions.find(s => s.session_id) || sessions[0];
 
   const peopleData = await legiscanGet('getSessionPeople', { id: currentSession.session_id }, legiscanKey);
   const people = (peopleData.sessionpeople && peopleData.sessionpeople.people) || [];
@@ -147,10 +152,30 @@ async function fetchBills(req, res, legiscanKey, anthropicKey) {
     return res.status(200).json({ bills: [] });
   }
 
-  let classified = primaryOnly.map(bill => ({
+  // Use the bill's own introduced/status date for its year, not the
+  // session's year_start — a 2025-2026 biennial session always reports
+  // year_start as 2025 even for bills introduced in 2026, which is what
+  // was causing 2025 bills to show up when only 2026 was wanted.
+  const TARGET_YEAR = 2026;
+  function billYear(bill) {
+    const dateStr = bill.status_date || bill.introduced_date || (bill.history && bill.history[0] && bill.history[0].date);
+    if (dateStr) {
+      const y = parseInt(String(dateStr).slice(0, 4), 10);
+      if (!isNaN(y)) return y;
+    }
+    return bill.session && bill.session.year_end ? bill.session.year_end : null;
+  }
+
+  const inTargetYear = primaryOnly.filter(bill => billYear(bill) === TARGET_YEAR);
+
+  if (inTargetYear.length === 0) {
+    return res.status(200).json({ bills: [], note: `No primary-sponsored bills found specifically in ${TARGET_YEAR} (some may exist in prior years of this session).` });
+  }
+
+  let classified = inTargetYear.map(bill => ({
     title: bill.title || bill.bill_number || 'Untitled bill',
     billNumber: bill.bill_number,
-    year: bill.session && bill.session.year_start ? bill.session.year_start : null,
+    year: billYear(bill) || TARGET_YEAR,
     legiscanUrl: bill.url || bill.state_link,
     statusCode: bill.status, // 4 = Passed, 5 = Vetoed, 6 = Failed, else pending/in-progress
     topicMatch: null,
