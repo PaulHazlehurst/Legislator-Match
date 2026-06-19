@@ -2037,6 +2037,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "failed"
+            },
+            {
+              "id": "B0256",
+              "title": "Health Services Cost Review Commission - Health Facilities - Rate Setting",
+              "topic": "healthcare",
+              "subtopic": "hospital-funding",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
             }
           ]
         }
@@ -2260,7 +2269,7 @@
   },
   "meta": {
     "nextLegislatorId": 38,
-    "nextBillId": 256
+    "nextBillId": 257
   },
   "sponsors": {
     "L017": {
