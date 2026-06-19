@@ -2315,6 +2315,13 @@
   },
   "activityLog": [
     {
+      "id": "mqlf92tu",
+      "ts": "2026-06-19T21:09:18.354Z",
+      "action": "import",
+      "detail": "Imported 18 bills for Pamela Beidle",
+      "user": "Paul"
+    },
+    {
       "id": "mqlddzpz",
       "ts": "2026-06-19T20:17:08.375Z",
       "action": "import",
