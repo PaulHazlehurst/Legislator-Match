@@ -234,6 +234,32 @@
   .leg-pick-row .leg-pick-badge.R{background:var(--party-r-bg);color:var(--party-r-text);}
   .leg-pick-empty{padding:10px;font-size:12.5px;color:var(--text-tertiary);text-align:center;}
 
+  /* ── IMPORT REVIEW BILL ROW (dedicated, unambiguous rules — avoids any
+     inheritance/specificity surprises from generic select/input rules) ── */
+  .ibr-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:.75rem 1rem;box-shadow:var(--shadow-sm);overflow:visible;}
+  .ibr-top{display:flex;align-items:flex-start;gap:8px;margin-bottom:10px;}
+  .ibr-title{font-weight:600;font-size:12.5px;color:var(--blue-900);line-height:1.35;margin-bottom:3px;word-break:break-word;}
+  .ibr-badges{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+  .ibr-fields{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;}
+  .ibr-field{display:flex;flex-direction:column;min-width:0;}
+  .ibr-field.grow{flex:1 1 140px;}
+  .ibr-field.year{flex:0 0 76px;}
+  .ibr-field.outcome{flex:0 0 118px;}
+  .ibr-label{font-size:9.5px;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;}
+  .ibr-select,.ibr-input{
+    display:block;box-sizing:border-box;width:100%;height:32px;
+    padding:0 8px;font-size:12px;font-family:var(--font);
+    border:1px solid var(--border-strong);border-radius:var(--radius-sm);
+    background:var(--surface-raised);color:var(--text);
+  }
+  .ibr-select{
+    appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%234A5F7A' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 8px center;padding-right:24px;
+  }
+  .ibr-select option{background:var(--surface);color:var(--text);}
+  .ibr-new-input{margin-top:4px;}
+
   /* ── SCORE LEGEND ─────────────────────────────────────────────────────── */
   .legend{display:flex;gap:14px;align-items:center;padding:8px 0 0;border-top:1px solid var(--border);margin-top:10px;flex-wrap:wrap;}
   .legend-label{font-size:10px;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.05em;margin-right:2px;}
@@ -882,6 +908,6 @@
   </div>
 </div>
 
-<script src="app.js?v=20260619"></script>
+<script src="app.js?v=20260619b"></script>
 </body>
 </html>
