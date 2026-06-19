@@ -3,7 +3,7 @@
 // See README.md "Deploying the serverless function" section.
 // Example: "https://legislator-matcher-api.vercel.app"
 // ===========================================================================
-const API_BASE = "https://legislator-match.vercel.app";
+const API_BASE = "PASTE_YOUR_VERCEL_FUNCTION_URL_HERE";
 
 // Track current filter state for the custom searchable dropdowns
 let currentIssue = null;
@@ -61,6 +61,9 @@ async function init() {
   document.getElementById('user-name').addEventListener('change', e => {
     localStorage.setItem('pinnacle_user_name', e.target.value.trim());
   });
+
+  // Dark mode toggle
+  setupThemeToggle();
 
   document.getElementById('print-btn').addEventListener('click', () => {
     // Populate print header before printing
@@ -385,6 +388,22 @@ function render() {
   const stateData = DATA.states[state];
   let legislators = stateData ? stateData.legislators : [];
 
+  // First-run onboarding: no legislators in this state's roster at all yet
+  const anyWithBills = legislators.some(l => l.bills.length > 0);
+  if (!anyWithBills) {
+    document.getElementById('results-meta').textContent = '';
+    document.getElementById('results').innerHTML = `<div style="text-align:center;padding:3rem 1.5rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);">
+      <div style="font-size:38px;margin-bottom:14px;">🏛️</div>
+      <p style="font-size:16px;font-weight:700;color:var(--blue-900);margin:0 0 6px;">No legislators tracked yet for ${escapeHtml(stateData?.name || state)}</p>
+      <p style="font-size:13.5px;color:var(--text-secondary);margin:0 0 18px;max-width:420px;margin-left:auto;margin-right:auto;">Start building your roster — import legislators from LegiScan one at a time, or add bills manually if you already have the details.</p>
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+        <button class="btn-outline" onclick="document.getElementById('open-import').click()" style="background:var(--blue-600);color:white;border-color:var(--blue-600);">⬇ Import from LegiScan</button>
+        <button class="btn-outline" onclick="document.getElementById('open-add').click()">+ Add manually</button>
+      </div>
+    </div>`;
+    return;
+  }
+
   if (party !== 'any') legislators = legislators.filter(l => l.party === party);
   if (chamber !== 'any') legislators = legislators.filter(l => l.chamber === chamber);
 
@@ -524,7 +543,7 @@ function handleExport() {
   const chamber = document.getElementById('chamber').value;
 
   const stateData = DATA.states[state];
-  if (!stateData || !issue) { alert('Select a state and topic first.'); return; }
+  if (!stateData || !issue) { showToast('Select a state and topic first.', 'error'); return; }
 
   let legislators = stateData.legislators;
   if (party !== 'any') legislators = legislators.filter(l => l.party === party);
@@ -577,7 +596,7 @@ async function saveNote(stateCode, legislatorId, btn) {
   } catch {
     btn.textContent = 'Save';
     btn.disabled = false;
-    alert('Could not save note. Check Vercel logs.');
+    showToast('Could not save note. Check Vercel logs.', 'error');
   }
 }
 
@@ -1212,6 +1231,7 @@ function setupDeletePanel() {
 // LEGISCAN IMPORT PANEL
 // ---------------------------------------------------------------------------
 let importState = { peopleId: null, matchedName: null, stateCode: null, party: '', chamber: '', district: '', bills: [] };
+let importSessionLog = []; // legislators added during this panel session, most recent first
 
 function setupImportPanel() {
   const overlay = document.getElementById('import-overlay');
@@ -1222,17 +1242,55 @@ function setupImportPanel() {
     document.getElementById('import-search-status').textContent = '';
     document.getElementById('import-matches').innerHTML = '';
     document.getElementById('import-name').value = '';
+    updateRosterProgress();
+    renderImportSessionLog();
     overlay.classList.add('open');
+    setTimeout(() => document.getElementById('import-name').focus(), 100);
   });
-  document.getElementById('close-import').addEventListener('click', () => overlay.classList.remove('open'));
-  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('open'); });
+  document.getElementById('close-import').addEventListener('click', () => {
+    overlay.classList.remove('open');
+    importSessionLog = [];
+  });
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) { overlay.classList.remove('open'); importSessionLog = []; }
+  });
 
   document.getElementById('import-search-btn').addEventListener('click', handleImportSearch);
+  document.getElementById('import-name').addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); handleImportSearch(); }
+  });
   document.getElementById('import-back-btn').addEventListener('click', () => {
     document.getElementById('import-search-step').style.display = 'block';
     document.getElementById('import-review-step').style.display = 'none';
   });
   document.getElementById('import-save-all-btn').addEventListener('click', handleImportSaveAll);
+}
+
+function updateRosterProgress() {
+  const stateCode = document.getElementById('import-state')?.value || document.getElementById('state').value;
+  const stateData = DATA.states[stateCode];
+  const count = stateData ? stateData.legislators.filter(l => l.bills.length > 0).length : 0;
+  const total = stateData ? stateData.legislators.length : 0;
+  document.getElementById('import-roster-text').textContent =
+    `${count} legislator${count === 1 ? '' : 's'} with bills tracked in ${stateData?.name || stateCode}`;
+  document.getElementById('import-session-count').textContent =
+    importSessionLog.length > 0 ? `+${importSessionLog.length} added this session` : '';
+}
+
+function renderImportSessionLog() {
+  const container = document.getElementById('import-session-log');
+  if (importSessionLog.length === 0) { container.innerHTML = ''; return; }
+  container.innerHTML = `
+    <p style="font-size:10.5px;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.05em;margin:0 0 6px;">Added this session</p>
+    <div style="display:flex;flex-direction:column;gap:4px;">
+      ${importSessionLog.map(entry => `
+        <div style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--text-secondary);padding:4px 0;">
+          <span style="color:var(--green);">✓</span>
+          <span style="flex:1;">${escapeHtml(entry.name)}</span>
+          <span style="color:var(--text-tertiary);">${entry.count} bill${entry.count === 1 ? '' : 's'}</span>
+        </div>
+      `).join('')}
+    </div>`;
 }
 
 async function handleImportSearch() {
@@ -1270,15 +1328,26 @@ async function handleImportSearch() {
 
 function renderImportMatches(matches, stateCode) {
   const container = document.getElementById('import-matches');
-  container.innerHTML = matches.map((m, i) => `
+  const stateData = DATA.states[stateCode];
+
+  container.innerHTML = matches.map((m, i) => {
+    // Check if this legislator already exists with bills tracked
+    const existing = stateData?.legislators.find(l =>
+      l.name.toLowerCase().includes(m.name.toLowerCase().replace(/^(sen\.|del\.|rep\.)\s*/i, '')) ||
+      m.name.toLowerCase().includes(l.name.replace(/^(sen\.|del\.|rep\.)\s*/i, '').toLowerCase())
+    );
+    const existingBillCount = existing ? existing.bills.length : 0;
+
+    return `
     <div class="delete-item" style="margin-bottom:8px;">
       <div class="info">
-        <div>${escapeHtml(m.name)}</div>
+        <div>${escapeHtml(m.name)} ${existingBillCount > 0 ? `<span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:100px;background:var(--amber-bg);color:var(--amber);margin-left:6px;">Already has ${existingBillCount} bill${existingBillCount === 1 ? '' : 's'}</span>` : ''}</div>
         <div class="who">${escapeHtml(m.party || '')} &middot; ${escapeHtml(m.role || '')}${m.district ? ' &middot; District ' + escapeHtml(String(m.district)) : ''}</div>
       </div>
-      <button data-idx="${i}" style="border-color:var(--blue-600); color:var(--blue-700);">Select</button>
+      <button data-idx="${i}" style="border-color:var(--blue-600); color:var(--blue-700);">${existingBillCount > 0 ? 'Add more' : 'Select'}</button>
     </div>
-  `).join('');
+  `;
+  }).join('');
 
   container.querySelectorAll('button').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -1304,7 +1373,8 @@ async function handleImportFetchBills(match, stateCode) {
     const result = await res.json();
 
     if (!result.bills || result.bills.length === 0) {
-      setStatus('import-search-status', `${match.name} has no primary-sponsored bills in the current session.`, 'error');
+      const msg = result.note || `${match.name} has no primary-sponsored bills in the current session.`;
+      setStatus('import-search-status', msg, 'error');
       return;
     }
 
@@ -1560,17 +1630,38 @@ async function handleImportSaveAll() {
     await waitForBillToAppear(lastBillId);
     setStatus('import-save-status', `Done — ${savedCount} bill${savedCount === 1 ? '' : 's'} saved and live.`, 'success');
     logActivity('import', `Imported ${savedCount} bill${savedCount === 1 ? '' : 's'} for ${importState.matchedName}`);
+
+    // Track this legislator in the session log for the progress display
+    importSessionLog.unshift({ name: importState.matchedName, count: savedCount });
+
+    // Refresh local data quietly (no full page reload) so progress counters
+    // and duplicate-detection are accurate for the next search, then jump
+    // straight back to the search box — this is the bulk-add fast path.
+    try {
+      const freshRes = await fetch('data.json?_=' + Date.now());
+      DATA = await freshRes.json();
+      normalizePendingToFailed();
+    } catch { /* keep using existing DATA if refresh fails */ }
+
     setTimeout(() => {
-      document.getElementById('import-overlay').classList.remove('open');
-      init();
-    }, 1200);
+      document.getElementById('import-review-step').style.display = 'none';
+      document.getElementById('import-search-step').style.display = 'block';
+      document.getElementById('import-name').value = '';
+      document.getElementById('import-matches').innerHTML = '';
+      document.getElementById('import-search-status').textContent = '';
+      updateRosterProgress();
+      renderImportSessionLog();
+      renderSidebar();
+      render();
+      document.getElementById('import-name').focus();
+    }, 900);
   } else {
     setStatus('import-save-status', 'All saves failed. Check the Vercel logs for details.', 'error');
   }
 
   importSaveInProgress = false;
   saveBtn.disabled = false;
-  saveBtn.textContent = 'Save selected to GitHub';
+  saveBtn.textContent = 'Save & search next legislator →';
 }
 
 
@@ -1955,6 +2046,7 @@ async function handleRemoveSponsor(legId) {
   renderSidebar();
   render();
   renderStats();
+  showToast('Removed from sponsors', 'success');
   try {
     await fetch(`${API_BASE}/api/save-sponsors`, {
       method: 'POST',
@@ -2118,19 +2210,47 @@ function logActivity(action, detail) {
 }
 
 // ---------------------------------------------------------------------------
+// DARK MODE TOGGLE
+// ---------------------------------------------------------------------------
+function setupThemeToggle() {
+  const btn = document.getElementById('theme-toggle');
+  const saved = localStorage.getItem('pinnacle_theme');
+  if (saved === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    btn.textContent = '☀️';
+  }
+  btn.addEventListener('click', () => {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    if (isDark) {
+      document.documentElement.removeAttribute('data-theme');
+      btn.textContent = '🌙';
+      localStorage.setItem('pinnacle_theme', 'light');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      btn.textContent = '☀️';
+      localStorage.setItem('pinnacle_theme', 'dark');
+    }
+  });
+}
+
+// ---------------------------------------------------------------------------
+// GLOBAL TOAST NOTIFICATIONS (used by shortcuts and replacing jarring alerts)
+// ---------------------------------------------------------------------------
+let _toastTimer;
+function showToast(msg, type = 'info') {
+  const toast = document.getElementById('shortcut-toast');
+  if (!toast) return;
+  toast.textContent = msg;
+  toast.style.background = type === 'error' ? 'var(--red)' : type === 'success' ? 'var(--green)' : 'var(--blue-900)';
+  toast.classList.add('show');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
+}
+
+// ---------------------------------------------------------------------------
 // KEYBOARD SHORTCUTS
 // ---------------------------------------------------------------------------
 function setupKeyboardShortcuts() {
-  const toast = document.getElementById('shortcut-toast');
-  let toastTimer;
-
-  function showToast(msg) {
-    toast.textContent = msg;
-    toast.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toast.classList.remove('show'), 1800);
-  }
-
   document.addEventListener('keydown', e => {
     // Don't fire shortcuts when typing in an input/textarea/select
     const tag = document.activeElement?.tagName;
@@ -2190,7 +2310,7 @@ function setupKeyboardShortcuts() {
 // ---------------------------------------------------------------------------
 function handleCopyResults() {
   const cards = document.querySelectorAll('.card');
-  if (!cards.length) { alert('No results to copy.'); return; }
+  if (!cards.length) { showToast('No results to copy.', 'error'); return; }
 
   const stateCode = document.getElementById('state').value;
   const stateName = DATA.states[stateCode]?.name || stateCode;
@@ -2215,9 +2335,10 @@ function handleCopyResults() {
       const btn = document.getElementById('copy-btn');
       const orig = btn.textContent;
       btn.textContent = '✓ Copied!';
+      showToast(`Copied ${cards.length} result${cards.length === 1 ? '' : 's'} to clipboard`, 'success');
       setTimeout(() => { btn.textContent = orig; }, 2000);
     })
-    .catch(() => alert('Could not copy to clipboard.'));
+    .catch(() => showToast('Could not copy to clipboard.', 'error'));
 }
 
 init();
