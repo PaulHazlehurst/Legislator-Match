@@ -1776,6 +1776,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "failed"
+            },
+            {
+              "id": "B0228",
+              "title": "Institutions of Higher Education and Elementary and Secondary Schools - Title VI Coordinators",
+              "topic": "education",
+              "subtopic": "civil-rights-compliance-coordinators",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
             }
           ]
         }
@@ -1994,7 +2003,7 @@
   },
   "meta": {
     "nextLegislatorId": 37,
-    "nextBillId": 228
+    "nextBillId": 229
   },
   "sponsors": {
     "L017": {
