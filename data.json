@@ -1749,6 +1749,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "failed"
+            },
+            {
+              "id": "B0225",
+              "title": "Vehicle Laws - Manufacturers and Dealers - Prices Listed on Dealer Websites (Jack Fitzgerald Price Transparency Act)",
+              "topic": "consumer-protection",
+              "subtopic": "fair-pricing-market-competition",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
             }
           ]
         }
@@ -1960,7 +1969,7 @@
   },
   "meta": {
     "nextLegislatorId": 37,
-    "nextBillId": 225
+    "nextBillId": 226
   },
   "sponsors": {
     "L017": {
