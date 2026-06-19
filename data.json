@@ -1812,6 +1812,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "failed"
+            },
+            {
+              "id": "B0232",
+              "title": "Security Guards - Certification Renewal - Requirements",
+              "topic": "business-regulation",
+              "subtopic": "certification-renewal",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -1990,7 +1999,8 @@
       "label": "Business Regulation",
       "subtopics": {
         "cemetery-regulation-disposition": "Cemetery regulation & disposition",
-        "abandoned-cemetery-acquisition": "Abandoned cemetery acquisition"
+        "abandoned-cemetery-acquisition": "Abandoned cemetery acquisition",
+        "certification-renewal": "Certification Renewal"
       }
     },
     "public-pensions-retirement": {
@@ -2031,7 +2041,7 @@
   },
   "meta": {
     "nextLegislatorId": 37,
-    "nextBillId": 232
+    "nextBillId": 233
   },
   "sponsors": {
     "L017": {
