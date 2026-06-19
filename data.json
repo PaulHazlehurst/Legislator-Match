@@ -2019,6 +2019,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0254",
+              "title": "Nursing Facilities - Involuntary Discharge or Transfer",
+              "topic": "healthcare",
+              "subtopic": "access-equity",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -2242,7 +2251,7 @@
   },
   "meta": {
     "nextLegislatorId": 38,
-    "nextBillId": 254
+    "nextBillId": 255
   },
   "sponsors": {
     "L017": {
