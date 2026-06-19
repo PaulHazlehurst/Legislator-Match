@@ -2001,6 +2001,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0252",
+              "title": "Business Regulation - Maryland Franchise Registration and Disclosure Law - Alterations (Franchise Reform Act)",
+              "topic": "business-regulation",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -2223,7 +2232,7 @@
   },
   "meta": {
     "nextLegislatorId": 38,
-    "nextBillId": 252
+    "nextBillId": 253
   },
   "sponsors": {
     "L017": {
