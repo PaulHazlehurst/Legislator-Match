@@ -1913,6 +1913,24 @@
               "outcome": "failed"
             }
           ]
+        },
+        {
+          "id": "L037",
+          "name": "Pamela Beidle",
+          "party": "D",
+          "chamber": "senate",
+          "district": "SD-032",
+          "bills": [
+            {
+              "id": "B0243",
+              "title": "Workers' Compensation - Occupational Disease Presumptions - Hypertension",
+              "topic": "labor-employment-rights",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            }
+          ]
         }
       ]
     }
@@ -2131,8 +2149,8 @@
     }
   },
   "meta": {
-    "nextLegislatorId": 37,
-    "nextBillId": 243
+    "nextLegislatorId": 38,
+    "nextBillId": 244
   },
   "sponsors": {
     "L017": {
