@@ -1875,6 +1875,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "failed"
+            },
+            {
+              "id": "B0239",
+              "title": "Transfer of Real Property - Recordation Certification and State Transfer Tax (Land Transfer Accountability Act)",
+              "topic": "land-use-property-rights",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
             }
           ]
         }
@@ -2095,7 +2104,7 @@
   },
   "meta": {
     "nextLegislatorId": 37,
-    "nextBillId": 239
+    "nextBillId": 240
   },
   "sponsors": {
     "L017": {
