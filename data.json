@@ -1866,6 +1866,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "failed"
+            },
+            {
+              "id": "B0238",
+              "title": "Task Force on Not-for-Profit Funeral Establishments",
+              "topic": "funeral-burial-services",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
             }
           ]
         }
@@ -2086,7 +2095,7 @@
   },
   "meta": {
     "nextLegislatorId": 37,
-    "nextBillId": 238
+    "nextBillId": 239
   },
   "sponsors": {
     "L017": {
