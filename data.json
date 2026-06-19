@@ -1893,6 +1893,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0241",
+              "title": "Handgun Roster Reform",
+              "topic": "firearms-weapons",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
             }
           ]
         }
@@ -2114,7 +2123,7 @@
   },
   "meta": {
     "nextLegislatorId": 37,
-    "nextBillId": 241
+    "nextBillId": 242
   },
   "sponsors": {
     "L017": {
