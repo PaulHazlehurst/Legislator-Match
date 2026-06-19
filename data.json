@@ -2046,6 +2046,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "failed"
+            },
+            {
+              "id": "B0257",
+              "title": "Gaming - Definition of \"Own\" - Alterations",
+              "topic": "gambling-gaming",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
             }
           ]
         }
@@ -2269,7 +2278,7 @@
   },
   "meta": {
     "nextLegislatorId": 38,
-    "nextBillId": 257
+    "nextBillId": 258
   },
   "sponsors": {
     "L017": {
