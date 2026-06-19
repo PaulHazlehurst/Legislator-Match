@@ -1794,6 +1794,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0230",
+              "title": "Civil Actions - Violation of Constitutional Rights (No Kings Act)",
+              "topic": "government-administration",
+              "subtopic": "constitution",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -1917,7 +1926,8 @@
     "government-administration": {
       "label": "Government Administration",
       "subtopics": {
-        "agency-operations": "Agency Operations"
+        "agency-operations": "Agency Operations",
+        "constitution": "Constitution"
       }
     },
     "election-law-voter-registration": {
@@ -2012,7 +2022,7 @@
   },
   "meta": {
     "nextLegislatorId": 37,
-    "nextBillId": 230
+    "nextBillId": 231
   },
   "sponsors": {
     "L017": {
