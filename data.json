@@ -1803,6 +1803,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0231",
+              "title": "Income Tax Credit - Parent of a Stillborn Child",
+              "topic": "taxation",
+              "subtopic": "tax-credits-incentives",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
             }
           ]
         }
@@ -2022,7 +2031,7 @@
   },
   "meta": {
     "nextLegislatorId": 37,
-    "nextBillId": 231
+    "nextBillId": 232
   },
   "sponsors": {
     "L017": {
