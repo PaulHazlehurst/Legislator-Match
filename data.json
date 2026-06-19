@@ -1983,6 +1983,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "failed"
+            },
+            {
+              "id": "B0250",
+              "title": "State Board of Morticians and Funeral Directors - Board Operations and Regulation of Crematories and Reduction Facilities",
+              "topic": "funeral-burial-services",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -2205,7 +2214,7 @@
   },
   "meta": {
     "nextLegislatorId": 38,
-    "nextBillId": 250
+    "nextBillId": 251
   },
   "sponsors": {
     "L017": {
