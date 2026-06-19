@@ -1956,6 +1956,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0247",
+              "title": "Maryland Money Transmission Act - Definition of Money Transmitter - Alteration",
+              "topic": "business-regulation",
+              "subtopic": "license",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -2136,7 +2145,8 @@
       "subtopics": {
         "cemetery-regulation-disposition": "Cemetery regulation & disposition",
         "abandoned-cemetery-acquisition": "Abandoned cemetery acquisition",
-        "certification-renewal": "Certification Renewal"
+        "certification-renewal": "Certification Renewal",
+        "license": "License"
       }
     },
     "public-pensions-retirement": {
@@ -2177,7 +2187,7 @@
   },
   "meta": {
     "nextLegislatorId": 38,
-    "nextBillId": 247
+    "nextBillId": 248
   },
   "sponsors": {
     "L017": {
