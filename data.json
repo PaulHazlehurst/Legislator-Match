@@ -1740,6 +1740,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "failed"
+            },
+            {
+              "id": "B0224",
+              "title": "Mail Theft",
+              "topic": "mail",
+              "subtopic": "theft",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
             }
           ]
         }
@@ -1941,11 +1950,17 @@
       "subtopics": {
         "requirements": "Requirements"
       }
+    },
+    "mail": {
+      "label": "Mail",
+      "subtopics": {
+        "theft": "Theft"
+      }
     }
   },
   "meta": {
     "nextLegislatorId": 37,
-    "nextBillId": 224
+    "nextBillId": 225
   },
   "sponsors": {
     "L017": {
