@@ -2064,6 +2064,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0259",
+              "title": "Alcoholic Beverages - Class 3 Wineries and Class 4 Limited Wineries - Alterations",
+              "topic": "alcoholic-beverages-licensing",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -2287,7 +2296,7 @@
   },
   "meta": {
     "nextLegislatorId": 38,
-    "nextBillId": 259
+    "nextBillId": 260
   },
   "sponsors": {
     "L017": {
