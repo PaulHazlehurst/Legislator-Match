@@ -2073,6 +2073,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0260",
+              "title": "Labor and Employment - Occupational Safety and Health - Revisions to Heat Stress Standards",
+              "topic": "labor-employment-rights",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
             }
           ]
         }
@@ -2296,7 +2305,7 @@
   },
   "meta": {
     "nextLegislatorId": 38,
-    "nextBillId": 260
+    "nextBillId": 261
   },
   "sponsors": {
     "L017": {
