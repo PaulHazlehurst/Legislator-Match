@@ -1857,6 +1857,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "failed"
+            },
+            {
+              "id": "B0237",
+              "title": "Developmental Disabilities Services - Expedited Eligibility Determinations for Recently Relocated Individuals (Ralph's Act)",
+              "topic": "healthcare",
+              "subtopic": "access-equity",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
             }
           ]
         }
@@ -2077,7 +2086,7 @@
   },
   "meta": {
     "nextLegislatorId": 37,
-    "nextBillId": 237
+    "nextBillId": 238
   },
   "sponsors": {
     "L017": {
