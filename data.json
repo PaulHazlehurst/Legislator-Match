@@ -1902,6 +1902,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "failed"
+            },
+            {
+              "id": "B0242",
+              "title": "Labor and Employment - Civic and Related Activities - Protection (Maryland Employee Civic Activity and Lawful Expression Protection Act)",
+              "topic": "labor-employment-rights",
+              "subtopic": "employee-meeting-protections",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
             }
           ]
         }
@@ -2123,7 +2132,7 @@
   },
   "meta": {
     "nextLegislatorId": 37,
-    "nextBillId": 242
+    "nextBillId": 243
   },
   "sponsors": {
     "L017": {
