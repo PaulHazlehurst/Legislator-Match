@@ -1767,6 +1767,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0227",
+              "title": "Criminal Procedure - Expungement - Adverse Actions and Removal From Maryland Electronic Courts (MDEC) System",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "expungement",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
             }
           ]
         }
@@ -1846,7 +1855,8 @@
         "offender-registration": "Offender Registration",
         "police-accountability": "Police Accountability",
         "hate-crime-definitions": "Hate crime definitions",
-        "drug-overdose-review-teams": "Drug overdose review teams"
+        "drug-overdose-review-teams": "Drug overdose review teams",
+        "expungement": "Expungement"
       }
     },
     "land-use-property-rights": {
@@ -1984,7 +1994,7 @@
   },
   "meta": {
     "nextLegislatorId": 37,
-    "nextBillId": 227
+    "nextBillId": 228
   },
   "sponsors": {
     "L017": {
