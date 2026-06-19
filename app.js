@@ -3,7 +3,7 @@
 // See README.md "Deploying the serverless function" section.
 // Example: "https://legislator-matcher-api.vercel.app"
 // ===========================================================================
-const API_BASE = "https://legislator-match.vercel.app";
+const API_BASE = "PASTE_YOUR_VERCEL_FUNCTION_URL_HERE";
 
 // Track current filter state for the custom searchable dropdowns
 let currentIssue = null;
@@ -1461,35 +1461,35 @@ function renderImportReview() {
     const checked = isHighConf ? 'checked' : '';
 
     return `
-    <div class="card" data-bill-idx="${i}" data-needs-review="${needsReview ? '1' : '0'}" style="border-left:3px solid ${borderColor};padding:.75rem 1rem;">
-      <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;">
+    <div class="card" data-bill-idx="${i}" data-needs-review="${needsReview ? '1' : '0'}" style="border-left:3px solid ${borderColor};padding:.75rem 1rem;overflow:hidden;">
+      <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:10px;">
         <input type="checkbox" class="import-bill-checkbox" ${checked} style="margin-top:3px;flex-shrink:0;" />
         <div style="flex:1;min-width:0;">
-          <div style="font-weight:600;font-size:12.5px;color:var(--blue-900);line-height:1.35;margin-bottom:3px;">${escapeHtml(b.title)}</div>
+          <div style="font-weight:600;font-size:12.5px;color:var(--blue-900);line-height:1.35;margin-bottom:3px;word-break:break-word;">${escapeHtml(b.title)}</div>
           <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
             ${confidenceBadge}
             <span style="font-size:11px;color:var(--text-tertiary);">${b.billNumber || ''} &middot; ${b.year || ''}</span>
           </div>
         </div>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr auto auto;gap:8px;align-items:end;">
-        <div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;">
+        <div style="flex:1 1 140px;min-width:0;">
           <label style="font-size:9.5px;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:3px;">Topic</label>
-          <select class="import-topic-select" style="height:30px;font-size:12px;">${topicOptionsHtml(topicCode)}</select>
-          <input type="text" class="import-topic-new" placeholder="New topic name" value="${escapeHtml(b.suggestedTopicLabel || '')}" style="display:${topicCode === '__new__' ? 'block' : 'none'};margin-top:4px;height:30px;font-size:12px;" />
+          <select class="import-topic-select" style="height:30px;font-size:12px;width:100%;">${topicOptionsHtml(topicCode)}</select>
+          <input type="text" class="import-topic-new" placeholder="New topic name" value="${escapeHtml(b.suggestedTopicLabel || '')}" style="display:${topicCode === '__new__' ? 'block' : 'none'};margin-top:4px;height:30px;font-size:12px;width:100%;" />
         </div>
-        <div>
+        <div style="flex:1 1 140px;min-width:0;">
           <label style="font-size:9.5px;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:3px;">Subtopic</label>
-          <select class="import-subtopic-select" style="height:30px;font-size:12px;">${subtopicOptionsHtml(topicCode, subtopicCode)}</select>
-          <input type="text" class="import-subtopic-new" placeholder="New subtopic" value="${escapeHtml(b.suggestedSubtopicLabel || '')}" style="display:${subtopicCode === '__new__' ? 'block' : 'none'};margin-top:4px;height:30px;font-size:12px;" />
+          <select class="import-subtopic-select" style="height:30px;font-size:12px;width:100%;">${subtopicOptionsHtml(topicCode, subtopicCode)}</select>
+          <input type="text" class="import-subtopic-new" placeholder="New subtopic" value="${escapeHtml(b.suggestedSubtopicLabel || '')}" style="display:${subtopicCode === '__new__' ? 'block' : 'none'};margin-top:4px;height:30px;font-size:12px;width:100%;" />
         </div>
-        <div>
+        <div style="flex:0 0 76px;">
           <label style="font-size:9.5px;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:3px;">Year</label>
-          <input type="number" class="import-year" value="${b.year || new Date().getFullYear()}" style="height:30px;font-size:12px;width:74px;" />
+          <input type="number" class="import-year" value="${b.year || new Date().getFullYear()}" style="height:30px;font-size:12px;width:100%;" />
         </div>
-        <div>
+        <div style="flex:0 0 118px;">
           <label style="font-size:9.5px;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:3px;">Outcome</label>
-          <select class="import-outcome" style="height:30px;font-size:12px;">
+          <select class="import-outcome" style="height:30px;font-size:12px;width:100%;">
             <option value="passed" ${defaultOutcome === 'passed' ? 'selected' : ''}>Passed</option>
             <option value="failed" ${defaultOutcome === 'failed' ? 'selected' : ''}>Did not pass</option>
           </select>
