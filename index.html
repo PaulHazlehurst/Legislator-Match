@@ -199,8 +199,9 @@
   .search-select-option.any-opt{color:var(--text-secondary);font-style:italic;}
   .search-select-empty{padding:10px 12px;font-size:13px;color:var(--text-tertiary);}
 
-  /* Regular selects (panel forms) */
-  select,input,textarea{
+  /* Regular selects (panel forms) — explicitly excludes checkbox/radio,
+     which should never get text-field width/height/padding applied to them */
+  select,input:not([type="checkbox"]):not([type="radio"]),textarea{
     width:100%;padding:0 10px;border-radius:var(--radius-md);
     border:1px solid var(--border-strong);background:var(--surface-raised);
     color:var(--text);font-size:13.5px;font-family:var(--font);
@@ -208,7 +209,10 @@
   }
   select{height:34px;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%234A5F7A' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;}
   select option{background:var(--surface);color:var(--text);}
-  input{height:34px;}
+  input:not([type="checkbox"]):not([type="radio"]){height:34px;}
+  input[type="checkbox"],input[type="radio"]{
+    width:15px;height:15px;flex-shrink:0;accent-color:var(--blue-600);cursor:pointer;
+  }
   textarea{padding:8px 10px;resize:vertical;min-height:70px;}
   select:focus,input:focus,textarea:focus{outline:none;border-color:var(--blue-500);box-shadow:0 0 0 3px rgba(44,123,203,0.15);}
   select[size]{height:auto;appearance:auto;background-image:none;padding:4px;}
