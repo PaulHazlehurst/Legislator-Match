@@ -60,9 +60,10 @@
   }
   [data-theme="dark"] body { background: var(--bg); }
   [data-theme="dark"] .brand-mark-fallback { background: linear-gradient(135deg, #5DA3E8, #1E3A57); }
-  [data-theme="dark"] select, [data-theme="dark"] input, [data-theme="dark"] textarea {
-    color-scheme: dark;
-  }
+  /* Note: deliberately NOT using color-scheme:dark here — it hands native
+     rendering of <select>/<option> text color to the browser/OS, which in
+     practice produced invisible white-on-white text in several browsers.
+     The explicit color/background rules below are more reliable. */
   *{box-sizing:border-box;}
   body{margin:0;font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.5;-webkit-font-smoothing:antialiased;}
 
@@ -206,6 +207,7 @@
     transition:border-color 0.15s,box-shadow 0.15s;
   }
   select{height:34px;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%234A5F7A' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;}
+  select option{background:var(--surface);color:var(--text);}
   input{height:34px;}
   textarea{padding:8px 10px;resize:vertical;min-height:70px;}
   select:focus,input:focus,textarea:focus{outline:none;border-color:var(--blue-500);box-shadow:0 0 0 3px rgba(44,123,203,0.15);}
