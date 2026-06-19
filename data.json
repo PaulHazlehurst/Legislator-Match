@@ -1839,6 +1839,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0235",
+              "title": "Residential Real Property - Notice of Landlord Entry - Tenant Consent",
+              "topic": "land-use-property-rights",
+              "subtopic": "residential-lease-fee-disclosures",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
             }
           ]
         }
@@ -2059,7 +2068,7 @@
   },
   "meta": {
     "nextLegislatorId": 37,
-    "nextBillId": 235
+    "nextBillId": 236
   },
   "sponsors": {
     "L017": {
