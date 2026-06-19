@@ -2010,6 +2010,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0253",
+              "title": "Health Occupations - Massage Therapy - Advertising",
+              "topic": "consumer-protection",
+              "subtopic": "advertising",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -2121,7 +2130,8 @@
         "app-store-regulation": "App Store Regulation",
         "fair-pricing-market-competition": "Fair pricing & market competition",
         "surveillance-based-pricing-prohibition": "Surveillance-based pricing prohibition",
-        "producer-regulation": "Producer Regulation"
+        "producer-regulation": "Producer Regulation",
+        "advertising": "Advertising"
       }
     },
     "family-law": {
@@ -2232,7 +2242,7 @@
   },
   "meta": {
     "nextLegislatorId": 38,
-    "nextBillId": 253
+    "nextBillId": 254
   },
   "sponsors": {
     "L017": {
