@@ -1724,6 +1724,24 @@
               "outcome": "failed"
             }
           ]
+        },
+        {
+          "id": "L036",
+          "name": "Jeff Waldstreicher",
+          "party": "D",
+          "chamber": "senate",
+          "district": "SD-018",
+          "bills": [
+            {
+              "id": "B0223",
+              "title": "Vehicle Laws - Bicycles, Play Vehicles, and Unicycles - Crosswalks",
+              "topic": "vehicle-transportation-law",
+              "subtopic": "crosswalk-monitoring-systems",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            }
+          ]
         }
       ]
     }
@@ -1926,8 +1944,8 @@
     }
   },
   "meta": {
-    "nextLegislatorId": 36,
-    "nextBillId": 223
+    "nextLegislatorId": 37,
+    "nextBillId": 224
   },
   "sponsors": {
     "L017": {
