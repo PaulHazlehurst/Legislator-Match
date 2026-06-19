@@ -1938,6 +1938,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "failed"
+            },
+            {
+              "id": "B0245",
+              "title": "Biotechnology Investment Incentive Tax Credit - Conversion to Grant Program",
+              "topic": "taxation",
+              "subtopic": "tax-credits-incentives",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
             }
           ]
         }
@@ -2159,7 +2168,7 @@
   },
   "meta": {
     "nextLegislatorId": 38,
-    "nextBillId": 245
+    "nextBillId": 246
   },
   "sponsors": {
     "L017": {
