@@ -1974,6 +1974,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0249",
+              "title": "Transportation - Rental Cars - Excise Tax Exemption",
+              "topic": "taxation",
+              "subtopic": "tax-credits-incentives",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
             }
           ]
         }
@@ -2196,7 +2205,7 @@
   },
   "meta": {
     "nextLegislatorId": 38,
-    "nextBillId": 249
+    "nextBillId": 250
   },
   "sponsors": {
     "L017": {
