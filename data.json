@@ -2139,5 +2139,14 @@
       "addedAt": "2026-06-18T19:07:00.818Z",
       "note": ""
     }
-  }
+  },
+  "activityLog": [
+    {
+      "id": "mqlddzpz",
+      "ts": "2026-06-19T20:17:08.375Z",
+      "action": "import",
+      "detail": "Imported 20 bills for Jeff Waldstreicher",
+      "user": "Paul"
+    }
+  ]
 }
