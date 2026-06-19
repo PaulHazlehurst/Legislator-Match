@@ -3,7 +3,7 @@
 // See README.md "Deploying the serverless function" section.
 // Example: "https://legislator-matcher-api.vercel.app"
 // ===========================================================================
-const API_BASE = "https://legislator-match.vercel.app";
+const API_BASE = "PASTE_YOUR_VERCEL_FUNCTION_URL_HERE";
 
 // Track current filter state for the custom searchable dropdowns
 let currentIssue = null;
@@ -304,35 +304,52 @@ function populateImportStateDropdown() {
 
 function populateExistingLegislatorDropdown(filterText) {
   const stateCode = document.getElementById('f-state').value;
-  const sel = document.getElementById('f-existing-leg');
+  const sel = document.getElementById('f-existing-leg'); // hidden, holds the actual value
+  const listEl = document.getElementById('f-existing-leg-list');
   const previousValue = sel.value;
   sel.innerHTML = '';
+  listEl.innerHTML = '';
   const stateData = DATA.states[stateCode];
   if (!stateData) return;
 
   const needle = (filterText || '').trim().toLowerCase();
 
-  stateData.legislators
+  const matches = stateData.legislators
     .slice()
     .sort((a, b) => a.name.localeCompare(b.name))
-    .filter(l => !needle || l.name.toLowerCase().includes(needle))
-    .forEach(l => {
-      const opt = document.createElement('option');
-      opt.value = l.id;
-      opt.textContent = `${l.name} (${l.party}, ${l.chamber === 'senate' ? 'Senate' : 'House'} D${l.district || '—'})`;
-      sel.appendChild(opt);
+    .filter(l => !needle || l.name.toLowerCase().includes(needle));
+
+  matches.forEach(l => {
+    const label = `${l.name} (${l.party}, ${l.chamber === 'senate' ? 'Senate' : 'House'} D${l.district || '—'})`;
+    const opt = document.createElement('option');
+    opt.value = l.id;
+    opt.textContent = label;
+    sel.appendChild(opt);
+
+    const row = document.createElement('div');
+    row.className = 'leg-pick-row';
+    row.dataset.legId = l.id;
+    row.innerHTML = `<span class="leg-pick-badge ${l.party || ''}">${l.party || '?'}</span><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(l.name)}</span><span style="font-size:11px;color:var(--text-tertiary);flex-shrink:0;">${l.chamber === 'senate' ? 'Sen.' : 'Del.'} D${l.district || '—'}</span>`;
+    row.addEventListener('click', () => {
+      sel.value = l.id;
+      listEl.querySelectorAll('.leg-pick-row').forEach(r => r.classList.remove('selected'));
+      row.classList.add('selected');
     });
+    listEl.appendChild(row);
+  });
 
   // Keep the previous selection if it's still in the filtered list
-  if (previousValue && Array.from(sel.options).some(o => o.value === previousValue)) {
+  if (previousValue && matches.some(l => l.id === previousValue)) {
     sel.value = previousValue;
+    listEl.querySelector(`[data-leg-id="${previousValue}"]`)?.classList.add('selected');
+  } else if (matches.length > 0) {
+    // Default to first match so there's always a valid selection
+    sel.value = matches[0].id;
+    listEl.querySelector('.leg-pick-row')?.classList.add('selected');
   }
 
-  if (sel.options.length === 0) {
-    const opt = document.createElement('option');
-    opt.disabled = true;
-    opt.textContent = 'No matches';
-    sel.appendChild(opt);
+  if (matches.length === 0) {
+    listEl.innerHTML = '<div class="leg-pick-empty">No matches</div>';
   }
 }
 
@@ -2087,26 +2104,42 @@ function setupSponsorPanel() {
 
 function populateSponsorDropdown(filter = '') {
   const stateCode = document.getElementById('sponsor-state').value;
-  const sel = document.getElementById('sponsor-leg');
+  const sel = document.getElementById('sponsor-leg'); // hidden, holds the actual value
+  const listEl = document.getElementById('sponsor-leg-list');
   sel.innerHTML = '';
+  listEl.innerHTML = '';
   const stateData = DATA.states[stateCode];
   if (!stateData) return;
   const needle = filter.toLowerCase();
-  stateData.legislators
+
+  const matches = stateData.legislators
     .slice().sort((a, b) => a.name.localeCompare(b.name))
-    .filter(l => !needle || l.name.toLowerCase().includes(needle))
-    .forEach(l => {
-      const opt = document.createElement('option');
-      opt.value = l.id;
-      const alreadySponsor = isSponsor(l.id);
-      opt.textContent = `${alreadySponsor ? '⭐ ' : ''}${l.name} (${l.party}, ${l.chamber === 'senate' ? 'Sen.' : 'Del.'})`;
-      sel.appendChild(opt);
-    });
-  if (sel.options.length === 0) {
+    .filter(l => !needle || l.name.toLowerCase().includes(needle));
+
+  matches.forEach(l => {
+    const alreadySponsor = isSponsor(l.id);
     const opt = document.createElement('option');
-    opt.disabled = true;
-    opt.textContent = 'No matches';
+    opt.value = l.id;
+    opt.textContent = `${alreadySponsor ? '⭐ ' : ''}${l.name} (${l.party}, ${l.chamber === 'senate' ? 'Sen.' : 'Del.'})`;
     sel.appendChild(opt);
+
+    const row = document.createElement('div');
+    row.className = 'leg-pick-row';
+    row.dataset.legId = l.id;
+    row.innerHTML = `<span class="leg-pick-badge ${l.party || ''}">${l.party || '?'}</span><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${alreadySponsor ? '⭐ ' : ''}${escapeHtml(l.name)}</span><span style="font-size:11px;color:var(--text-tertiary);flex-shrink:0;">${l.chamber === 'senate' ? 'Sen.' : 'Del.'}</span>`;
+    row.addEventListener('click', () => {
+      sel.value = l.id;
+      listEl.querySelectorAll('.leg-pick-row').forEach(r => r.classList.remove('selected'));
+      row.classList.add('selected');
+    });
+    listEl.appendChild(row);
+  });
+
+  if (matches.length > 0) {
+    sel.value = matches[0].id;
+    listEl.querySelector('.leg-pick-row')?.classList.add('selected');
+  } else {
+    listEl.innerHTML = '<div class="leg-pick-empty">No matches</div>';
   }
 }
 
