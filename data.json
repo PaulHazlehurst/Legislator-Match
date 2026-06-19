@@ -1884,6 +1884,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "failed"
+            },
+            {
+              "id": "B0240",
+              "title": "Residential-in-Commercial-Zone Laws - Study (Bring Back Main Street Act)",
+              "topic": "land-use-property-rights",
+              "subtopic": "zoning",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -1972,7 +1981,8 @@
       "subtopics": {
         "training-programs": "training-programs",
         "residential-lease-fee-disclosures": "Residential lease fee disclosures",
-        "public-land-acquisition": "Public land acquisition"
+        "public-land-acquisition": "Public land acquisition",
+        "zoning": "Zoning"
       }
     },
     "alcoholic-beverages-licensing": {
@@ -2104,7 +2114,7 @@
   },
   "meta": {
     "nextLegislatorId": 37,
-    "nextBillId": 240
+    "nextBillId": 241
   },
   "sponsors": {
     "L017": {
