@@ -1758,6 +1758,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "failed"
+            },
+            {
+              "id": "B0226",
+              "title": "Courts - Immunity From Liability - Donation of Pet Supplies",
+              "topic": "legal",
+              "subtopic": "immunity",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
             }
           ]
         }
@@ -1965,11 +1974,17 @@
       "subtopics": {
         "theft": "Theft"
       }
+    },
+    "legal": {
+      "label": "Legal",
+      "subtopics": {
+        "immunity": "Immunity"
+      }
     }
   },
   "meta": {
     "nextLegislatorId": 37,
-    "nextBillId": 226
+    "nextBillId": 227
   },
   "sponsors": {
     "L017": {
