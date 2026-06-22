@@ -3,7 +3,7 @@
 // See README.md "Deploying the serverless function" section.
 // Example: "https://legislator-matcher-api.vercel.app"
 // ===========================================================================
-const API_BASE = "https://legislator-match.vercel.app";
+const API_BASE = "PASTE_YOUR_VERCEL_FUNCTION_URL_HERE";
 
 // Track current filter state for the custom searchable dropdowns
 let currentIssue = null;
@@ -1474,6 +1474,21 @@ function renderImportReview() {
         ? `<span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:100px;background:var(--amber-bg);color:var(--amber);flex-shrink:0;">⚠ Low confidence — review</span>`
         : `<span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:100px;background:var(--red-bg);color:var(--red);flex-shrink:0;">✕ Unclassified — assign topic</span>`;
 
+    // LegiScan subject tags give the user immediate context
+    const subjectBadges = (b.legiscanSubjects || []).slice(0, 4).map(s =>
+      `<span style="font-size:10px;padding:1px 6px;border-radius:100px;background:var(--blue-50);color:var(--blue-700);border:1px solid var(--blue-100);">${escapeHtml(s)}</span>`
+    ).join('');
+
+    // Claude's reasoning is surfaced inline so users know why each bill was classified (or not)
+    const reasoningHtml = b.reasoning
+      ? `<div style="font-size:11px;color:var(--text-secondary);margin-top:4px;font-style:italic;">💡 ${escapeHtml(b.reasoning)}</div>`
+      : '';
+
+    // Description preview — most valuable signal, collapsed if long
+    const descHtml = b.description
+      ? `<div style="font-size:11px;color:var(--text-tertiary);margin-top:3px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;" title="${escapeHtml(b.description)}">${escapeHtml(b.description)}</div>`
+      : '';
+
     // Only pre-check high-confidence bills; user must actively check low/unclassified ones
     const checked = isHighConf ? 'checked' : '';
 
@@ -1483,10 +1498,13 @@ function renderImportReview() {
         <input type="checkbox" class="import-bill-checkbox" ${checked} style="margin-top:3px;" />
         <div style="flex:1;min-width:0;">
           <div class="ibr-title">${escapeHtml(b.title)}</div>
-          <div class="ibr-badges">
+          ${descHtml}
+          <div class="ibr-badges" style="margin-top:5px;">
             ${confidenceBadge}
             <span style="font-size:11px;color:var(--text-tertiary);">${b.billNumber || ''} &middot; ${b.year || ''}</span>
+            ${subjectBadges}
           </div>
+          ${reasoningHtml}
         </div>
       </div>
       <div class="ibr-fields">
