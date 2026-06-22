@@ -2664,6 +2664,13 @@
   },
   "activityLog": [
     {
+      "id": "mqpdwgam",
+      "ts": "2026-06-22T15:42:34.366Z",
+      "action": "import",
+      "detail": "Imported 12 bills for Brian Feldman",
+      "user": "Paul"
+    },
+    {
       "id": "mqpdsag3",
       "ts": "2026-06-22T15:39:20.163Z",
       "action": "import",
