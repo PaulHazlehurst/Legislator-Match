@@ -2561,6 +2561,51 @@
               "outcome": "passed"
             }
           ]
+        },
+        {
+          "id": "L045",
+          "name": "Wayne Hartman",
+          "party": "R",
+          "chamber": "house",
+          "district": "HD-038",
+          "bills": [
+            {
+              "id": "B0307",
+              "title": "Sales and Use Tax - Precious Metal Bullion or Coins - Exemption",
+              "topic": "taxation",
+              "subtopic": "tax-credits-incentives",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0308",
+              "title": "Corporate Income Tax - Rate Reduction (Economic Competitiveness Act of 2026)",
+              "topic": "taxation",
+              "subtopic": "tax-credits-incentives",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0309",
+              "title": "Worcester County - Board of License Commissioners - Membership",
+              "topic": "alcoholic-beverages-licensing",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0310",
+              "title": "Environment - Building Energy Performance Standards - Repeal",
+              "topic": "environment",
+              "subtopic": "clean-energy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            }
+          ]
         }
       ]
     }
@@ -2793,8 +2838,8 @@
     }
   },
   "meta": {
-    "nextLegislatorId": 45,
-    "nextBillId": 307
+    "nextLegislatorId": 46,
+    "nextBillId": 311
   },
   "sponsors": {
     "L017": {
