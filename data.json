@@ -2147,6 +2147,87 @@
               "outcome": "failed"
             }
           ]
+        },
+        {
+          "id": "L040",
+          "name": "Joanne Benson",
+          "party": "D",
+          "chamber": "senate",
+          "district": "SD-024",
+          "bills": [
+            {
+              "id": "B0266",
+              "title": "County Boards of Education - Student Technology Use Policy - Requirements",
+              "topic": "education",
+              "subtopic": "school-health-safety-policy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0267",
+              "title": "Public Middle, High, and Charter Schools - Start Time for Instruction",
+              "topic": "education",
+              "subtopic": "school-health-safety-policy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0268",
+              "title": "Comprehensive Community Safety Funding Act",
+              "topic": "taxation",
+              "subtopic": "tax-credits-incentives",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0269",
+              "title": "Food, Drugs, and Cosmetics - Gene Structure- and Function-Modifying Products - Labeling",
+              "topic": "consumer-protection",
+              "subtopic": "advertising",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0270",
+              "title": "Public Works Contracts - Apprenticeship Requirements (Maryland Workforce Apprenticeship Utilization Act)",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0271",
+              "title": "Transportation - Study on Speed Limits - Interstate 495 and Connected Highways",
+              "topic": "study",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0272",
+              "title": "Criminal Law - Obscene Matter - Visual Representation of Child",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "child-protection",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0273",
+              "title": "Juvenile Law - Probation and Treatment Services - Required Disposition (Parental Accountability Act)",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "child-protection",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            }
+          ]
         }
       ]
     }
@@ -2366,11 +2447,15 @@
       "subtopics": {
         "immunity": "Immunity"
       }
+    },
+    "study": {
+      "label": "Study",
+      "subtopics": {}
     }
   },
   "meta": {
-    "nextLegislatorId": 40,
-    "nextBillId": 266
+    "nextLegislatorId": 41,
+    "nextBillId": 274
   },
   "sponsors": {
     "L017": {
