@@ -555,6 +555,42 @@
   .audit-delete-btn:hover{background:var(--red-bg);}
   .audit-leg-header{font-size:11px;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.05em;padding:12px 0 6px;border-top:1px solid var(--border);margin-top:6px;}
   .audit-leg-header:first-child{border-top:none;margin-top:0;}
+
+  /* ── PROPOSE A BILL TAB ───────────────────────────────────────────────── */
+  .propose-hero{background:linear-gradient(135deg,var(--blue-900),var(--blue-700));border-radius:var(--radius-lg);padding:1.5rem;margin-bottom:1rem;color:white;}
+  .propose-hero h2{font-size:20px;font-weight:700;margin:0 0 6px;color:white;}
+  .propose-hero p{font-size:13.5px;margin:0 0 14px;opacity:0.85;}
+  .propose-input-row textarea{width:100%;border:none;background:rgba(255,255,255,0.12);color:white;border-radius:var(--radius-md);padding:10px 12px;font-size:13.5px;font-family:var(--font);resize:none;}
+  .propose-input-row textarea::placeholder{color:rgba(255,255,255,0.5);}
+  .propose-input-row textarea:focus{outline:2px solid rgba(255,255,255,0.5);outline-offset:1px;}
+  .propose-input-row .btn{background:white;color:var(--blue-900);font-weight:700;}
+  .propose-input-row .btn:hover{background:var(--blue-50);}
+  .propose-hero .status-msg{color:rgba(255,255,255,0.85);font-size:12.5px;}
+  .propose-hero .status-msg.error{color:#F0A39C;}
+  .propose-context-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:10px 14px;margin-bottom:12px;box-shadow:var(--shadow-sm);}
+
+  /* ── SEARCH TAB ───────────────────────────────────────────────────────── */
+  .search-result-row{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:10px 14px;margin-bottom:6px;display:flex;gap:12px;align-items:flex-start;}
+  .search-result-row:hover{box-shadow:var(--shadow-sm);}
+  .search-result-title{font-size:13px;font-weight:600;color:var(--blue-900);}
+  .search-result-meta{font-size:11.5px;color:var(--text-secondary);margin-top:2px;display:flex;gap:8px;flex-wrap:wrap;}
+
+  /* ── IMPORT PROGRESS ──────────────────────────────────────────────────── */
+  .progress-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:6px;margin-top:10px;}
+  .progress-item{display:flex;align-items:center;gap:7px;padding:6px 10px;border-radius:var(--radius-md);font-size:12px;background:var(--surface);border:1px solid var(--border);}
+  .progress-item.done{border-color:var(--green);background:var(--green-bg);}
+  .progress-item.partial{border-color:var(--amber);background:var(--amber-bg);}
+  .progress-item.empty-leg{border-color:var(--border);opacity:0.65;}
+  .progress-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+  .progress-dot.done{background:var(--green);}
+  .progress-dot.partial{background:var(--amber);}
+  .progress-dot.empty-leg{background:var(--text-tertiary);}
+
+  /* ── PENDING BILLS LIST (session end) ─────────────────────────────────── */
+  .pending-row{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 10px;display:flex;align-items:center;gap:8px;font-size:12.5px;}
+  .pending-row-title{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text);}
+  .pending-row-who{font-size:11px;color:var(--text-tertiary);flex-shrink:0;}
+  .pending-row select{height:28px;font-size:11.5px;flex:0 0 120px;}
 </style>
 </head>
 <body>
@@ -602,8 +638,10 @@
 
     <!-- MAIN TABS -->
     <div class="main-tabs">
-      <button class="main-tab active" data-tab="matcher">Matcher</button>
-      <button class="main-tab" data-tab="stats">Statistics</button>
+      <button class="main-tab active" data-tab="matcher">🎯 Matcher</button>
+      <button class="main-tab" data-tab="propose">💡 Propose a Bill</button>
+      <button class="main-tab" data-tab="search">🔍 Search Bills</button>
+      <button class="main-tab" data-tab="stats">📊 Statistics</button>
       <button class="main-tab" data-tab="sponsors">⭐ Our Sponsors</button>
       <button class="main-tab" data-tab="audit">✏️ Audit</button>
       <button class="main-tab" data-tab="feed">📋 Team Feed</button>
@@ -665,6 +703,68 @@
       <div class="results" id="results"><p class="empty">Loading…</p></div>
     </div>
 
+    <!-- PROPOSE A BILL TAB -->
+    <div class="tab-pane" id="tab-propose">
+      <div class="propose-hero">
+        <h2>Find champions for your bill</h2>
+        <p>Describe the bill you want to propose. We'll identify the most likely legislative champions based on their track record.</p>
+        <div class="propose-input-row">
+          <textarea id="propose-text" placeholder="Describe your bill in plain English — e.g. 'A bill to expand apprenticeship programs for unemployed veterans in manufacturing'" rows="3"></textarea>
+          <button class="btn" id="propose-btn" style="margin-top:8px;height:42px;">Find Champions</button>
+        </div>
+        <div class="status-msg" id="propose-status"></div>
+      </div>
+      <div id="propose-context" style="display:none;" class="propose-context-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+          <div>
+            <div id="propose-topic-label" style="font-size:13px;font-weight:700;color:var(--blue-900);"></div>
+            <div id="propose-reasoning" style="font-size:12px;color:var(--text-secondary);margin-top:2px;font-style:italic;"></div>
+          </div>
+          <div style="display:flex;gap:6px;">
+            <select id="propose-party" style="height:30px;font-size:12.5px;">
+              <option value="any">Any party</option>
+              <option value="D">Democrats only</option>
+              <option value="R">Republicans only</option>
+            </select>
+            <select id="propose-chamber" style="height:30px;font-size:12.5px;">
+              <option value="any">Both chambers</option>
+              <option value="senate">Senate only</option>
+              <option value="house">House only</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div id="propose-results"></div>
+    </div>
+
+    <!-- SEARCH BILLS TAB -->
+    <div class="tab-pane" id="tab-search">
+      <div style="margin-bottom:1rem;">
+        <h2 style="font-size:18px;font-weight:700;color:var(--blue-900);margin:0 0 4px;">Search All Bills</h2>
+        <p style="font-size:13px;color:var(--text-secondary);margin:0 0 12px;">Search across every bill in the system by keyword, legislator, topic, or outcome.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;">
+          <div style="flex:1;min-width:200px;">
+            <input type="text" id="search-query" placeholder="Search bill titles…" style="height:36px;" />
+          </div>
+          <select id="search-topic" style="height:36px;font-size:13px;flex:0 0 160px;">
+            <option value="">All topics</option>
+          </select>
+          <select id="search-outcome" style="height:36px;font-size:13px;flex:0 0 140px;">
+            <option value="">Any outcome</option>
+            <option value="passed">Passed</option>
+            <option value="failed">Did not pass</option>
+          </select>
+          <select id="search-party" style="height:36px;font-size:13px;flex:0 0 130px;">
+            <option value="">Any party</option>
+            <option value="D">Democrat</option>
+            <option value="R">Republican</option>
+          </select>
+        </div>
+      </div>
+      <div class="results-meta" id="search-meta"></div>
+      <div id="search-results"><p class="empty">Type to search…</p></div>
+    </div>
+
     <!-- STATS TAB -->
     <div class="tab-pane" id="tab-stats">
       <div id="stats-content"><p class="empty">Loading stats…</p></div>
@@ -692,14 +792,40 @@
           <p style="font-size:13px;color:var(--text-secondary);margin:0;">Review and edit any bill's topic, subtopic, outcome, or title inline.</p>
         </div>
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-          <select id="audit-filter-leg" style="height:34px;font-size:12.5px;max-width:220px;"></select>
-          <select id="audit-filter-topic" style="height:34px;font-size:12.5px;max-width:180px;">
+          <select id="audit-filter-leg" style="height:34px;font-size:12.5px;max-width:200px;"></select>
+          <select id="audit-filter-topic" style="height:34px;font-size:12.5px;max-width:160px;">
             <option value="">All topics</option>
           </select>
           <label style="display:flex;align-items:center;gap:5px;font-size:12.5px;color:var(--text-secondary);white-space:nowrap;">
-            <input type="checkbox" id="audit-filter-unclassified" /> Unclassified only
+            <input type="checkbox" id="audit-filter-unclassified" /> Unclassified
           </label>
+          <button class="btn-outline" id="open-session-end" style="color:var(--amber);border-color:var(--amber);">🏁 Session End</button>
         </div>
+      </div>
+      <!-- Topic guidance editor -->
+      <div id="audit-guidance-section" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.2rem;margin-bottom:1rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <h3 style="font-size:13.5px;font-weight:700;color:var(--blue-900);margin:0;">Topic Classification Guidance</h3>
+          <button class="btn-outline" id="close-guidance" style="font-size:11px;height:26px;padding:0 10px;">Close</button>
+        </div>
+        <p style="font-size:12px;color:var(--text-secondary);margin:0 0 10px;">Edit what each topic includes and excludes to improve AI classification accuracy for future imports.</p>
+        <div class="form-group">
+          <label>Topic</label>
+          <select id="guidance-topic-sel" style="height:34px;"></select>
+        </div>
+        <div class="form-group">
+          <label>This topic includes</label>
+          <textarea id="guidance-includes" style="min-height:60px;font-size:12.5px;" placeholder="e.g. job training, apprenticeships, employer hiring incentives…"></textarea>
+        </div>
+        <div class="form-group">
+          <label>This topic does NOT include</label>
+          <textarea id="guidance-excludes" style="min-height:60px;font-size:12.5px;" placeholder="e.g. veterans benefits, disability accommodations…"></textarea>
+        </div>
+        <div class="status-msg" id="guidance-status"></div>
+        <button class="btn" id="save-guidance-btn" style="height:36px;margin-top:8px;">Save guidance to GitHub</button>
+      </div>
+      <div style="display:flex;justify-content:flex-end;margin-bottom:8px;">
+        <button class="btn-outline" id="open-guidance" style="font-size:11.5px;">⚙ Edit topic guidance</button>
       </div>
       <div id="audit-content"><p class="empty">Loading…</p></div>
     </div>
@@ -709,14 +835,14 @@
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:10px;">
         <div>
           <h2 style="font-size:18px;font-weight:700;color:var(--blue-900);margin:0 0 3px;">Team Activity Feed</h2>
-          <p style="font-size:13px;color:var(--text-secondary);margin:0;">A log of everything added, edited, or changed by the team. Refreshes when you switch to this tab.</p>
+          <p style="font-size:13px;color:var(--text-secondary);margin:0;">A log of everything added, edited, or changed by the team.</p>
         </div>
         <button class="btn-outline" id="refresh-feed-btn">↻ Refresh</button>
       </div>
       <div id="feed-content"><p class="empty">Loading activity…</p></div>
     </div>
 
-    <footer>Data lives in <code>data.json</code> on GitHub. Press <code>?</code> in the top bar for keyboard shortcuts.</footer>
+    <footer>Data lives in <code>data.json</code> on GitHub. Press <code>?</code> for keyboard shortcuts.</footer>
   </div>
 </div>
 
@@ -881,6 +1007,51 @@
   </div>
 </div>
 
+<!-- SESSION END MODAL -->
+<div class="overlay" id="session-end-overlay">
+  <div class="panel">
+    <div class="panel-header">
+      <h2>🏁 Session End — Update Outcomes</h2>
+      <button class="panel-close" id="close-session-end">✕</button>
+    </div>
+    <p style="font-size:13px;color:var(--text-secondary);margin-top:-6px;margin-bottom:1rem;">When the legislative session ends, use this to bulk-update bill outcomes rather than editing them one by one.</p>
+    <div style="background:var(--amber-bg);border:1px solid var(--amber);border-radius:var(--radius-md);padding:10px 14px;margin-bottom:16px;font-size:13px;color:var(--amber);">
+      ⚠ The Quick Sweep below marks ALL bills in a state at once. Use with care.
+    </div>
+
+    <div class="form-group">
+      <label>State</label>
+      <select id="session-end-state"></select>
+    </div>
+
+    <div style="background:var(--surface-raised);border:1px solid var(--border);border-radius:var(--radius-md);padding:12px;margin-bottom:14px;">
+      <p style="font-size:13px;font-weight:700;color:var(--blue-900);margin:0 0 8px;">Option 1: Quick Sweep</p>
+      <p style="font-size:12.5px;color:var(--text-secondary);margin:0 0 10px;">Mark all pending bills in the selected state as either passed or failed.</p>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <select id="sweep-from" style="height:34px;flex:1;">
+          <option value="pending">Pending / Unknown</option>
+          <option value="failed">Did not pass</option>
+        </select>
+        <span style="font-size:13px;color:var(--text-secondary);">→</span>
+        <select id="sweep-to" style="height:34px;flex:1;">
+          <option value="failed">Did not pass</option>
+          <option value="passed">Passed</option>
+        </select>
+        <button class="btn" id="run-sweep-btn" style="flex:0 0 auto;height:36px;padding:0 16px;">Run sweep</button>
+      </div>
+    </div>
+
+    <div style="background:var(--surface-raised);border:1px solid var(--border);border-radius:var(--radius-md);padding:12px;">
+      <p style="font-size:13px;font-weight:700;color:var(--blue-900);margin:0 0 8px;">Option 2: Review &amp; Update</p>
+      <p style="font-size:12.5px;color:var(--text-secondary);margin:0 0 10px;">See only bills marked as pending and update each individually.</p>
+      <button class="btn btn-secondary" id="load-pending-btn" style="height:36px;">Load pending bills</button>
+      <div id="pending-bills-list" style="margin-top:10px;max-height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;"></div>
+    </div>
+
+    <div class="status-msg" id="session-end-status"></div>
+  </div>
+</div>
+
 <!-- ADD SPONSOR PANEL -->
 <div class="overlay" id="sponsor-overlay">
   <div class="panel">
@@ -908,6 +1079,6 @@
   </div>
 </div>
 
-<script src="app.js?v=20260619d"></script>
+<script src="app.js?v=20260619e"></script>
 </body>
 </html>

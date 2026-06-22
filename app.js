@@ -3,7 +3,7 @@
 // See README.md "Deploying the serverless function" section.
 // Example: "https://legislator-matcher-api.vercel.app"
 // ===========================================================================
-const API_BASE = "https://legislator-match.vercel.app";
+const API_BASE = "PASTE_YOUR_VERCEL_FUNCTION_URL_HERE";
 
 // Track current filter state for the custom searchable dropdowns
 let currentIssue = null;
@@ -53,6 +53,7 @@ async function init() {
   setupImportPanel();
   setupSponsorPanel();
   setupKeyboardShortcuts();
+  setupSessionEnd();
   populateImportStateDropdown();
 
   // Restore user name from localStorage
@@ -638,6 +639,8 @@ function setupTabs() {
       if (tab.dataset.tab === 'sponsors') renderSponsorsTab();
       if (tab.dataset.tab === 'audit') { setupAudit(); }
       if (tab.dataset.tab === 'feed') { renderFeed(); }
+      if (tab.dataset.tab === 'propose') { setupProposeTab(); }
+      if (tab.dataset.tab === 'search') { setupSearchTab(); }
     });
   });
 }
@@ -837,6 +840,8 @@ function renderStats() {
 
   // ── RENDER ──────────────────────────────────────────────────────────────
   container.innerHTML = `
+
+    ${renderRosterCoverage(stateCode, stateData)}
 
     <!-- Key numbers -->
     <div class="stats-grid">
@@ -2359,8 +2364,19 @@ function setupKeyboardShortcuts() {
         document.querySelector('.main-tab[data-tab="feed"]')?.click();
         showToast('F — Team Feed');
         break;
+      case 'b':
+        e.preventDefault();
+        document.querySelector('.main-tab[data-tab="propose"]')?.click();
+        showToast('B — Propose a bill');
+        break;
+      case '/':
+        e.preventDefault();
+        document.querySelector('.main-tab[data-tab="search"]')?.click();
+        showToast('/ — Search bills');
+        setTimeout(() => document.getElementById('search-query')?.focus(), 100);
+        break;
       case 'p':
-        if (e.ctrlKey || e.metaKey) return; // let browser Ctrl+P handle itself
+        if (e.ctrlKey || e.metaKey) return;
         e.preventDefault();
         document.getElementById('print-btn')?.click();
         showToast('P — Print report');
@@ -2403,6 +2419,392 @@ function handleCopyResults() {
       setTimeout(() => { btn.textContent = orig; }, 2000);
     })
     .catch(() => showToast('Could not copy to clipboard.', 'error'));
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 1. PROPOSE A BILL TAB
+// ─────────────────────────────────────────────────────────────────────────────
+let proposeSetup = false;
+
+function setupProposeTab() {
+  if (proposeSetup) return;
+  proposeSetup = true;
+  document.getElementById('propose-btn').addEventListener('click', handlePropose);
+  document.getElementById('propose-text').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) handlePropose();
+  });
+  ['propose-party', 'propose-chamber'].forEach(id => {
+    document.getElementById(id).addEventListener('change', () => {
+      const topicCode = document.getElementById('propose-context')._topicCode;
+      const subtopicCode = document.getElementById('propose-context')._subtopicCode;
+      if (topicCode) renderProposeResults(topicCode, subtopicCode);
+    });
+  });
+}
+
+async function handlePropose() {
+  const text = document.getElementById('propose-text').value.trim();
+  if (!text) return;
+  if (!apiConfigured()) return;
+
+  const btn = document.getElementById('propose-btn');
+  btn.disabled = true; btn.textContent = 'Classifying…';
+  setStatus('propose-status', 'Analyzing your bill description…', 'loading');
+  document.getElementById('propose-context').style.display = 'none';
+  document.getElementById('propose-results').innerHTML = '';
+
+  try {
+    const res = await fetch(`${API_BASE}/api/parse-bill`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text, knownTopics: DATA.topics })
+    });
+    if (!res.ok) throw new Error(`Server returned ${res.status}`);
+    const result = await res.json();
+    const topicCode = result.topicMatch;
+
+    if (!topicCode || !DATA.topics[topicCode]) {
+      setStatus('propose-status',
+        `⚠ ${result.reasoning || 'Could not match this bill to any topic in your system.'} — Try describing the policy goal more specifically, or add the relevant topic to your taxonomy first.`,
+        'error');
+      btn.disabled = false; btn.textContent = 'Find Champions';
+      return;
+    }
+
+    setStatus('propose-status', '', '');
+    const ctxEl = document.getElementById('propose-context');
+    ctxEl.style.display = 'block';
+    ctxEl._topicCode = topicCode;
+    ctxEl._subtopicCode = result.subtopicMatch || null;
+
+    const subtopicLabel = result.subtopicMatch && DATA.topics[topicCode].subtopics[result.subtopicMatch]
+      ? ' → ' + DATA.topics[topicCode].subtopics[result.subtopicMatch] : '';
+    document.getElementById('propose-topic-label').textContent =
+      `🎯 Matched to: ${DATA.topics[topicCode].label}${subtopicLabel}`;
+    document.getElementById('propose-reasoning').textContent = result.reasoning || '';
+    renderProposeResults(topicCode, result.subtopicMatch);
+
+  } catch (err) {
+    setStatus('propose-status', `Error: ${err.message}`, 'error');
+  }
+  btn.disabled = false; btn.textContent = 'Find Champions';
+}
+
+function renderProposeResults(topicCode, subtopicCode) {
+  const state = document.getElementById('state').value;
+  const party = document.getElementById('propose-party').value;
+  const chamber = document.getElementById('propose-chamber').value;
+  const stateData = DATA.states[state];
+  const container = document.getElementById('propose-results');
+  if (!stateData) return;
+
+  let legislators = stateData.legislators;
+  if (party !== 'any') legislators = legislators.filter(l => l.party === party);
+  if (chamber !== 'any') legislators = legislators.filter(l => l.chamber === chamber);
+
+  const scored = legislators
+    .map(l => ({ l, ...computeScore(l.bills, topicCode, subtopicCode || 'any', l.id) }))
+    .filter(item => item.relevant.length > 0)
+    .sort((a, b) => b.score - a.score);
+
+  if (scored.length === 0) {
+    container.innerHTML = `<div style="text-align:center;padding:2rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);margin-top:1rem;">
+      <p style="font-size:15px;font-weight:600;color:var(--blue-900);margin:0 0 6px;">No legislators tracked on this topic yet</p>
+      <p style="font-size:13px;color:var(--text-secondary);margin:0 0 16px;">Import legislators who work on ${DATA.topics[topicCode]?.label || topicCode} to build your database.</p>
+      <button class="btn-outline" onclick="document.getElementById('open-import').click()">⬇ Import from LegiScan</button>
+    </div>`;
+    return;
+  }
+
+  container.innerHTML = `
+    <div style="font-size:12.5px;color:var(--text-secondary);margin:10px 0 10px;">${scored.length} potential champion${scored.length === 1 ? '' : 's'} — ranked by track record on ${DATA.topics[topicCode]?.label || topicCode}</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      ${scored.map(({ l, score, relevant, passed, rate }) => {
+        const scoreClass = scoreColorClass(score);
+        const decidedCount = relevant.filter(b => b.outcome === 'passed' || b.outcome === 'failed').length;
+        const isSpon = isSponsor(l.id);
+        const dataQ = relevant.length >= 4 ? { cls:'dq-strong', label:'Strong data' } : relevant.length >= 2 ? { cls:'dq-thin', label:'Thin data' } : { cls:'dq-minimal', label:'Minimal data' };
+        return `<div class="card${isSpon ? ' is-sponsor' : ''}">
+          <div class="card-top">
+            <div class="card-identity">
+              <p class="card-name">${escapeHtml(l.name)}<span class="party-badge ${l.party||''}">${l.party||''}</span>${isSpon ? '<span class="star-badge">⭐ Sponsor</span>' : ''}</p>
+              <p class="card-meta">${l.chamber==='senate'?'Senate':'House'}${l.district?' · D'+l.district:''} · ${l.party==='D'?'Democrat':'Republican'}</p>
+            </div>
+            <div class="score-col"><div class="score-ring ${scoreClass}">${score}</div><span class="score-label">Interest</span></div>
+          </div>
+          <div class="meter"><div class="meter-fill ${scoreClass}" style="width:${score}%;"></div></div>
+          <div class="stats-row">
+            <span class="stat">📋 ${relevant.length} bill${relevant.length===1?'':'s'} on this topic</span>
+            <span class="stat">${decidedCount>0?`✅ ${passed}/${decidedCount} passed (${rate}%)`:'⏳ No decided bills yet'}</span>
+            <span class="data-quality ${dataQ.cls}">${dataQ.label}</span>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 2. CROSS-TOPIC BILL SEARCH TAB
+// ─────────────────────────────────────────────────────────────────────────────
+let searchSetup = false;
+
+function setupSearchTab() {
+  if (searchSetup) return;
+  searchSetup = true;
+
+  const topicSel = document.getElementById('search-topic');
+  Object.entries(DATA.topics).forEach(([code, t]) => {
+    const opt = document.createElement('option');
+    opt.value = code; opt.textContent = t.label;
+    topicSel.appendChild(opt);
+  });
+
+  ['search-query','search-topic','search-outcome','search-party'].forEach(id => {
+    document.getElementById(id).addEventListener(id==='search-query'?'input':'change', renderSearch);
+  });
+}
+
+function renderSearch() {
+  const query = document.getElementById('search-query').value.trim().toLowerCase();
+  const topic = document.getElementById('search-topic').value;
+  const outcome = document.getElementById('search-outcome').value;
+  const party = document.getElementById('search-party').value;
+  const state = document.getElementById('state').value;
+  const stateData = DATA.states[state];
+  const container = document.getElementById('search-results');
+  const meta = document.getElementById('search-meta');
+
+  if (!stateData) { container.innerHTML = '<p class="empty">No data for this state.</p>'; return; }
+
+  const results = [];
+  stateData.legislators.forEach(l => {
+    if (party && l.party !== party) return;
+    l.bills.forEach(b => {
+      if (topic && b.topic !== topic) return;
+      if (outcome && b.outcome !== outcome) return;
+      if (query && !b.title.toLowerCase().includes(query)) return;
+      results.push({ l, b });
+    });
+  });
+
+  results.sort((a, b) => (b.b.year||0)-(a.b.year||0) || a.l.name.localeCompare(b.l.name));
+  meta.textContent = results.length > 0 ? `${results.length} bill${results.length===1?'':'s'} found` : '';
+
+  if (results.length === 0) {
+    container.innerHTML = query||topic||outcome||party ? '<p class="empty">No bills match these filters.</p>' : '<p class="empty">Type to search across all bills…</p>';
+    return;
+  }
+
+  const highlight = t => {
+    if (!query) return escapeHtml(t);
+    const i = t.toLowerCase().indexOf(query);
+    if (i === -1) return escapeHtml(t);
+    return escapeHtml(t.slice(0,i)) + `<mark style="background:var(--amber-bg);color:var(--amber);border-radius:2px;">${escapeHtml(t.slice(i,i+query.length))}</mark>` + escapeHtml(t.slice(i+query.length));
+  };
+
+  container.innerHTML = results.slice(0,200).map(({l,b}) => {
+    const topicLabel = DATA.topics[b.topic]?.label || b.topic || 'Unclassified';
+    const outcomeColor = b.outcome==='passed'?'var(--green)':'var(--text-tertiary)';
+    const outcomeLabel = b.outcome==='passed'?'Passed':b.outcome==='failed'?'Did not pass':'Prior session';
+    return `<div class="search-result-row">
+      <div style="flex:1;min-width:0;">
+        <div class="search-result-title">${highlight(b.title)}</div>
+        <div class="search-result-meta">
+          <span style="font-weight:600;color:var(--blue-700);">${escapeHtml(l.name)}</span>
+          <span class="party-badge ${l.party||''}" style="font-size:9.5px;">${l.party||''}</span>
+          <span>${b.year||'—'}</span>
+          <span style="color:var(--blue-600);font-weight:500;">${escapeHtml(topicLabel)}</span>
+          <span style="color:${outcomeColor};">${outcomeLabel}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('') + (results.length > 200 ? `<p style="font-size:12px;color:var(--text-tertiary);text-align:center;padding:8px;">Showing first 200 of ${results.length} results — narrow your search to see more.</p>` : '');
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 3. SESSION END — BULK OUTCOME UPDATER + TOPIC GUIDANCE EDITOR
+// ─────────────────────────────────────────────────────────────────────────────
+function setupSessionEnd() {
+  const sel = document.getElementById('session-end-state');
+  if (sel) {
+    Object.entries(DATA.states).forEach(([code, st]) => {
+      const opt = document.createElement('option');
+      opt.value = code; opt.textContent = st.name;
+      sel.appendChild(opt);
+    });
+  }
+
+  const overlay = document.getElementById('session-end-overlay');
+  document.getElementById('open-session-end')?.addEventListener('click', () => {
+    setStatus('session-end-status','','');
+    document.getElementById('pending-bills-list').innerHTML = '';
+    overlay.classList.add('open');
+  });
+  document.getElementById('close-session-end')?.addEventListener('click', () => overlay.classList.remove('open'));
+  overlay?.addEventListener('click', e => { if (e.target===overlay) overlay.classList.remove('open'); });
+  document.getElementById('run-sweep-btn')?.addEventListener('click', handleSessionSweep);
+  document.getElementById('load-pending-btn')?.addEventListener('click', loadPendingBills);
+
+  // Guidance editor
+  document.getElementById('open-guidance')?.addEventListener('click', () => {
+    const s = document.getElementById('audit-guidance-section');
+    s.style.display = s.style.display==='none'?'block':'none';
+    if (s.style.display==='block') populateGuidanceEditor();
+  });
+  document.getElementById('close-guidance')?.addEventListener('click', () => {
+    document.getElementById('audit-guidance-section').style.display='none';
+  });
+  document.getElementById('guidance-topic-sel')?.addEventListener('change', populateGuidanceEditor);
+  document.getElementById('save-guidance-btn')?.addEventListener('click', saveGuidance);
+}
+
+function populateGuidanceEditor() {
+  const topicSel = document.getElementById('guidance-topic-sel');
+  if (!topicSel) return;
+  if (topicSel.options.length === 0) {
+    Object.entries(DATA.topics).forEach(([code, t]) => {
+      const opt = document.createElement('option');
+      opt.value = code; opt.textContent = t.label;
+      topicSel.appendChild(opt);
+    });
+  }
+  const code = topicSel.value;
+  const g = DATA.topics[code]?.guidance || {};
+  document.getElementById('guidance-includes').value = g.includes || '';
+  document.getElementById('guidance-excludes').value = g.excludes || '';
+}
+
+async function saveGuidance() {
+  if (!apiConfigured()) return;
+  const topicCode = document.getElementById('guidance-topic-sel').value;
+  const guidance = {
+    includes: document.getElementById('guidance-includes').value.trim(),
+    excludes: document.getElementById('guidance-excludes').value.trim()
+  };
+  setStatus('guidance-status','Saving…','loading');
+  try {
+    const res = await fetch(`${API_BASE}/api/update-outcomes`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ mode:'save-guidance', topicCode, guidance })
+    });
+    if (!res.ok) throw new Error('save failed');
+    if (DATA.topics[topicCode]) DATA.topics[topicCode].guidance = guidance;
+    setStatus('guidance-status','Saved! Future imports will use this guidance.','success');
+    logActivity('edit_bill', `Updated classification guidance for "${DATA.topics[topicCode]?.label || topicCode}"`);
+  } catch(err) { setStatus('guidance-status',`Failed: ${err.message}`,'error'); }
+}
+
+async function handleSessionSweep() {
+  if (!apiConfigured()) return;
+  const stateCode = document.getElementById('session-end-state').value;
+  const fromOutcome = document.getElementById('sweep-from').value;
+  const toOutcome = document.getElementById('sweep-to').value;
+  const stateData = DATA.states[stateCode];
+  if (!stateData) return;
+
+  const count = stateData.legislators.reduce((n,l) => n+l.bills.filter(b=>b.outcome===fromOutcome).length, 0);
+  if (count===0) { setStatus('session-end-status',`No bills with outcome "${fromOutcome}" found.`,'error'); return; }
+  if (!confirm(`Update ${count} bill${count===1?'':'s'} from "${fromOutcome}" → "${toOutcome}" in ${stateData.name}?`)) return;
+
+  setStatus('session-end-status',`Updating ${count} bills…`,'loading');
+  try {
+    const res = await fetch(`${API_BASE}/api/update-outcomes`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({mode:'sweep',stateCode,fromOutcome,toOutcome})
+    });
+    if (!res.ok) throw new Error('update failed');
+    const result = await res.json();
+    stateData.legislators.forEach(l=>l.bills.forEach(b=>{if(b.outcome===fromOutcome)b.outcome=toOutcome;}));
+    setStatus('session-end-status',`✓ ${result.changedCount} bills updated.`,'success');
+    logActivity('edit_bill',`Session sweep: ${result.changedCount} bills → ${toOutcome} in ${stateCode}`);
+    render(); renderStats();
+  } catch(err) { setStatus('session-end-status',`Failed: ${err.message}`,'error'); }
+}
+
+function loadPendingBills() {
+  const stateCode = document.getElementById('session-end-state').value;
+  const stateData = DATA.states[stateCode];
+  const container = document.getElementById('pending-bills-list');
+  if (!stateData) return;
+
+  const allNonPassed = stateData.legislators.flatMap(l =>
+    l.bills.filter(b=>b.outcome!=='passed').map(b=>({l,b}))
+  );
+
+  if (allNonPassed.length===0) {
+    container.innerHTML='<p style="font-size:13px;color:var(--text-secondary);padding:8px 0;">No non-passed bills found.</p>';
+    return;
+  }
+
+  container.innerHTML = allNonPassed.slice(0,150).map(({l,b})=>`
+    <div class="pending-row">
+      <div class="pending-row-title" title="${escapeHtml(b.title)}">${escapeHtml(b.title)}</div>
+      <span class="pending-row-who">${escapeHtml(l.name.replace(/^(sen\.|del\.|rep\.)\s*/i,''))}</span>
+      <select data-bill-id="${b.id}" style="height:28px;font-size:11.5px;flex:0 0 120px;">
+        <option value="failed" ${b.outcome==='failed'?'selected':''}>Did not pass</option>
+        <option value="passed" ${b.outcome==='passed'?'selected':''}>Passed</option>
+      </select>
+    </div>`).join('');
+
+  const saveBtn = document.createElement('button');
+  saveBtn.className='btn'; saveBtn.style.cssText='height:36px;margin-top:10px;';
+  saveBtn.textContent=`Save all ${allNonPassed.length} updates`;
+  saveBtn.addEventListener('click', async () => {
+    if (!apiConfigured()) return;
+    const updates = Array.from(container.querySelectorAll('[data-bill-id]'))
+      .map(sel=>({billId:sel.dataset.billId,outcome:sel.value}));
+    setStatus('session-end-status','Saving…','loading');
+    try {
+      const res = await fetch(`${API_BASE}/api/update-outcomes`,{
+        method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({mode:'bulk',updates})
+      });
+      if (!res.ok) throw new Error('update failed');
+      const result = await res.json();
+      const billMap={};
+      Object.values(DATA.states).forEach(st=>st.legislators.forEach(l=>l.bills.forEach(b=>{billMap[b.id]=b;})));
+      updates.forEach(({billId,outcome})=>{if(billMap[billId])billMap[billId].outcome=outcome;});
+      setStatus('session-end-status',`✓ ${result.changedCount} bills updated.`,'success');
+      render(); renderStats();
+    } catch(err) { setStatus('session-end-status',`Failed: ${err.message}`,'error'); }
+  });
+  container.appendChild(saveBtn);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 4+5. ROSTER COVERAGE — injected into Stats tab
+// ─────────────────────────────────────────────────────────────────────────────
+function renderRosterCoverage(stateCode, stateData) {
+  const total = stateData.legislators.length;
+  if (total===0) return '';
+  const done = stateData.legislators.filter(l=>l.bills.length>=4);
+  const partial = stateData.legislators.filter(l=>l.bills.length>0&&l.bills.length<4);
+  const empty = stateData.legislators.filter(l=>l.bills.length===0);
+  const pct = Math.round((done.length/total)*100);
+
+  return `<div class="stats-section" style="margin-bottom:1rem;">
+    <h3>Roster coverage — ${escapeHtml(stateData.name)}</h3>
+    <p class="section-sub">How completely the database covers each legislator (4+ bills = strong data).</p>
+    <div style="display:flex;gap:16px;margin-bottom:10px;flex-wrap:wrap;">
+      <span style="font-size:13px;"><strong style="color:var(--green);">${done.length}</strong> strong (4+ bills)</span>
+      <span style="font-size:13px;"><strong style="color:var(--amber);">${partial.length}</strong> partial (1–3 bills)</span>
+      <span style="font-size:13px;"><strong style="color:var(--text-tertiary);">${empty.length}</strong> not imported</span>
+      <span style="font-size:13px;margin-left:auto;font-weight:700;color:var(--blue-900);">${pct}% complete</span>
+    </div>
+    <div style="height:8px;background:var(--bg);border-radius:4px;overflow:hidden;margin-bottom:14px;">
+      <div style="height:100%;width:${pct}%;background:var(--green);border-radius:4px;"></div>
+    </div>
+    <div class="progress-grid">
+      ${[...done,...partial,...empty].map(l=>{
+        const cls=l.bills.length>=4?'done':l.bills.length>0?'partial':'empty-leg';
+        return `<div class="progress-item ${cls}">
+          <div class="progress-dot ${cls}"></div>
+          <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11.5px;">${escapeHtml(l.name.replace(/^(sen\.|del\.|rep\.)\s*/i,''))}</span>
+          <span style="font-size:10px;color:var(--text-tertiary);flex-shrink:0;margin-left:auto;">${l.bills.length}</span>
+        </div>`;
+      }).join('')}
+    </div>
+  </div>`;
 }
 
 init();
