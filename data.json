@@ -3389,6 +3389,168 @@
               "outcome": "failed"
             }
           ]
+        },
+        {
+          "id": "L052",
+          "name": "Anthony Muse",
+          "party": "D",
+          "chamber": "senate",
+          "district": "SD-026",
+          "bills": [
+            {
+              "id": "B0392",
+              "title": "Unhoused Individuals - Rights and Affirmative Defense",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "fines-penalties",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0393",
+              "title": "Criminal Procedure - Incompetency to Stand Trial Dismissal",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0394",
+              "title": "Election Law - Incarcerated Individuals - Voter Hotline and Voting Eligibility (Voting Rights for All Act)",
+              "topic": "election-law-voter-registration",
+              "subtopic": "voter-eligibility-verification",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0395",
+              "title": "Prince George's County - Point-to-Point Speed Monitoring Systems - Maryland Route 210",
+              "topic": "vehicle-transportation-law",
+              "subtopic": "crosswalk-monitoring-systems",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0396",
+              "title": "Corporations and Associations - Methodist Churches - Trust Requirement Repeal and Disaffiliation",
+              "topic": "religious-organizations-property",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0397",
+              "title": "Estates and Trusts - Interpretation of Wills - Evidence of Intent (Granny's Law)",
+              "topic": "estates-probate",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0398",
+              "title": "Prince George's County - Speed Monitoring Systems - Maryland Route 210 - Penalties",
+              "topic": "vehicle-transportation-law",
+              "subtopic": "crosswalk-monitoring-systems",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0399",
+              "title": "Family Law - Child Support - Assignment of Rights",
+              "topic": "family-law",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0400",
+              "title": "Criminal Procedure - Expungement - No Finding and Case Terminated Without Finding",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "expungement",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0401",
+              "title": "Child Support - Suspension of Driver's Licenses",
+              "topic": "family-law",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0402",
+              "title": "Landlord and Tenant - Residential Leases and Holdover Tenancies - Local Good Cause Termination (Good Cause Eviction)",
+              "topic": "land-use-property-rights",
+              "subtopic": "residential-lease-fee-disclosures",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0403",
+              "title": "Municipalities - Vagrancy - Repeal of Authority to Prohibit",
+              "topic": "legal",
+              "subtopic": "authority",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0404",
+              "title": "Commission to Examine the Expungement Laws of Maryland",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "expungement",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0405",
+              "title": "State Government – Maryland Reparations Commission – Revisions",
+              "topic": "government-administration",
+              "subtopic": "agency-operations",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0406",
+              "title": "Natural Resources - Striped Bass Recreational Seasons and Fisheries Regulations",
+              "topic": "environment",
+              "subtopic": "conservation",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0407",
+              "title": "Consumer Protection and Labor and Employment - Food Service Facilities and Minimum Wage",
+              "topic": "labor-employment-rights",
+              "subtopic": "wages",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0408",
+              "title": "Common Ownership Communities - Ombudsman Unit, Governing Document Database, and Local Commissions",
+              "topic": "land-use-property-rights",
+              "subtopic": "hoa",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            }
+          ]
         }
       ]
     }
@@ -3611,7 +3773,8 @@
       "label": "Legal",
       "subtopics": {
         "immunity": "Immunity",
-        "filing": "Filing"
+        "filing": "Filing",
+        "authority": "Authority"
       }
     },
     "study": {
@@ -3621,11 +3784,15 @@
     "housing-assistance-counseling": {
       "label": "Housing Assistance & Counseling",
       "subtopics": {}
+    },
+    "religious-organizations-property": {
+      "label": "Religious Organizations & Property",
+      "subtopics": {}
     }
   },
   "meta": {
-    "nextLegislatorId": 52,
-    "nextBillId": 392
+    "nextLegislatorId": 53,
+    "nextBillId": 409
   },
   "sponsors": {
     "L017": {
