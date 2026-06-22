@@ -3164,6 +3164,231 @@
               "outcome": "failed"
             }
           ]
+        },
+        {
+          "id": "L051",
+          "name": "Benjamin Kramer",
+          "party": "D",
+          "chamber": "senate",
+          "district": "SD-019",
+          "bills": [
+            {
+              "id": "B0368",
+              "title": "Unemployment Insurance Modernization Act of 2026",
+              "topic": "workforce",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0369",
+              "title": "State Personnel - Collective Bargaining - Nontenure Track Faculty",
+              "topic": "labor-employment-rights",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0370",
+              "title": "State Personnel - Collective Bargaining - Graduate Assistants",
+              "topic": "labor-employment-rights",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0371",
+              "title": "Collective Bargaining - Alcohol, Tobacco, and Cannabis Commission - Police Officers",
+              "topic": "labor-employment-rights",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0372",
+              "title": "Condominiums - Property Insurance Deductibles - Unit Owner Responsibility",
+              "topic": "land-use-property-rights",
+              "subtopic": "insurance",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0373",
+              "title": "Interstate Podiatric Medical Licensure Compact",
+              "topic": "healthcare",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0374",
+              "title": "Research Facilities and Testing Facilities That Use Animals - Adoption and Reporting Requirements",
+              "topic": "study",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0375",
+              "title": "Research Facilities and Testing Facilities That Use Animals - Prohibitions and Adoption Requirements (Animal Research Modernization and Best Practices Act of 2026)",
+              "topic": "study",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0376",
+              "title": "Certificate of Need - Intermediate Health Care Facilities",
+              "topic": "healthcare",
+              "subtopic": "hospital-funding",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0377",
+              "title": "Employment Standards - Firefighters - Payment of Wages and Payroll Information",
+              "topic": "labor-employment-rights",
+              "subtopic": "wages",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0378",
+              "title": "Property Tax - Charter Counties - Application of County Tax Limitation on Public Safety Budget",
+              "topic": "taxation",
+              "subtopic": "property-tax-credit",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0379",
+              "title": "Health Insurance - Material Changes to Provider Networks - Notification and Special Enrollment Period",
+              "topic": "healthcare",
+              "subtopic": "insurance-coverage",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0380",
+              "title": "Business Regulation - Collection Agencies and Property Managers",
+              "topic": "business-regulation",
+              "subtopic": "license",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0381",
+              "title": "Study on Greenhouse Gas Emissions Economy-Wide Cap-and-Invest Program (Maryland Climate Crisis Equity Act)",
+              "topic": "environment",
+              "subtopic": "clean-energy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0382",
+              "title": "Institutions of Postsecondary Education – Institutional Debt – Report",
+              "topic": "education",
+              "subtopic": "higher-ed-funding",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0383",
+              "title": "Information Technology - State and Higher Education E-Mail - Requirements",
+              "topic": "government-administration",
+              "subtopic": "agency-operations",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0384",
+              "title": "Financial Institutions - Payment Stablecoin Services - Establishment and Regulation (Maryland Stablecoin Act)",
+              "topic": "business-regulation",
+              "subtopic": "license",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0385",
+              "title": "Nursing Homes - Direct Care Wages and Benefits and Cost Reports",
+              "topic": "healthcare",
+              "subtopic": "hospital-funding",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0386",
+              "title": "Climate Change, Homeowner's Insurance, and Emergency Management - Study",
+              "topic": "study",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0387",
+              "title": "Transportation Network Companies - Deactivation of Operators",
+              "topic": "labor-gig-economy",
+              "subtopic": "gig-worker-minimum-pay",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0388",
+              "title": "Fiduciary Institutions - Exploitation of Seniors and Vulnerable Adults - Protections and Required Referral (Vulnerable Adult Banking Protection Act)",
+              "topic": "consumer-protection",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0389",
+              "title": "Workgroup for an Inclusive State Workplace - Established",
+              "topic": "workforce",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0390",
+              "title": "Financial Institutions and Activities - Licensing Requirements and Regulation of Commercial Financing",
+              "topic": "business-regulation",
+              "subtopic": "license",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0391",
+              "title": "Income Tax - Credit for Student Loan Debt of Educators Working in Public Schools",
+              "topic": "taxation",
+              "subtopic": "tax-credits-incentives",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            }
+          ]
         }
       ]
     }
@@ -3399,8 +3624,8 @@
     }
   },
   "meta": {
-    "nextLegislatorId": 51,
-    "nextBillId": 368
+    "nextLegislatorId": 52,
+    "nextBillId": 392
   },
   "sponsors": {
     "L017": {
