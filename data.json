@@ -2084,6 +2084,24 @@
               "outcome": "failed"
             }
           ]
+        },
+        {
+          "id": "L038",
+          "name": "Kriselda Valderrama",
+          "party": "D",
+          "chamber": "house",
+          "district": "HD-026",
+          "bills": [
+            {
+              "id": "B0261",
+              "title": "Certified Public Accountants - Licensure - Qualifications",
+              "topic": "business-regulation",
+              "subtopic": "license",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            }
+          ]
         }
       ]
     }
@@ -2304,8 +2322,8 @@
     }
   },
   "meta": {
-    "nextLegislatorId": 38,
-    "nextBillId": 261
+    "nextLegislatorId": 39,
+    "nextBillId": 262
   },
   "sponsors": {
     "L017": {
