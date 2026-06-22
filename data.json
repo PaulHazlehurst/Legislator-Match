@@ -3802,6 +3802,13 @@
   },
   "activityLog": [
     {
+      "id": "mqplwyr6",
+      "ts": "2026-06-22T19:26:55.218Z",
+      "action": "import",
+      "detail": "Imported 17 bills for Anthony Muse",
+      "user": "Paul"
+    },
+    {
       "id": "mqpltl5q",
       "ts": "2026-06-22T19:24:17.630Z",
       "action": "import",
