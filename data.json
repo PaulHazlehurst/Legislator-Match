@@ -2849,6 +2849,13 @@
   },
   "activityLog": [
     {
+      "id": "mqpggspa",
+      "ts": "2026-06-22T16:54:22.798Z",
+      "action": "import",
+      "detail": "Imported 4 bills for Wayne Hartman",
+      "user": "Paul"
+    },
+    {
       "id": "mqpgfrme",
       "ts": "2026-06-22T16:53:34.742Z",
       "action": "import",
