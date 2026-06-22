@@ -2465,6 +2465,13 @@
   },
   "activityLog": [
     {
+      "id": "mqpdnnr3",
+      "ts": "2026-06-22T15:35:44.127Z",
+      "action": "import",
+      "detail": "Imported 8 bills for Joanne Benson",
+      "user": "Paul"
+    },
+    {
       "id": "mqpdktvc",
       "ts": "2026-06-22T15:33:32.088Z",
       "action": "import",
