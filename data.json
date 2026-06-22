@@ -2246,6 +2246,69 @@
               "outcome": "failed"
             }
           ]
+        },
+        {
+          "id": "L042",
+          "name": "Jay Jacobs",
+          "party": "R",
+          "chamber": "house",
+          "district": "HD-036",
+          "bills": [
+            {
+              "id": "B0275",
+              "title": "Oysters - Rotational Harvest - Pilot Program",
+              "topic": "environment",
+              "subtopic": "conservation",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0276",
+              "title": "Consumer Protection - Agricultural Equipment Warranties",
+              "topic": "consumer-protection",
+              "subtopic": "producer-regulation",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0277",
+              "title": "Shellfish Aquaculture - Penalties - Suspension or Revocation of Permit or Registration Card",
+              "topic": "business-regulation",
+              "subtopic": "license",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0278",
+              "title": "Public Safety - Stationary Energy Storage Systems",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "fines-penalties",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0279",
+              "title": "Natural Resources - Recreational Fishing - Mobile Reporting Application",
+              "topic": "environment",
+              "subtopic": "licensing",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0280",
+              "title": "Chesapeake Bay - Enhancement Program and Maryland Seafood Industry Financial Assistance Fund - Established",
+              "topic": "environment",
+              "subtopic": "conservation",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            }
+          ]
         }
       ]
     }
@@ -2274,7 +2337,8 @@
         "clean-energy": "Clean energy",
         "conservation": "Conservation",
         "waste-pollution": "Waste & pollution",
-        "funds": "Funds"
+        "funds": "Funds",
+        "licensing": "Licensing"
       }
     },
     "education": {
@@ -2472,8 +2536,8 @@
     }
   },
   "meta": {
-    "nextLegislatorId": 42,
-    "nextBillId": 275
+    "nextLegislatorId": 43,
+    "nextBillId": 281
   },
   "sponsors": {
     "L017": {
