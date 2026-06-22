@@ -2109,6 +2109,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "failed"
+            },
+            {
+              "id": "B0263",
+              "title": "State Finance and Procurement - Prevailing Wage Rate - Calculation",
+              "topic": "labor-employment-rights",
+              "subtopic": "wages",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
             }
           ]
         }
@@ -2276,7 +2285,8 @@
         "overtime-pay-exemptions": "Overtime pay exemptions",
         "employee-paid-leave": "Employee paid leave",
         "training-repayment-agreements": "Training repayment agreements",
-        "worksite-enforcement-complaint-investigation": "Worksite enforcement & complaint investigation"
+        "worksite-enforcement-complaint-investigation": "Worksite enforcement & complaint investigation",
+        "wages": "Wages"
       }
     },
     "food-security-nutrition": {
@@ -2332,7 +2342,7 @@
   },
   "meta": {
     "nextLegislatorId": 39,
-    "nextBillId": 263
+    "nextBillId": 264
   },
   "sponsors": {
     "L017": {
