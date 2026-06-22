@@ -177,7 +177,15 @@ async function fetchBills(req, res, legiscanKey, anthropicKey) {
     billNumber: bill.bill_number,
     year: billYear(bill) || TARGET_YEAR,
     legiscanUrl: bill.url || bill.state_link,
-    statusCode: bill.status, // 4 = Passed, 5 = Vetoed, 6 = Failed, else pending/in-progress
+    statusCode: bill.status,
+    // Option 2: extract LegiScan's own description — far more informative
+    // than the title alone for classification purposes.
+    description: bill.description || null,
+    // Option 1: extract LegiScan's own subject tags — they've already run
+    // their own classification and these are a strong prior signal.
+    legiscanSubjects: Array.isArray(bill.subjects)
+      ? bill.subjects.map(s => s.subject_name).filter(Boolean)
+      : [],
     topicMatch: null,
     subtopicMatch: null,
     suggestedTopicLabel: null,
@@ -192,33 +200,76 @@ async function fetchBills(req, res, legiscanKey, anthropicKey) {
 }
 
 async function classifyBillsWithClaude(bills, knownTopics, apiKey) {
+  // Option 5: Build rich per-topic guidance rather than just listing labels.
+  // Explicitly tell Claude what belongs in each topic AND common
+  // things that do NOT belong, since those edge cases cause most errors.
+  const TOPIC_GUIDANCE = {
+    workforce: {
+      includes: 'job training, apprenticeships, workforce development programs, employer hiring incentives, vocational education, skills training, labor market programs, career readiness, youth employment, unemployment insurance reform, job placement services',
+      excludes: 'veterans benefits (even if veterans are mentioned as a population), disability accommodations, general economic development, business licensing, tax credits that are not specifically tied to hiring/employment'
+    },
+    healthcare: {
+      includes: 'health insurance coverage, Medicaid/Medicare policy, hospital funding, mental health access, prescription drug policy, telehealth, nursing home standards, public health programs, health equity, patient rights',
+      excludes: 'workplace safety (unless specifically about healthcare workers), veterinary medicine, health-related tax credits that are primarily fiscal policy, general appropriations that happen to mention health'
+    },
+    environment: {
+      includes: 'clean energy, renewable energy, emissions standards, conservation, water quality, wildlife protection, pollution control, climate policy, land use for environmental purposes, recycling, stormwater, forest preservation',
+      excludes: 'agricultural policy that is primarily about farm economics, mining/drilling that is primarily an economic bill, transportation infrastructure (unless specifically about emissions or EV)'
+    },
+    education: {
+      includes: 'K-12 school funding, teacher pay and certification, curriculum standards, higher education tuition and aid, school construction, special education, early childhood education, school choice, charter schools, literacy programs',
+      excludes: 'workforce training programs (even if in schools), student loan policy that is primarily financial services, general appropriations that happen to fund schools'
+    }
+  };
+
   const topicList = Object.entries(knownTopics || {}).map(([code, t]) => {
-    const subs = Object.entries(t.subtopics || {}).map(([sc, sl]) => `${sc} (${sl})`).join(', ');
-    return `- ${code} (${t.label})${subs ? ': subtopics = ' + subs : ''}`;
-  }).join('\n');
+    const subs = Object.entries(t.subtopics || {}).map(([sc, sl]) => `  • ${sc}: ${sl}`).join('\n');
+    const guidance = TOPIC_GUIDANCE[code];
+    return [
+      `TOPIC: ${code} — "${t.label}"`,
+      guidance ? `  Includes: ${guidance.includes}` : '',
+      guidance ? `  Does NOT include: ${guidance.excludes}` : '',
+      subs ? `  Subtopics:\n${subs}` : ''
+    ].filter(Boolean).join('\n');
+  }).join('\n\n');
 
-  const systemPrompt = `You classify state legislative bill titles into topic categories for a consulting firm's lobbying database.
+  const systemPrompt = `You are classifying Maryland state legislative bills for a professional lobbying firm. Your classifications directly affect which legislators get recommended to clients, so accuracy is critical.
 
-CRITICAL RULES — read carefully:
-1. Only match a topic if the bill is CLEARLY and DIRECTLY about that topic. A bill about tax credits for veterans is NOT a workforce bill. A bill about nursing home membership is NOT a healthcare bill unless it's about patient care access or insurance.
-2. If the bill title is ambiguous, administrative, or doesn't clearly fit any topic: return null for topicMatch.
-3. NEVER guess. A null is far better than a wrong classification — the user will classify unmatched bills manually.
-4. Return a confidence: "high" means clearly relevant, "low" means loosely relevant (user should double-check), null means no match.
-5. Do NOT try to suggest new topic labels unless the bill is clearly about a real policy area not covered at all.
+You will receive bills with THREE pieces of information:
+1. The official bill TITLE (can be misleading — titles are formal/legal and often don't reveal the real subject)
+2. The DESCRIPTION — a plain-language summary of what the bill actually does (more reliable than the title)
+3. LEGISCAN SUBJECT TAGS — LegiScan's own classification of the bill (use as a strong prior signal)
 
-The available topics in this system are:
-${topicList || '(none yet — return null for all)'}
+Use ALL THREE to determine the correct topic. When the description and LegiScan subjects agree, that's a high-confidence classification. When they conflict with the title, trust the description and subjects over the title.
 
-You will receive a JSON array of bill titles. Respond with ONLY a JSON array, same length and order, no markdown fences:
+CRITICAL RULES:
+1. Only match a topic if the bill CLEARLY belongs there based on its actual policy content.
+2. A bill affecting a particular population (veterans, seniors, teachers) does NOT automatically belong in any topic — what matters is what the bill actually DOES, not who it affects.
+3. If a bill clearly belongs in a topic we don't have defined yet, suggest a new topic label.
+4. If a bill doesn't fit any topic at all (procedural bills, administrative changes, naming bills), return null — do NOT force a fit.
+5. Return confidence: "high" = clearly fits, "low" = loosely fits or you're not certain, null = no match.
+6. A null classification is far better than a wrong one — the user will classify unmatched bills manually.
+
+${topicList ? `THE AVAILABLE TOPICS:\n\n${topicList}` : 'No topics defined yet — return null for all.'}
+
+Respond with ONLY a JSON array (same length and order as the input), no markdown fences, no explanation:
 [{
   "topicMatch": "existing topic code or null",
   "subtopicMatch": "existing subtopic code or null",
   "confidence": "high" | "low" | null,
-  "suggestedTopicLabel": "only if clearly a new distinct policy area, otherwise null",
-  "suggestedSubtopicLabel": "only if clearly a new subtopic, otherwise null"
+  "suggestedTopicLabel": "short label for a new topic if needed, otherwise null",
+  "suggestedSubtopicLabel": "short label for a new subtopic if needed, otherwise null",
+  "reasoning": "one sentence explaining your classification or why you returned null"
 }]`;
 
-  const userPayload = bills.map(b => ({ title: b.title }));
+  // Send all three signals per bill — much richer than title alone
+  const userPayload = bills.map(b => ({
+    title: b.title,
+    description: b.description || null,
+    legiscanSubjects: b.legiscanSubjects && b.legiscanSubjects.length > 0
+      ? b.legiscanSubjects
+      : null
+  }));
 
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
@@ -229,13 +280,13 @@ You will receive a JSON array of bill titles. Respond with ONLY a JSON array, sa
     },
     body: JSON.stringify({
       model: 'claude-sonnet-4-6',
-      max_tokens: 2000,
+      max_tokens: 4000, // more output needed now that each response includes reasoning
       system: systemPrompt,
       messages: [{ role: 'user', content: JSON.stringify(userPayload) }]
     })
   });
 
-  if (!response.ok) return bills; // classification failing shouldn't block the import
+  if (!response.ok) return bills;
 
   const data = await response.json();
   const rawText = data.content.find(b => b.type === 'text')?.text || '[]';
@@ -250,9 +301,9 @@ You will receive a JSON array of bill titles. Respond with ONLY a JSON array, sa
         topicMatch: c.topicMatch || null,
         subtopicMatch: c.subtopicMatch || null,
         confidence: c.confidence || null,
+        reasoning: c.reasoning || null, // surface this in the UI so users can see why
         suggestedTopicLabel: c.suggestedTopicLabel || null,
         suggestedSubtopicLabel: c.suggestedSubtopicLabel || null,
-        // Flag for review if no match OR low confidence
         needsReview: !c.topicMatch || c.confidence === 'low'
       };
     });
