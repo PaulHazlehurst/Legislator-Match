@@ -2831,6 +2831,105 @@
               "outcome": "passed"
             }
           ]
+        },
+        {
+          "id": "L049",
+          "name": "Marvin Holmes",
+          "party": "D",
+          "chamber": "house",
+          "district": "HD-023",
+          "bills": [
+            {
+              "id": "B0333",
+              "title": "Common Ownership Communities - Oversight, Governing Document Database, and Local Commissions",
+              "topic": "land-use-property-rights",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0334",
+              "title": "Condominiums - Mandatory Insurance Coverage",
+              "topic": "land-use-property-rights",
+              "subtopic": "insurance",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0335",
+              "title": "Real Property - Governing Bodies of Common Ownership Communities - Member Training",
+              "topic": "land-use-property-rights",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0336",
+              "title": "Residential Owners in Common Ownership Communities - Bill of Rights",
+              "topic": "land-use-property-rights",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0337",
+              "title": "Real Property - Condominiums and Homeowners Associations - Governing Bodies and Annual Meetings",
+              "topic": "land-use-property-rights",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0338",
+              "title": "Real Property - Regulation of Common Ownership Community Managers",
+              "topic": "business-regulation",
+              "subtopic": "license",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0339",
+              "title": "Common Ownership Communities – Candidate or Proposition Signs – Display Period",
+              "topic": "land-use-property-rights",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0340",
+              "title": "Vehicle Laws - Electric Vehicle Dealer Licenses - City of Bowie",
+              "topic": "vehicle-transportation-law",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0341",
+              "title": "Real Property - Recordation and Land Records - Revisions",
+              "topic": "land-use-property-rights",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0342",
+              "title": "Real Property - Condominiums and Homeowners Associations - Elections",
+              "topic": "land-use-property-rights",
+              "subtopic": "hoa",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            }
+          ]
         }
       ]
     }
@@ -2919,7 +3018,9 @@
         "training-programs": "training-programs",
         "residential-lease-fee-disclosures": "Residential lease fee disclosures",
         "public-land-acquisition": "Public land acquisition",
-        "zoning": "Zoning"
+        "zoning": "Zoning",
+        "insurance": "Insurance",
+        "hoa": "HOA"
       }
     },
     "alcoholic-beverages-licensing": {
@@ -3063,8 +3164,8 @@
     }
   },
   "meta": {
-    "nextLegislatorId": 49,
-    "nextBillId": 333
+    "nextLegislatorId": 50,
+    "nextBillId": 343
   },
   "sponsors": {
     "L017": {
