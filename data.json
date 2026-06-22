@@ -2705,6 +2705,132 @@
               "outcome": "passed"
             }
           ]
+        },
+        {
+          "id": "L048",
+          "name": "Jon Cardin",
+          "party": "D",
+          "chamber": "house",
+          "district": "HD-011",
+          "bills": [
+            {
+              "id": "B0320",
+              "title": "Estates and Trusts - Venue for Administrative and Judicial Probate and Application of Inheritance Tax",
+              "topic": "estates-probate",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0321",
+              "title": "Police Discipline - Order to Show Cause",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "police-accountability",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0322",
+              "title": "Estates and Trusts - Fiduciaries - Attorney-Client Privilege",
+              "topic": "estates-probate",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0323",
+              "title": "Video Lottery Operations - Prohibitions on Campaign Contributions - Parity Act",
+              "topic": "election-law-voter-registration",
+              "subtopic": "campaign-contribution-restrictions",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0324",
+              "title": "Recordation and Transfer Taxes - Exemption for Related Business Entities - Common Law Trusts",
+              "topic": "taxation",
+              "subtopic": "tax-credits-incentives",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0325",
+              "title": "Inheritance Tax - Beneficiaries of Limited Means - Installment Payments",
+              "topic": "estates-probate",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0326",
+              "title": "Circuit Court Judges - Selection and Retention Elections",
+              "topic": "government-administration",
+              "subtopic": "constitution",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0327",
+              "title": "Motor Vehicles and Marine Vessels - Transfer-on-Death Designations",
+              "topic": "estates-probate",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0328",
+              "title": "Criminal Procedure - Incompetency to Stand Trial Dismissal",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0329",
+              "title": "Estates and Trusts - Spousal Lifetime Access Trusts",
+              "topic": "estates-probate",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0330",
+              "title": "Motor Vehicles - Automated Speed Enforcement - Improper Registration",
+              "topic": "vehicle-transportation-law",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0331",
+              "title": "Judges - Mandatory Retirement Age",
+              "topic": "government-administration",
+              "subtopic": "constitution",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0332",
+              "title": "Maryland Trust Act - In Terrorem Clause - Void",
+              "topic": "estates-probate",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            }
+          ]
         }
       ]
     }
@@ -2937,8 +3063,8 @@
     }
   },
   "meta": {
-    "nextLegislatorId": 48,
-    "nextBillId": 320
+    "nextLegislatorId": 49,
+    "nextBillId": 333
   },
   "sponsors": {
     "L017": {
