@@ -2120,6 +2120,33 @@
               "outcome": "failed"
             }
           ]
+        },
+        {
+          "id": "L039",
+          "name": "Veronica Turner",
+          "party": "D",
+          "chamber": "house",
+          "district": "HD-026",
+          "bills": [
+            {
+              "id": "B0264",
+              "title": "Public Health - Drugs and Medical Devices Used in Death Sentences - Prohibition",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "fines-penalties",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0265",
+              "title": "Employment Discrimination - School Employees - Use of Cannabis",
+              "topic": "labor-employment-rights",
+              "subtopic": "cannabis-discrimination",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            }
+          ]
         }
       ]
     }
@@ -2286,7 +2313,8 @@
         "employee-paid-leave": "Employee paid leave",
         "training-repayment-agreements": "Training repayment agreements",
         "worksite-enforcement-complaint-investigation": "Worksite enforcement & complaint investigation",
-        "wages": "Wages"
+        "wages": "Wages",
+        "cannabis-discrimination": "Cannabis Discrimination"
       }
     },
     "food-security-nutrition": {
@@ -2341,8 +2369,8 @@
     }
   },
   "meta": {
-    "nextLegislatorId": 39,
-    "nextBillId": 264
+    "nextLegislatorId": 40,
+    "nextBillId": 266
   },
   "sponsors": {
     "L017": {
