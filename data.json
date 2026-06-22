@@ -2426,6 +2426,141 @@
               "outcome": "failed"
             }
           ]
+        },
+        {
+          "id": "L044",
+          "name": "Samuel Rosenberg",
+          "party": "D",
+          "chamber": "house",
+          "district": "HD-041",
+          "bills": [
+            {
+              "id": "B0293",
+              "title": "Real Property - Dedication - Roads",
+              "topic": "land-use-property-rights",
+              "subtopic": "zoning",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0294",
+              "title": "Housing Development Projects - Housing Counseling Services",
+              "topic": "housing-assistance-counseling",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0295",
+              "title": "Business Regulation - Sale of Motor Fuel - Pricing Signage",
+              "topic": "consumer-protection",
+              "subtopic": "fair-pricing-market-competition",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0296",
+              "title": "Baltimore City - Alcoholic Beverages - License Extension",
+              "topic": "alcoholic-beverages-licensing",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0297",
+              "title": "Health Facilities - Certified Recovery Residences - Unannounced Inspections",
+              "topic": "healthcare",
+              "subtopic": "access-equity",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0298",
+              "title": "Criminal Procedure - Immigration Arrest - Immunity in Connection With Court Proceeding",
+              "topic": "legal",
+              "subtopic": "immunity",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0299",
+              "title": "Charitable Organizations - Charitable Donation and Tax-Exempt Status - Revocation (Keeping Charities Nonpartisan Act of 2026)",
+              "topic": "election-law-voter-registration",
+              "subtopic": "campaign-contribution-restrictions",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0300",
+              "title": "Civil Actions - Maryland Uniform Public Expression Protection Act",
+              "topic": "legal",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0301",
+              "title": "Department of the Environment - Federal Environmental Policy - Reporting",
+              "topic": "environment",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0302",
+              "title": "Algorithmic Addiction Fund – Establishment",
+              "topic": "healthcare",
+              "subtopic": "access-equity",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0303",
+              "title": "Criminal Law - Obstruction or Interference With Exercise of Religious Beliefs - Prohibition",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "fines-penalties",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0304",
+              "title": "Walter Sondheim Jr. Public Service Internship Scholarship Program - Funding",
+              "topic": "education",
+              "subtopic": "higher-ed-funding",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0305",
+              "title": "Certificates of Birth - Filing - Time Period",
+              "topic": "legal",
+              "subtopic": "filing",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0306",
+              "title": "Condominiums - Buildings More Than 40 Years Old - Study",
+              "topic": "study",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            }
+          ]
         }
       ]
     }
@@ -2644,17 +2779,22 @@
     "legal": {
       "label": "Legal",
       "subtopics": {
-        "immunity": "Immunity"
+        "immunity": "Immunity",
+        "filing": "Filing"
       }
     },
     "study": {
       "label": "Study",
       "subtopics": {}
+    },
+    "housing-assistance-counseling": {
+      "label": "Housing Assistance & Counseling",
+      "subtopics": {}
     }
   },
   "meta": {
-    "nextLegislatorId": 44,
-    "nextBillId": 293
+    "nextLegislatorId": 45,
+    "nextBillId": 307
   },
   "sponsors": {
     "L017": {
