@@ -4,667 +4,2425 @@
       "name": "Maryland",
       "legislators": [
         {
-          "id": "L001",
-          "name": "Sen. J. Carter",
-          "party": "D",
-          "chamber": "senate",
-          "district": "13",
-          "bills": [
-            {
-              "id": "B0001",
-              "title": "Workforce Apprenticeship Expansion Act",
-              "topic": "workforce",
-              "subtopic": "training-programs",
-              "year": 2025,
-              "role": "sponsor",
-              "outcome": "passed"
-            },
-            {
-              "id": "B0002",
-              "title": "Manufacturing Jobs Tax Credit",
-              "topic": "workforce",
-              "subtopic": "employer-incentives",
-              "year": 2025,
-              "role": "sponsor",
-              "outcome": "passed"
-            },
-            {
-              "id": "B0003",
-              "title": "Youth Job Corps Funding Act",
-              "topic": "workforce",
-              "subtopic": "grants",
-              "year": 2024,
-              "role": "sponsor",
-              "outcome": "passed"
-            },
-            {
-              "id": "B0004",
-              "title": "Skills Training Grant Program",
-              "topic": "workforce",
-              "subtopic": "grants",
-              "year": 2024,
-              "role": "co-sponsor",
-              "outcome": "failed"
-            },
-            {
-              "id": "B0005",
-              "title": "Career Readiness in Schools Act",
-              "topic": "workforce",
-              "subtopic": "training-programs",
-              "year": 2023,
-              "role": "sponsor",
-              "outcome": "failed"
-            },
-            {
-              "id": "B0006",
-              "title": "Veterans Workforce Reentry Program",
-              "topic": "workforce",
-              "subtopic": "training-programs",
-              "year": 2023,
-              "role": "co-sponsor",
-              "outcome": "failed"
-            }
-          ]
-        },
-        {
-          "id": "L002",
-          "name": "Del. R. Singh",
-          "party": "D",
-          "chamber": "house",
-          "district": "21",
-          "bills": [
-            {
-              "id": "B0007",
-              "title": "Job Training Tax Credit Act",
-              "topic": "workforce",
-              "subtopic": "employer-incentives",
-              "year": 2025,
-              "role": "co-sponsor",
-              "outcome": "passed"
-            },
-            {
-              "id": "B0008",
-              "title": "Apprenticeship Pipeline Expansion",
-              "topic": "workforce",
-              "subtopic": "training-programs",
-              "year": 2025,
-              "role": "co-sponsor",
-              "outcome": "passed"
-            },
-            {
-              "id": "B0009",
-              "title": "Community College Workforce Partnership Act",
-              "topic": "workforce",
-              "subtopic": "training-programs",
-              "year": 2024,
-              "role": "sponsor",
-              "outcome": "failed"
-            },
-            {
-              "id": "B0010",
-              "title": "Small Business Hiring Incentive",
-              "topic": "workforce",
-              "subtopic": "employer-incentives",
-              "year": 2023,
-              "role": "co-sponsor",
-              "outcome": "failed"
-            }
-          ]
-        },
-        {
-          "id": "L003",
-          "name": "Sen. M. Doyle",
-          "party": "R",
-          "chamber": "senate",
-          "district": "5",
-          "bills": [
-            {
-              "id": "B0011",
-              "title": "Small Business Hiring Incentive",
-              "topic": "workforce",
-              "subtopic": "employer-incentives",
-              "year": 2024,
-              "role": "sponsor",
-              "outcome": "passed"
-            },
-            {
-              "id": "B0012",
-              "title": "Rural Workforce Development Grant",
-              "topic": "workforce",
-              "subtopic": "grants",
-              "year": 2024,
-              "role": "co-sponsor",
-              "outcome": "failed"
-            },
-            {
-              "id": "B0013",
-              "title": "Vocational Education Pilot Program",
-              "topic": "workforce",
-              "subtopic": "training-programs",
-              "year": 2023,
-              "role": "co-sponsor",
-              "outcome": "failed"
-            }
-          ]
-        },
-        {
-          "id": "L004",
-          "name": "Del. A. Reyes",
-          "party": "R",
-          "chamber": "house",
-          "district": "34",
-          "bills": [
-            {
-              "id": "B0014",
-              "title": "Vocational Education Pilot Program",
-              "topic": "workforce",
-              "subtopic": "training-programs",
-              "year": 2024,
-              "role": "co-sponsor",
-              "outcome": "failed"
-            }
-          ]
-        },
-        {
-          "id": "L005",
-          "name": "Sen. P. Howell",
-          "party": "D",
-          "chamber": "senate",
-          "district": "9",
-          "bills": [
-            {
-              "id": "B0015",
-              "title": "Rural Hospital Funding Act",
-              "topic": "healthcare",
-              "subtopic": "hospital-funding",
-              "year": 2025,
-              "role": "sponsor",
-              "outcome": "passed"
-            },
-            {
-              "id": "B0016",
-              "title": "Prescription Drug Affordability Expansion",
-              "topic": "healthcare",
-              "subtopic": "insurance-coverage",
-              "year": 2025,
-              "role": "sponsor",
-              "outcome": "passed"
-            },
-            {
-              "id": "B0017",
-              "title": "Maternal Health Equity Act",
-              "topic": "healthcare",
-              "subtopic": "access-equity",
-              "year": 2024,
-              "role": "sponsor",
-              "outcome": "passed"
-            },
-            {
-              "id": "B0018",
-              "title": "Mental Health Parity Enforcement Act",
-              "topic": "healthcare",
-              "subtopic": "insurance-coverage",
-              "year": 2024,
-              "role": "co-sponsor",
-              "outcome": "passed"
-            },
-            {
-              "id": "B0019",
-              "title": "Telehealth Access Expansion",
-              "topic": "healthcare",
-              "subtopic": "access-equity",
-              "year": 2023,
-              "role": "sponsor",
-              "outcome": "failed"
-            },
-            {
-              "id": "B0020",
-              "title": "Nursing Home Staffing Standards Act",
-              "topic": "healthcare",
-              "subtopic": "hospital-funding",
-              "year": 2023,
-              "role": "co-sponsor",
-              "outcome": "failed"
-            },
-            {
-              "id": "B0021",
-              "title": "Medicaid Dental Coverage Expansion",
-              "topic": "healthcare",
-              "subtopic": "insurance-coverage",
-              "year": 2022,
-              "role": "sponsor",
-              "outcome": "failed"
-            }
-          ]
-        },
-        {
-          "id": "L006",
-          "name": "Del. K. Brooks",
-          "party": "D",
-          "chamber": "house",
-          "district": "41",
-          "bills": [
-            {
-              "id": "B0022",
-              "title": "Mental Health Parity Enforcement Act",
-              "topic": "healthcare",
-              "subtopic": "insurance-coverage",
-              "year": 2025,
-              "role": "co-sponsor",
-              "outcome": "passed"
-            },
-            {
-              "id": "B0023",
-              "title": "School-Based Health Center Expansion",
-              "topic": "healthcare",
-              "subtopic": "access-equity",
-              "year": 2024,
-              "role": "sponsor",
-              "outcome": "failed"
-            },
-            {
-              "id": "B0024",
-              "title": "Community Health Worker Funding Act",
-              "topic": "healthcare",
-              "subtopic": "access-equity",
-              "year": 2023,
-              "role": "co-sponsor",
-              "outcome": "failed"
-            }
-          ]
-        },
-        {
-          "id": "L007",
-          "name": "Sen. T. Folsom",
-          "party": "R",
-          "chamber": "senate",
-          "district": "29",
-          "bills": [
-            {
-              "id": "B0025",
-              "title": "Telehealth Licensing Reform Act",
-              "topic": "healthcare",
-              "subtopic": "access-equity",
-              "year": 2024,
-              "role": "sponsor",
-              "outcome": "passed"
-            },
-            {
-              "id": "B0026",
-              "title": "Rural Pharmacy Access Act",
-              "topic": "healthcare",
-              "subtopic": "access-equity",
-              "year": 2023,
-              "role": "co-sponsor",
-              "outcome": "failed"
-            }
-          ]
-        },
-        {
-          "id": "L008",
-          "name": "Del. C. Nguyen",
-          "party": "R",
-          "chamber": "house",
-          "district": "8",
-          "bills": [
-            {
-              "id": "B0027",
-              "title": "Medicaid Program Integrity Audit Act",
-              "topic": "healthcare",
-              "subtopic": "insurance-coverage",
-              "year": 2023,
-              "role": "co-sponsor",
-              "outcome": "failed"
-            }
-          ]
-        },
-        {
-          "id": "L009",
-          "name": "Sen. L. Avery",
-          "party": "D",
-          "chamber": "senate",
-          "district": "12",
-          "bills": [
-            {
-              "id": "B0028",
-              "title": "Offshore Wind Expansion Act",
-              "topic": "environment",
-              "subtopic": "clean-energy",
-              "year": 2025,
-              "role": "sponsor",
-              "outcome": "passed"
-            },
-            {
-              "id": "B0029",
-              "title": "Clean Energy Jobs Act Amendments",
-              "topic": "environment",
-              "subtopic": "clean-energy",
-              "year": 2025,
-              "role": "sponsor",
-              "outcome": "passed"
-            },
-            {
-              "id": "B0030",
-              "title": "Solar Panel Recycling Program",
-              "topic": "environment",
-              "subtopic": "clean-energy",
-              "year": 2025,
-              "role": "co-sponsor",
-              "outcome": "passed"
-            },
-            {
-              "id": "B0031",
-              "title": "Chesapeake Bay Restoration Funding Act",
-              "topic": "environment",
-              "subtopic": "conservation",
-              "year": 2024,
-              "role": "sponsor",
-              "outcome": "passed"
-            },
-            {
-              "id": "B0032",
-              "title": "Building Energy Performance Standards",
-              "topic": "environment",
-              "subtopic": "clean-energy",
-              "year": 2024,
-              "role": "sponsor",
-              "outcome": "passed"
-            },
-            {
-              "id": "B0033",
-              "title": "Plastic Bag Reduction Act",
-              "topic": "environment",
-              "subtopic": "waste-pollution",
-              "year": 2023,
-              "role": "co-sponsor",
-              "outcome": "failed"
-            },
-            {
-              "id": "B0034",
-              "title": "Coastal Resiliency Bond Act",
-              "topic": "environment",
-              "subtopic": "conservation",
-              "year": 2023,
-              "role": "sponsor",
-              "outcome": "failed"
-            },
-            {
-              "id": "B0035",
-              "title": "Methane Emissions Reduction Act",
-              "topic": "environment",
-              "subtopic": "waste-pollution",
-              "year": 2022,
-              "role": "co-sponsor",
-              "outcome": "failed"
-            }
-          ]
-        },
-        {
-          "id": "L010",
-          "name": "Del. D. Park",
-          "party": "D",
-          "chamber": "house",
-          "district": "17",
-          "bills": [
-            {
-              "id": "B0036",
-              "title": "EV Charging Infrastructure Act",
-              "topic": "environment",
-              "subtopic": "clean-energy",
-              "year": 2025,
-              "role": "sponsor",
-              "outcome": "passed"
-            },
-            {
-              "id": "B0037",
-              "title": "Clean Vehicle Rebate Program",
-              "topic": "environment",
-              "subtopic": "clean-energy",
-              "year": 2025,
-              "role": "sponsor",
-              "outcome": "passed"
-            },
-            {
-              "id": "B0038",
-              "title": "Tree Canopy Expansion Act",
-              "topic": "environment",
-              "subtopic": "conservation",
-              "year": 2024,
-              "role": "co-sponsor",
-              "outcome": "failed"
-            },
-            {
-              "id": "B0039",
-              "title": "Stormwater Management Reform Act",
-              "topic": "environment",
-              "subtopic": "waste-pollution",
-              "year": 2023,
-              "role": "co-sponsor",
-              "outcome": "failed"
-            },
-            {
-              "id": "B0040",
-              "title": "Green Building Tax Credit",
-              "topic": "environment",
-              "subtopic": "clean-energy",
-              "year": 2023,
-              "role": "sponsor",
-              "outcome": "failed"
-            }
-          ]
-        },
-        {
-          "id": "L011",
-          "name": "Sen. W. Branch",
-          "party": "R",
-          "chamber": "senate",
-          "district": "37",
-          "bills": [
-            {
-              "id": "B0041",
-              "title": "Agricultural Conservation Grant Act",
-              "topic": "environment",
-              "subtopic": "conservation",
-              "year": 2024,
-              "role": "sponsor",
-              "outcome": "passed"
-            },
-            {
-              "id": "B0042",
-              "title": "Forest Preservation Tax Credit",
-              "topic": "environment",
-              "subtopic": "conservation",
-              "year": 2023,
-              "role": "co-sponsor",
-              "outcome": "failed"
-            }
-          ]
-        },
-        {
-          "id": "L012",
-          "name": "Del. H. Cole",
-          "party": "R",
-          "chamber": "house",
-          "district": "3",
-          "bills": [
-            {
-              "id": "B0043",
-              "title": "Stream Restoration Funding Act",
-              "topic": "environment",
-              "subtopic": "conservation",
-              "year": 2023,
-              "role": "co-sponsor",
-              "outcome": "failed"
-            }
-          ]
-        },
-        {
-          "id": "L013",
-          "name": "Sen. G. Whitfield",
-          "party": "D",
-          "chamber": "senate",
-          "district": "25",
-          "bills": [
-            {
-              "id": "B0044",
-              "title": "Community College Tuition Assistance Act",
-              "topic": "education",
-              "subtopic": "higher-ed-funding",
-              "year": 2025,
-              "role": "sponsor",
-              "outcome": "passed"
-            },
-            {
-              "id": "B0045",
-              "title": "School Construction Funding Formula Reform",
-              "topic": "education",
-              "subtopic": "k12-funding",
-              "year": 2025,
-              "role": "sponsor",
-              "outcome": "passed"
-            },
-            {
-              "id": "B0046",
-              "title": "Universal Pre-K Expansion Act",
-              "topic": "education",
-              "subtopic": "k12-funding",
-              "year": 2024,
-              "role": "sponsor",
-              "outcome": "passed"
-            },
-            {
-              "id": "B0047",
-              "title": "Teacher Loan Forgiveness Expansion",
-              "topic": "education",
-              "subtopic": "teacher-support",
-              "year": 2024,
-              "role": "co-sponsor",
-              "outcome": "failed"
-            },
-            {
-              "id": "B0048",
-              "title": "Special Education Funding Equity Act",
-              "topic": "education",
-              "subtopic": "k12-funding",
-              "year": 2023,
-              "role": "sponsor",
-              "outcome": "failed"
-            },
-            {
-              "id": "B0049",
-              "title": "School Meals For All Act",
-              "topic": "education",
-              "subtopic": "k12-funding",
-              "year": 2023,
-              "role": "co-sponsor",
-              "outcome": "failed"
-            }
-          ]
-        },
-        {
-          "id": "L014",
-          "name": "Del. E. Marsh",
-          "party": "D",
-          "chamber": "house",
-          "district": "44",
-          "bills": [
-            {
-              "id": "B0050",
-              "title": "Teacher Pay Raise Act",
-              "topic": "education",
-              "subtopic": "teacher-support",
-              "year": 2025,
-              "role": "co-sponsor",
-              "outcome": "passed"
-            },
-            {
-              "id": "B0051",
-              "title": "Literacy Intervention Funding Act",
-              "topic": "education",
-              "subtopic": "k12-funding",
-              "year": 2024,
-              "role": "sponsor",
-              "outcome": "passed"
-            },
-            {
-              "id": "B0052",
-              "title": "School Library Modernization Act",
-              "topic": "education",
-              "subtopic": "k12-funding",
-              "year": 2024,
-              "role": "co-sponsor",
-              "outcome": "failed"
-            },
-            {
-              "id": "B0053",
-              "title": "Career and Technical Education Expansion",
-              "topic": "education",
-              "subtopic": "higher-ed-funding",
-              "year": 2023,
-              "role": "co-sponsor",
-              "outcome": "failed"
-            }
-          ]
-        },
-        {
-          "id": "L015",
-          "name": "Sen. B. Tully",
-          "party": "R",
-          "chamber": "senate",
-          "district": "1",
-          "bills": [
-            {
-              "id": "B0054",
-              "title": "School Choice Pilot Program",
-              "topic": "education",
-              "subtopic": "school-choice",
-              "year": 2024,
-              "role": "sponsor",
-              "outcome": "passed"
-            },
-            {
-              "id": "B0055",
-              "title": "Parental Rights in Education Act",
-              "topic": "education",
-              "subtopic": "school-choice",
-              "year": 2024,
-              "role": "co-sponsor",
-              "outcome": "failed"
-            },
-            {
-              "id": "B0056",
-              "title": "Charter School Expansion Act",
-              "topic": "education",
-              "subtopic": "school-choice",
-              "year": 2023,
-              "role": "co-sponsor",
-              "outcome": "failed"
-            }
-          ]
-        },
-        {
-          "id": "L016",
-          "name": "Del. S. Okafor",
+          "id": "L017",
+          "name": "Nkongolo",
           "party": "R",
           "chamber": "house",
           "district": "31",
           "bills": [
             {
-              "id": "B0057",
-              "title": "Literacy Funding Act",
-              "topic": "education",
-              "subtopic": "k12-funding",
-              "year": 2023,
-              "role": "co-sponsor",
+              "id": "B0059",
+              "title": "Health Insurance – Scalp Cooling Systems – Required Coverage",
+              "topic": "healthcare",
+              "subtopic": "insurance-coverage",
+              "year": 2026,
+              "role": "sponsor",
               "outcome": "passed"
             },
             {
-              "id": "B0058",
-              "title": "Homeschool Resource Access Act",
+              "id": "B0060",
+              "title": "Estates – Maryland Uniform Simultaneous Death Act",
+              "topic": "estates-probate",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0061",
+              "title": "Anne Arundel County – Residential Property Tax Payment Deferrals – Eligibility",
+              "topic": "taxation",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0092",
+              "title": "Health Insurance - Scalp Cooling Systems - Required Coverage",
+              "topic": "healthcare",
+              "subtopic": "insurance-coverage",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0093",
+              "title": "Estates - Maryland Uniform Simultaneous Death Act",
+              "topic": "estates-probate",
+              "subtopic": "uniform-simultaneous-death",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0094",
+              "title": "Anne Arundel County - Residential Property Tax Payment Deferrals - Eligibility",
+              "topic": "taxation",
+              "subtopic": "property-tax-credit",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0095",
+              "title": "Reduction Facilities and Veterans Service Organizations - Hydrolyzed and Soil Remains - Immunity",
+              "topic": "funeral-burial-services",
+              "subtopic": "liability-immunity",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0096",
+              "title": "Criminal Law - Causing Ingestion of an Abortion-Inducing Drug - Prohibition (Women's Freedom From Coercion Act)",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "fines-penalties",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0097",
+              "title": "Child Exploitation Material - Civil and Criminal Actions (Safe Kids Act)",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "child-protection",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0098",
+              "title": "Consumer Protection - Application Store Accountability Act",
+              "topic": "consumer-protection",
+              "subtopic": "app-store-regulation",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0099",
+              "title": "Income Tax - Angel Investor Tax Credit",
+              "topic": "taxation",
+              "subtopic": "tax-credits-incentives",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0100",
+              "title": "Labor and Employment - Workforce Development and Local Workforce Development Boards (Local Workforce Solutions Investment Act",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0101",
+              "title": "Criminal Procedure - Domestic Violence Offenders - Registration",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "offender-registration",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0102",
+              "title": "Family Law - Final Protective Orders - Duration",
+              "topic": "family-law",
+              "subtopic": "protective-orders",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0103",
+              "title": "Motor Vehicle Administration - Telephone Queuing System - Establishment",
+              "topic": "government-administration",
+              "subtopic": "agency-operations",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            }
+          ],
+          "notes": ""
+        },
+        {
+          "id": "L018",
+          "name": "Pena-Melnyk",
+          "party": "D",
+          "chamber": "senate",
+          "district": "",
+          "bills": [
+            {
+              "id": "B0062",
+              "title": "Public Health – Mammograms – Arterial Calcification Notice",
+              "topic": "healthcare",
+              "subtopic": "access-equity",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0066",
+              "title": "Health Occupations, Public Health, and Insurance - Menopause - Provider Training Coverage Requirements, Policy Initiatives, and Access to Care",
+              "topic": "healthcare",
+              "subtopic": "access-equity",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            }
+          ]
+        },
+        {
+          "id": "L019",
+          "name": "Delegate Arikan",
+          "party": "R",
+          "chamber": "house",
+          "district": "",
+          "bills": [
+            {
+              "id": "B0063",
+              "title": "Consumer Goods – Restrictions Based on Energy Source – Prohibition (Energy Equality Act of 2026)",
+              "topic": "environment",
+              "subtopic": "clean-energy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            }
+          ]
+        },
+        {
+          "id": "L020",
+          "name": "Buckel",
+          "party": "R",
+          "chamber": "house",
+          "district": "",
+          "bills": [
+            {
+              "id": "B0064",
+              "title": "Income Tax – Standard Deduction – Alteration",
+              "topic": "taxation",
+              "subtopic": "standard-deduction",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            }
+          ]
+        },
+        {
+          "id": "L021",
+          "name": "Beauchamp",
+          "party": "R",
+          "chamber": "house",
+          "district": "",
+          "bills": [
+            {
+              "id": "B0065",
+              "title": "Solar Energy - Construction of Generating Stations in Priority Preservation Areas and Study",
+              "topic": "environment",
+              "subtopic": "clean-energy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            }
+          ]
+        },
+        {
+          "id": "L022",
+          "name": "Pippy",
+          "party": "R",
+          "chamber": "house",
+          "district": "",
+          "bills": [
+            {
+              "id": "B0067",
+              "title": "Regulated Firearms - Seven-Day Waiting Period - Exceptions",
+              "topic": "firearms-weapons",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0068",
+              "title": "Department of Juvenile Services - Employees - Prohibited Convictions (Juvenile Offender Protection Act)",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0069",
+              "title": "Property Tax - Credit for Dwelling House of Disabled Veterans and Surviving Spouses - Income Eligibility",
+              "topic": "taxation",
+              "subtopic": "property-tax-credit",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0070",
+              "title": "Land Surveyors and Property Line Surveyors - Private Property Access - Prohibition",
+              "topic": "land-use-property-rights",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            }
+          ]
+        },
+        {
+          "id": "L023",
+          "name": "Pasteur",
+          "party": "D",
+          "chamber": "house",
+          "district": "11A",
+          "bills": [
+            {
+              "id": "B0071",
+              "title": "Correctional Education and Workforce Skills Training Programs - State Correctional Ombudsman and Certified Peer Recovery Specialist Training Program for Incarcerated Individuals",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            }
+          ]
+        },
+        {
+          "id": "L024",
+          "name": "Delegate Lewis",
+          "party": "D",
+          "chamber": "house",
+          "district": "46",
+          "bills": [
+            {
+              "id": "B0072",
+              "title": "Baltimore City – Ordinance Enforcement – Fines and Penalties",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "fines-penalties",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            }
+          ]
+        },
+        {
+          "id": "L025",
+          "name": "Delegate Pruski",
+          "party": "D",
+          "chamber": "senate",
+          "district": "33A",
+          "bills": [
+            {
+              "id": "B0073",
+              "title": "Anne Arundel County – Alcoholic Beverages – Golf Course License and Sports Activity Venue Licenses",
+              "topic": "alcoholic-beverages-licensing",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            }
+          ]
+        },
+        {
+          "id": "L026",
+          "name": "Delegate Rogers",
+          "party": "D",
+          "chamber": "house",
+          "district": "32",
+          "bills": [
+            {
+              "id": "B0074",
+              "title": "Anne Arundel County – Alcoholic Beverages – Class C (Veterans' Organization) Licenses – Membership",
+              "topic": "alcoholic-beverages-licensing",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            }
+          ]
+        },
+        {
+          "id": "L027",
+          "name": "Frank Conaway",
+          "party": "R",
+          "chamber": "house",
+          "district": "",
+          "bills": [
+            {
+              "id": "B0075",
+              "title": "Criminal Procedure - Theft - Notification of Victims and Victims' Representatives",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0076",
+              "title": "Law Enforcement - Use of Facial Recognition Technology - Images Captured in Dwelling Interior",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0077",
+              "title": "Theft of Mail and Packages and Victim Notification",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0078",
+              "title": "Law Enforcement – Use of Facial Recognition Technology – Images Captured by Camera Affixed to Dwelling Exterior",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0079",
+              "title": "Speed Monitoring Systems - Citations - Failure to Pay",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "fines-penalties",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0080",
+              "title": "Criminal Law - Theft and Opening of Mail and Packages",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "fines-penalties",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0081",
+              "title": "Public Middle Schools – Instruction on the Consequences of a Conviction for Felony Murder",
+              "topic": "education",
+              "subtopic": "curriculum-requirements",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0082",
+              "title": "Criminal Law - Theft - Mail and Packages (Porch Piracy Act of 2026)",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "fines-penalties",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0083",
+              "title": "Criminal Law - Theft - Mail and Packages (Porch Piracy Act of 2026)",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "fines-penalties",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0084",
+              "title": "Criminal Law - Theft - Mail and Packages (Porch Piracy Act of 2026)",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "fines-penalties",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0085",
+              "title": "Criminal Procedure - Theft - Notification of Victims and Victims' Representatives",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0086",
+              "title": "County Boards of Education - College Preparatory Programs - Fees",
+              "topic": "education",
+              "subtopic": "higher-ed-funding",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0087",
+              "title": "Criminal Law - Fraud - Possession of Residential Real Property",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "fines-penalties",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0088",
+              "title": "Real Property - Wrongful Detainer Actions - Time of Hearing",
+              "topic": "land-use-property-rights",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0089",
+              "title": "Real Property - Actions for Wrongful Detainer - Required Postings",
+              "topic": "land-use-property-rights",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0090",
+              "title": "Baltimore City - Public Middle Schools - Instruction on the Consequences of a Conviction for Felony Murder",
+              "topic": "education",
+              "subtopic": "curriculum-requirements",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0091",
+              "title": "Correctional Services - Incarcerated Individuals - Menstrual Hygiene",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            }
+          ]
+        },
+        {
+          "id": "L028",
+          "name": "Kathy Szeliga",
+          "party": "R",
+          "chamber": "house",
+          "district": "",
+          "bills": [
+            {
+              "id": "B0104",
+              "title": "Education - Interscholastic and Intramural Junior Varsity and Varsity Teams and Locker Rooms - Designation Based on Sex (Fairness in Girls' Sports Act)",
+              "topic": "education",
+              "subtopic": "sports-gender-policy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0105",
+              "title": "Baltimore County - Alcoholic Beverages - Sale for Off-Premises Consumption",
+              "topic": "alcoholic-beverages-licensing",
+              "subtopic": "off-premises-sales",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0106",
+              "title": "State Aid - Nonprofits - Status",
+              "topic": "government-administration",
+              "subtopic": "agency-operations",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            }
+          ]
+        },
+        {
+          "id": "L029",
+          "name": "Kevin Hornberger",
+          "party": "R",
+          "chamber": "house",
+          "district": "",
+          "bills": [
+            {
+              "id": "B0107",
+              "title": "Election Law - Voter Registration Eligibility - U.S. Citizenship Verification (SAVE Our Elections Act of 2026)",
+              "topic": "election-law-voter-registration",
+              "subtopic": "voter-eligibility-verification",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0108",
+              "title": "Public Safety - Police Accountability - Investigation Records Relating to Not Administratively Charged, Unfounded, and Exonerated Complaints",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "police-accountability",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0109",
+              "title": "Problem Gambling - Authorized Uses of Funds - Alterations",
+              "topic": "gambling-gaming",
+              "subtopic": "problem-gambling-funds",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0110",
+              "title": "Vehicle Laws - Historic Motor Vehicles and Street Rod Vehicles - Minimum Age",
+              "topic": "vehicle-transportation-law",
+              "subtopic": "historic-special-vehicles",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0111",
+              "title": "Vehicle Laws - Vehicle Emissions Inspection Program - Modifications",
+              "topic": "environment",
+              "subtopic": "waste-pollution",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0112",
+              "title": "Cecil County - County Council and Board of Education Elections - Single-Member Districts",
+              "topic": "election-law-voter-registration",
+              "subtopic": "district-election-administration",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0113",
+              "title": "Handgun Permits - Special Endorsement for Security Clearance Holders",
+              "topic": "firearms-weapons",
+              "subtopic": "permit-endorsements",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0114",
+              "title": "Certified Peer Recovery Specialists - Coverage Under the Maryland Medical Assistance Program and Health Insurance and Workgroup on Certification",
+              "topic": "healthcare",
+              "subtopic": "insurance-coverage",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            }
+          ]
+        },
+        {
+          "id": "L030",
+          "name": "Joe Vogel",
+          "party": "D",
+          "chamber": "house",
+          "district": "",
+          "bills": [
+            {
+              "id": "B0115",
+              "title": "Income Tax - Credit for 9-1-1 Specialist Retirement Income (Supporting Our 9-1-1 Specialists Act)",
+              "topic": "taxation",
+              "subtopic": "tax-credits-incentives",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0116",
+              "title": "Transportation Network Companies - Transportation Network Operators - Minimum Payments for Passenger Trips",
+              "topic": "labor-gig-economy",
+              "subtopic": "gig-worker-minimum-pay",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0117",
+              "title": "Labor and Employment - Mandatory Meetings on Religious or Political Matters - Employee Attendance and Participation (Maryland Worker Freedom Act)",
+              "topic": "labor-employment-rights",
+              "subtopic": "employee-meeting-protections",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0118",
+              "title": "Public Schools - Maryland Civic Excellence Program - Established",
+              "topic": "education",
+              "subtopic": "curriculum-requirements",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0119",
+              "title": "Labor and Employment - Exemptions From Overtime Pay - Administrative, Executive, or Professional Capacity",
+              "topic": "labor-employment-rights",
+              "subtopic": "overtime-pay-exemptions",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0120",
+              "title": "Landlord and Tenant - Residential Leases - Fee Disclosures",
+              "topic": "land-use-property-rights",
+              "subtopic": "residential-lease-fee-disclosures",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0121",
+              "title": "State and Local Employees - Cancer Screening - Paid Leave",
+              "topic": "labor-employment-rights",
+              "subtopic": "employee-paid-leave",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0122",
+              "title": "Income Tax - Energy Efficient Home Improvement Credit",
+              "topic": "taxation",
+              "subtopic": "tax-credits-incentives",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0123",
+              "title": "Institutions of Higher Education and Elementary and Secondary Schools - Title VI Coordinators",
+              "topic": "education",
+              "subtopic": "civil-rights-compliance-coordinators",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0124",
+              "title": "Energy Performance Contracts - Navigators, Funding, and Requirements",
+              "topic": "environment",
+              "subtopic": "clean-energy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0125",
+              "title": "Income Tax - Subtraction Modification - Losses From Theft or Fraud",
+              "topic": "taxation",
+              "subtopic": "tax-credits-incentives",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0126",
+              "title": "County Boards of Education - Therapy Dogs - Policy for Handling and Use in Schools",
+              "topic": "education",
+              "subtopic": "school-wellness-policy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0127",
+              "title": "Family Law - Incapacitated or Protected Persons - Petition for Visitation",
+              "topic": "family-law",
+              "subtopic": "visitation-for-incapacitated-persons",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0128",
+              "title": "Maryland Public Ethics Law - Officials of the Legislative Branch - Gifts of Food and Beverages",
+              "topic": "government-administration",
+              "subtopic": "agency-operations",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0129",
+              "title": "Commercial Law – Fair Pricing and Market Competition Fund – Establishment",
+              "topic": "consumer-protection",
+              "subtopic": "fair-pricing-market-competition",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0130",
+              "title": "Consumer Protection and Labor and Employment - Surveillance-Based Price and Wage Setting - Prohibition",
+              "topic": "consumer-protection",
+              "subtopic": "surveillance-based-pricing-prohibition",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0131",
+              "title": "Sales and Use Tax - Distribution of Cannabis Sales Tax Revenue - Maryland Veterans Trust Fund",
+              "topic": "taxation",
+              "subtopic": "tax-credits-incentives",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0132",
+              "title": "Housing and Community Development - Affordable Housing - Educator Workforce Housing and Municipal Corporations",
+              "topic": "workforce",
+              "subtopic": "grants",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0133",
+              "title": "Department of Commerce - Complaint Portal and Annual Report",
+              "topic": "government-administration",
+              "subtopic": "agency-operations",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0134",
+              "title": "Public Health - Social Isolation and Loneliness Pilot Grant Program - Establishment",
+              "topic": "healthcare",
+              "subtopic": "access-equity",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0135",
+              "title": "Labor and Employment - Training Repayment Agreements - Prohibition",
+              "topic": "labor-employment-rights",
+              "subtopic": "training-repayment-agreements",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0136",
+              "title": "Election Law - Certificate of Candidacy for Congressional Offices - Stock Trading Activities (Congressional Stock Trading Transparency Act)",
+              "topic": "election-law-voter-registration",
+              "subtopic": "candidate-financial-disclosure",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0137",
+              "title": "Continuing Care Providers - Financial Stress Tests, Transparency, and Governing Bodies",
+              "topic": "healthcare",
+              "subtopic": "hospital-funding",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0138",
+              "title": "County Boards of Education - Opioid Overdose-Reversing Medications - Policy Requirements (Naloxone Access Act)",
+              "topic": "education",
+              "subtopic": "school-health-safety-policy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0139",
+              "title": "Campaign Finance - Contributions by Gas and Electric Utility Companies - Prohibition",
+              "topic": "election-law-voter-registration",
+              "subtopic": "campaign-contribution-restrictions",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0140",
+              "title": "Hate Crimes and Hate Bias - Definitions of Sexual Orientation and Hate Bias Incident",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "hate-crime-definitions",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0141",
+              "title": "Public Health - Local Drug Overdose Fatality Review Teams - Membership",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "drug-overdose-review-teams",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0142",
+              "title": "Maryland Department of Labor - Investigation of Complaints - Requirements (Worksite Enforcement Act of 2026)",
+              "topic": "labor-employment-rights",
+              "subtopic": "worksite-enforcement-complaint-investigation",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            }
+          ]
+        },
+        {
+          "id": "L031",
+          "name": "Johnny Salling",
+          "party": "R",
+          "chamber": "senate",
+          "district": "",
+          "bills": [
+            {
+              "id": "B0143",
+              "title": "Baltimore County Food Desert Study",
+              "topic": "food-security-nutrition",
+              "subtopic": "food-desert-study",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0144",
+              "title": "Public Schools - Airway Clearing Device Availability and Use - Policy (Bowen Levy Airway Clearing Device Act)",
+              "topic": "education",
+              "subtopic": "school-health-safety-policy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0145",
+              "title": "State Procurement - Preferences - Historically Underutilized Business Zone Businesses",
+              "topic": "government-administration",
+              "subtopic": "agency-operations",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0146",
+              "title": "Business Regulation - Cemeteries and Abandoned Cemeteries - Sale, Transfer, or Government Acquisition and Disposition",
+              "topic": "business-regulation",
+              "subtopic": "cemetery-regulation-disposition",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0147",
+              "title": "Business Regulation - Abandoned Cemeteries - Acquisition and Disposition",
+              "topic": "business-regulation",
+              "subtopic": "abandoned-cemetery-acquisition",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0148",
+              "title": "Baltimore County - Property Tax Credits - Public Safety Officers and Public School System Employees",
+              "topic": "taxation",
+              "subtopic": "property-tax-credit",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0149",
+              "title": "Law Enforcement Officers' Pension System - Military Service Credit Eligibility - Helicopter Pilots",
+              "topic": "public-pensions-retirement",
+              "subtopic": "military-service-credit-eligibility",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0150",
+              "title": "Labor and Employment - Workforce Development - Hospital Employee Retraining and Placement Program and Workforce Development and Local Workforce Development Boards (Local Workforce Solutions Investment Act)",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0151",
+              "title": "Income Tax Credit - Venison Donation - Alterations",
+              "topic": "taxation",
+              "subtopic": "tax-credits-incentives",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0152",
+              "title": "Property Tax - Credit for Dwelling House of Disabled Veterans and Surviving Spouses - Alterations",
+              "topic": "taxation",
+              "subtopic": "property-tax-credit",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0153",
+              "title": "State Government - Veterans and Military Families Ombudsman - Establishment",
+              "topic": "veterans-military-affairs",
+              "subtopic": "veterans-ombudsman",
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0154",
+              "title": "Vehicle Laws - Electric Bicycles - Certificate of Title, Registration, and Insurance",
+              "topic": "vehicle-transportation-law",
+              "subtopic": "electric-bicycle-registration-insurance",
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "pending"
+            }
+          ]
+        },
+        {
+          "id": "L032",
+          "name": "Jim Rosapepe",
+          "party": "D",
+          "chamber": "senate",
+          "district": "",
+          "bills": [
+            {
+              "id": "B0155",
+              "title": "Economic Development - Transformational Project Financing Program - Establishment",
+              "topic": "workforce",
+              "subtopic": "employer-incentives",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0156",
+              "title": "Property Taxes - Authority of Counties to Establish Subclasses and Set Separate Rates for Land and Improvements to Land",
+              "topic": "taxation",
+              "subtopic": "property-tax-credit",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0157",
+              "title": "Vehicle Laws – Crosswalk Monitoring Systems – Authorization",
+              "topic": "vehicle-transportation-law",
+              "subtopic": "crosswalk-monitoring-systems",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0158",
+              "title": "Procurement - Advertising - Maryland News Organizations (Local News for Maryland Communities Act of 2026)",
+              "topic": "government-administration",
+              "subtopic": "agency-operations",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0159",
+              "title": "State Department of Assessments and Taxation and Department of General Services - Property Appraisal Aids - Geographic Images",
+              "topic": "government-administration",
+              "subtopic": "agency-operations",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0160",
+              "title": "Higher Education - Workforce Pell Grant Program - Implementation",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0161",
+              "title": "Economic Development - Local Sourcing Database",
+              "topic": "workforce",
+              "subtopic": "employer-incentives",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0162",
+              "title": "Maryland Public Charter School Program - School Facilities - Funding",
               "topic": "education",
               "subtopic": "school-choice",
-              "year": 2023,
-              "role": "co-sponsor",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0163",
+              "title": "Public Schools STEM and Robotics Program Task Force - Establishment",
+              "topic": "education",
+              "subtopic": "curriculum-requirements",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0164",
+              "title": "Maryland Small Business Retirement Savings Board - Membership - Alteration",
+              "topic": "workforce",
+              "subtopic": "retirement-savings-board",
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0165",
+              "title": "Income Tax - Resident",
+              "topic": "taxation",
+              "subtopic": "standard-deduction",
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0166",
+              "title": "County Income Tax - Rate and Income Brackets - Alterations",
+              "topic": "taxation",
+              "subtopic": "standard-deduction",
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0167",
+              "title": "State Department of Assessments and Taxation and Department of General Services - Property Appraisal Aids - Geographic Images",
+              "topic": "government-administration",
+              "subtopic": "agency-operations",
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0168",
+              "title": "Fantasy Competitions - Alterations and Voluntary Exclusion Requirements",
+              "topic": "gambling-gaming",
+              "subtopic": "fantasy-competitions-regulation",
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "pending"
+            },
+            {
+              "id": "B0169",
+              "title": "Vehicle Laws - Motor Vehicle Administration - 3-Hour Roadway Safety Driving Education Program - Requirements",
+              "topic": "vehicle-transportation-law",
+              "subtopic": "driver-education-requirements",
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0170",
+              "title": "Property Tax - Property Adjacent to Rail Stations - Subclasses and Special Rates",
+              "topic": "taxation",
+              "subtopic": "property-tax-credit",
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "pending"
+            }
+          ]
+        },
+        {
+          "id": "L033",
+          "name": "Nicholaus Kipke",
+          "party": "R",
+          "chamber": "house",
+          "district": "HD-031",
+          "bills": [
+            {
+              "id": "B0171",
+              "title": "Maryland Port Administration - Acquisition of Land in Anne Arundel County - Notice of Public Hearing",
+              "topic": "land-use-property-rights",
+              "subtopic": "public-land-acquisition",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0172",
+              "title": "State Veterans' Cemeteries - Interment",
+              "topic": "veterans-military-affairs",
+              "subtopic": "veterans-cemetery-interment",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0173",
+              "title": "Health Insurance - Physical Therapy - Copayments, Coinsurance, and Deductibles",
+              "topic": "healthcare",
+              "subtopic": "insurance-coverage",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0174",
+              "title": "State Board of Dental Examiners - Disciplinary Action and Unannounced Inspections",
+              "topic": "government-administration",
+              "subtopic": "agency-operations",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0175",
+              "title": "Oversight Committee on Quality of Care in Nursing Homes and Assisted Living Facilities – Membership",
+              "topic": "healthcare",
+              "subtopic": "access-equity",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            }
+          ]
+        },
+        {
+          "id": "L034",
+          "name": "Bryan Simonaire",
+          "party": "R",
+          "chamber": "senate",
+          "district": "SD-031",
+          "bills": [
+            {
+              "id": "B0176",
+              "title": "Higher Education - Douglas J. J. Peters Veterans of the Afghanistan and Iraq Conflicts Scholarship - Repeal of Termination Date",
+              "topic": "veterans-military-affairs",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed",
+              "topicLabel": "Veterans & Military Affairs",
+              "subtopicLabel": null
+            },
+            {
+              "id": "B0177",
+              "title": "Alcoholic Beverages - License Fee Refund Requirements - Alterations",
+              "topic": "alcoholic-beverages-licensing",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed",
+              "topicLabel": "Alcoholic Beverages Licensing",
+              "subtopicLabel": "training-programs"
+            },
+            {
+              "id": "B0178",
+              "title": "Natural Resources - State Parks - Maryland Golden Age Pass",
+              "topic": "public-pensions-retirement",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed",
+              "topicLabel": "Public Pensions & Retirement",
+              "subtopicLabel": null
+            },
+            {
+              "id": "B0179",
+              "title": "Maryland Service Animal Programs - Participant Disqualification - Revisions",
+              "topic": null,
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed",
+              "topicLabel": null,
+              "subtopicLabel": null
+            },
+            {
+              "id": "B0180",
+              "title": "Reduction Facilities and Veterans Service Organizations - Hydrolyzed and Soil Remains - Immunity",
+              "topic": "funeral-burial-services",
+              "subtopic": "liability-immunity",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed",
+              "topicLabel": "Funeral & Burial Services",
+              "subtopicLabel": "Liability & Immunity"
+            },
+            {
+              "id": "B0181",
+              "title": "State Veterans' Cemeteries - Interment",
+              "topic": "veterans-military-affairs",
+              "subtopic": "veterans-cemetery-interment",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed",
+              "topicLabel": "Veterans & Military Affairs",
+              "subtopicLabel": "Veterans cemetery interment"
+            },
+            {
+              "id": "B0182",
+              "title": "Maryland Port Administration - Acquisition of Land in Anne Arundel County - Notice of Public Hearing",
+              "topic": "land-use-property-rights",
+              "subtopic": "public-land-acquisition",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed",
+              "topicLabel": "Land Use & Property Rights",
+              "subtopicLabel": "Public land acquisition"
+            },
+            {
+              "id": "B0183",
+              "title": "Primary and Secondary Educators - Licenses and Public Profiles - Notation of Veteran Status",
+              "topic": "veterans-military-affairs",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "topicLabel": "Veterans & Military Affairs",
+              "subtopicLabel": null
+            },
+            {
+              "id": "B0184",
+              "title": "Anne Arundel County - Alcoholic Beverages - Class C (Veterans' Organization) Licenses - Membership",
+              "topic": "alcoholic-beverages-licensing",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed",
+              "topicLabel": "Alcoholic Beverages Licensing",
+              "subtopicLabel": null
+            },
+            {
+              "id": "B0185",
+              "title": "Health Occupations - Grounds for Discipline - Federal and Court Actions",
+              "topic": "labor-employment-rights",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed",
+              "topicLabel": "Labor & Employment Rights",
+              "subtopicLabel": null
+            },
+            {
+              "id": "B0186",
+              "title": "Sheila E. Hixson Behavioral Health Services Matching Grant Program for Service Members and Veterans - Terminology - Active Service Members",
+              "topic": "veterans-military-affairs",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed",
+              "topicLabel": "Veterans & Military Affairs",
+              "subtopicLabel": null
+            },
+            {
+              "id": "B0187",
+              "title": "Anne Arundel County - Residential Property Tax Payment Deferrals - Eligibility",
+              "topic": "public-pensions-retirement",
+              "subtopic": "military-service-credit-eligibility",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed",
+              "topicLabel": "Public Pensions & Retirement",
+              "subtopicLabel": "Military service credit eligibility"
+            },
+            {
+              "id": "B0188",
+              "title": "Oversight Committee on Quality of Care in Nursing Homes and Assisted Living Facilities - Membership",
+              "topic": "healthcare",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed",
+              "topicLabel": "Healthcare access",
+              "subtopicLabel": null
+            },
+            {
+              "id": "B0189",
+              "title": "Notation of Veteran Status - Public Profiles",
+              "topic": "veterans-military-affairs",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed",
+              "topicLabel": "Veterans & Military Affairs",
+              "subtopicLabel": null
+            },
+            {
+              "id": "B0190",
+              "title": "Natural Resources - State Park Entry Fee - Exemptions",
+              "topic": "veterans-military-affairs",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed",
+              "topicLabel": "Veterans & Military Affairs",
+              "subtopicLabel": null
+            },
+            {
+              "id": "B0191",
+              "title": "Department of Natural Resources - Licenses, Permits, Registrations, and Public Profiles - Notation of Veteran Status",
+              "topic": "veterans-military-affairs",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "topicLabel": "Veterans & Military Affairs",
+              "subtopicLabel": null
+            },
+            {
+              "id": "B0192",
+              "title": "Income and Property Tax Incentives - Members and Veterans of the Space Force - Application",
+              "topic": "veterans-military-affairs",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed",
+              "topicLabel": "Veterans & Military Affairs",
+              "subtopicLabel": null
+            },
+            {
+              "id": "B0193",
+              "title": "Individuals With Disabilities and Service-Disabled Veterans Boating Fund - Eligible Companions",
+              "topic": "veterans-military-affairs",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed",
+              "topicLabel": "Veterans & Military Affairs",
+              "subtopicLabel": null
+            },
+            {
+              "id": "B0194",
+              "title": "Veterans and Uniformed Services - Maryland Veterans Trust Fund and Application of Laws",
+              "topic": "veterans-military-affairs",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed",
+              "topicLabel": "Veterans & Military Affairs",
+              "subtopicLabel": null
+            },
+            {
+              "id": "B0195",
+              "title": "Modernizing Civil Relief for Service Members Act",
+              "topic": "veterans-military-affairs",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed",
+              "topicLabel": "Veterans & Military Affairs",
+              "subtopicLabel": null
+            },
+            {
+              "id": "B0196",
+              "title": "Uniformed Services Spouses Act",
+              "topic": "veterans-military-affairs",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed",
+              "topicLabel": "Veterans & Military Affairs",
+              "subtopicLabel": null
+            },
+            {
+              "id": "B0197",
+              "title": "Estates - Maryland Uniform Simultaneous Death Act",
+              "topic": "estates-probate",
+              "subtopic": "uniform-simultaneous-death",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed",
+              "topicLabel": "Estates & Probate",
+              "subtopicLabel": "uniform-simultaneous-death"
+            },
+            {
+              "id": "B0198",
+              "title": "Mel Noland Woodland Incentives and Fellowship Fund - Reporting",
+              "topic": "land-use-property-rights",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed",
+              "topicLabel": "Land Use & Property Rights",
+              "subtopicLabel": null
+            },
+            {
+              "id": "B0199",
+              "title": "Income Tax - Subtraction Modification for Classroom Supplies Purchased by Teachers - Alteration",
+              "topic": "education",
+              "subtopic": "teacher-support",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed",
+              "topicLabel": "Education funding",
+              "subtopicLabel": "Teacher support"
+            },
+            {
+              "id": "B0200",
+              "title": "Veterans' Discounts Act",
+              "topic": "veterans-military-affairs",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "topicLabel": "Veterans & Military Affairs",
+              "subtopicLabel": null
+            },
+            {
+              "id": "B0201",
+              "title": "Professional Licensing Portability - Members of the Foreign Service and Spouses",
+              "topic": "veterans-military-affairs",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed",
+              "topicLabel": "Veterans & Military Affairs",
+              "subtopicLabel": null
+            },
+            {
+              "id": "B0202",
+              "title": "Health Occupations - State Board of Massage Therapy Examiners - Revisions",
+              "topic": "healthcare",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed",
+              "topicLabel": "Healthcare access",
+              "subtopicLabel": null
+            },
+            {
+              "id": "B0203",
+              "title": "Natural Resources - Complimentary Fishing and Hunting Licenses - Alterations",
+              "topic": "environment",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "topicLabel": "Environment / energy",
+              "subtopicLabel": null
+            },
+            {
+              "id": "B0204",
+              "title": "Anne Arundel County - Alcoholic Beverages Licenses - Veterans' Organizations",
+              "topic": "veterans-military-affairs",
+              "subtopic": null,
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "passed",
+              "topicLabel": "Veterans & Military Affairs",
+              "subtopicLabel": null
+            },
+            {
+              "id": "B0205",
+              "title": "Department of General Services - Identification Cards - Veteran Status Notation",
+              "topic": "veterans-military-affairs",
+              "subtopic": null,
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "passed",
+              "topicLabel": "Veterans & Military Affairs",
+              "subtopicLabel": null
+            },
+            {
+              "id": "B0206",
+              "title": "Local Government - Annapolis and Anne Arundel County Conference and Visitors Bureau Designation",
+              "topic": null,
+              "subtopic": null,
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "passed",
+              "topicLabel": null,
+              "subtopicLabel": null
+            },
+            {
+              "id": "B0207",
+              "title": "Funeral Establishments, Crematories, and Reduction Facilities - Disposition of Unclaimed Remains - Veterans",
+              "topic": "funeral-burial-services",
+              "subtopic": null,
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "passed",
+              "topicLabel": "Funeral & Burial Services",
+              "subtopicLabel": null
+            },
+            {
+              "id": "B0208",
+              "title": "Health Occupations Boards - Notation of Veteran Status and Eligibility for Benefits",
+              "topic": "veterans-military-affairs",
+              "subtopic": null,
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "passed",
+              "topicLabel": "Veterans & Military Affairs",
+              "subtopicLabel": null
+            },
+            {
+              "id": "B0209",
+              "title": "Chesapeake Conservation Corps Program - Renaming",
+              "topic": "environment",
+              "subtopic": null,
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "passed",
+              "topicLabel": "Environment / energy",
+              "subtopicLabel": null
+            },
+            {
+              "id": "B0210",
+              "title": "Braille Flag Memorial Act of 2025",
+              "topic": null,
+              "subtopic": null,
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "passed",
+              "topicLabel": null,
+              "subtopicLabel": null
+            },
+            {
+              "id": "B0211",
+              "title": "Department of the Environment - Notation of Veteran Status",
+              "topic": "veterans-military-affairs",
+              "subtopic": null,
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "passed",
+              "topicLabel": "Veterans & Military Affairs",
+              "subtopicLabel": null
+            },
+            {
+              "id": "B0212",
+              "title": "Boating Accidents - Reporting Requirement - Property Damage",
+              "topic": "land-use-property-rights",
+              "subtopic": null,
+              "year": 2025,
+              "role": "sponsor",
+              "outcome": "passed",
+              "topicLabel": "Land Use & Property Rights",
+              "subtopicLabel": null
+            }
+          ]
+        },
+        {
+          "id": "L035",
+          "name": "Dana Stein",
+          "party": "D",
+          "chamber": "house",
+          "district": "HD-011",
+          "bills": [
+            {
+              "id": "B0213",
+              "title": "Election Law - Presidential Electors - Selection and Voting",
+              "topic": "election-law-voter-registration",
+              "subtopic": "district-election-administration",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0214",
+              "title": "General Provisions - Commemorative Month - Maryland Native Plant Month",
+              "topic": "commemorative",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0215",
+              "title": "Mel Noland Woodland Incentives and Fellowship Fund - Reporting",
+              "topic": "environment",
+              "subtopic": "funds",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0216",
+              "title": "Public Safety – State Fire Prevention Code – Trash and Recyclable Materials",
+              "topic": "environment",
+              "subtopic": "waste-pollution",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0217",
+              "title": "Railroads - Required Crew for Movement of Freight",
+              "topic": "construction",
+              "subtopic": "requirements",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0218",
+              "title": "Sewage Sludge - Per- and Polyfluoroalkyl Substances - Regulation",
+              "topic": "environment",
+              "subtopic": "waste-pollution",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0219",
+              "title": "Electronic Device Producer Responsibility Program - Established",
+              "topic": "consumer-protection",
+              "subtopic": "producer-regulation",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0220",
+              "title": "Maryland Strategic Energy Investment Fund - Mandated Uses - Climate Change Programs",
+              "topic": "environment",
+              "subtopic": "clean-energy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0221",
+              "title": "Net Energy Metering, SUNRISE Program, and Community Solar Energy Generating Systems Program (SUNRISE Act)",
+              "topic": "environment",
+              "subtopic": "clean-energy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0222",
+              "title": "Baltimore County Board of Education - Financial Reporting Requirements",
+              "topic": "education",
+              "subtopic": "school-wellness-policy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            }
+          ]
+        },
+        {
+          "id": "L036",
+          "name": "Jeff Waldstreicher",
+          "party": "D",
+          "chamber": "senate",
+          "district": "SD-018",
+          "bills": [
+            {
+              "id": "B0223",
+              "title": "Vehicle Laws - Bicycles, Play Vehicles, and Unicycles - Crosswalks",
+              "topic": "vehicle-transportation-law",
+              "subtopic": "crosswalk-monitoring-systems",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0224",
+              "title": "Mail Theft",
+              "topic": "mail",
+              "subtopic": "theft",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0225",
+              "title": "Vehicle Laws - Manufacturers and Dealers - Prices Listed on Dealer Websites (Jack Fitzgerald Price Transparency Act)",
+              "topic": "consumer-protection",
+              "subtopic": "fair-pricing-market-competition",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0226",
+              "title": "Courts - Immunity From Liability - Donation of Pet Supplies",
+              "topic": "legal",
+              "subtopic": "immunity",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0227",
+              "title": "Criminal Procedure - Expungement - Adverse Actions and Removal From Maryland Electronic Courts (MDEC) System",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "expungement",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0228",
+              "title": "Institutions of Higher Education and Elementary and Secondary Schools - Title VI Coordinators",
+              "topic": "education",
+              "subtopic": "civil-rights-compliance-coordinators",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0229",
+              "title": "Vehicle Manufacturers and Dealers - Dealer and Manufacturer Associations - Administrative Hearings",
+              "topic": "consumer-protection",
+              "subtopic": "producer-regulation",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0230",
+              "title": "Civil Actions - Violation of Constitutional Rights (No Kings Act)",
+              "topic": "government-administration",
+              "subtopic": "constitution",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0231",
+              "title": "Income Tax Credit - Parent of a Stillborn Child",
+              "topic": "taxation",
+              "subtopic": "tax-credits-incentives",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0232",
+              "title": "Security Guards - Certification Renewal - Requirements",
+              "topic": "business-regulation",
+              "subtopic": "certification-renewal",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0233",
+              "title": "Motor Vehicles - Intelligent Speed Assistance System Pilot Program - Establishment",
+              "topic": "vehicle-transportation-law",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0234",
+              "title": "Law Enforcement - Protective Body Armor - Requirements and Reporting",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "police-accountability",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0235",
+              "title": "Residential Real Property - Notice of Landlord Entry - Tenant Consent",
+              "topic": "land-use-property-rights",
+              "subtopic": "residential-lease-fee-disclosures",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0236",
+              "title": "Maryland Illegal Online Gambling Enforcement Act",
+              "topic": "gambling-gaming",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0237",
+              "title": "Developmental Disabilities Services - Expedited Eligibility Determinations for Recently Relocated Individuals (Ralph's Act)",
+              "topic": "healthcare",
+              "subtopic": "access-equity",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0238",
+              "title": "Task Force on Not-for-Profit Funeral Establishments",
+              "topic": "funeral-burial-services",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0239",
+              "title": "Transfer of Real Property - Recordation Certification and State Transfer Tax (Land Transfer Accountability Act)",
+              "topic": "land-use-property-rights",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0240",
+              "title": "Residential-in-Commercial-Zone Laws - Study (Bring Back Main Street Act)",
+              "topic": "land-use-property-rights",
+              "subtopic": "zoning",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0241",
+              "title": "Handgun Roster Reform",
+              "topic": "firearms-weapons",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0242",
+              "title": "Labor and Employment - Civic and Related Activities - Protection (Maryland Employee Civic Activity and Lawful Expression Protection Act)",
+              "topic": "labor-employment-rights",
+              "subtopic": "employee-meeting-protections",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            }
+          ]
+        },
+        {
+          "id": "L037",
+          "name": "Pamela Beidle",
+          "party": "D",
+          "chamber": "senate",
+          "district": "SD-032",
+          "bills": [
+            {
+              "id": "B0243",
+              "title": "Workers' Compensation - Occupational Disease Presumptions - Hypertension",
+              "topic": "labor-employment-rights",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0244",
+              "title": "Health Services Cost Review Commission - Term of Office of Members",
+              "topic": "government-administration",
+              "subtopic": "agency-operations",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0245",
+              "title": "Biotechnology Investment Incentive Tax Credit - Conversion to Grant Program",
+              "topic": "taxation",
+              "subtopic": "tax-credits-incentives",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0246",
+              "title": "Tobacco Product Licensees - Additional Licensure for Electronic Smoking Devices",
+              "topic": "consumer-protection",
+              "subtopic": "producer-regulation",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0247",
+              "title": "Maryland Money Transmission Act - Definition of Money Transmitter - Alteration",
+              "topic": "business-regulation",
+              "subtopic": "license",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0248",
+              "title": "Maryland Medical Assistance Program and Health Insurance - Coverage for Orthoses and Prostheses (So Every Body Can Move Act)",
+              "topic": "healthcare",
+              "subtopic": "insurance-coverage",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0249",
+              "title": "Transportation - Rental Cars - Excise Tax Exemption",
+              "topic": "taxation",
+              "subtopic": "tax-credits-incentives",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0250",
+              "title": "State Board of Morticians and Funeral Directors - Board Operations and Regulation of Crematories and Reduction Facilities",
+              "topic": "funeral-burial-services",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0251",
+              "title": "Anne Arundel County - Alcoholic Beverages - Consumption-Only Nonprofit Swim Club License",
+              "topic": "alcoholic-beverages-licensing",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0252",
+              "title": "Business Regulation - Maryland Franchise Registration and Disclosure Law - Alterations (Franchise Reform Act)",
+              "topic": "business-regulation",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0253",
+              "title": "Health Occupations - Massage Therapy - Advertising",
+              "topic": "consumer-protection",
+              "subtopic": "advertising",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0254",
+              "title": "Nursing Facilities - Involuntary Discharge or Transfer",
+              "topic": "healthcare",
+              "subtopic": "access-equity",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0255",
+              "title": "Maryland Health Care Commission - Certificates of Need and Material Change Transactions",
+              "topic": "healthcare",
+              "subtopic": "hospital-funding",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0256",
+              "title": "Health Services Cost Review Commission - Health Facilities - Rate Setting",
+              "topic": "healthcare",
+              "subtopic": "hospital-funding",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0257",
+              "title": "Gaming - Definition of \"Own\" - Alterations",
+              "topic": "gambling-gaming",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0258",
+              "title": "Cannabis - Advertising - Alterations",
+              "topic": "consumer-protection",
+              "subtopic": "advertising",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0259",
+              "title": "Alcoholic Beverages - Class 3 Wineries and Class 4 Limited Wineries - Alterations",
+              "topic": "alcoholic-beverages-licensing",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0260",
+              "title": "Labor and Employment - Occupational Safety and Health - Revisions to Heat Stress Standards",
+              "topic": "labor-employment-rights",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            }
+          ]
+        },
+        {
+          "id": "L038",
+          "name": "Kriselda Valderrama",
+          "party": "D",
+          "chamber": "house",
+          "district": "HD-026",
+          "bills": [
+            {
+              "id": "B0261",
+              "title": "Certified Public Accountants - Licensure - Qualifications",
+              "topic": "business-regulation",
+              "subtopic": "license",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0262",
+              "title": "Real Property - Short-Term Rentals",
+              "topic": "land-use-property-rights",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0263",
+              "title": "State Finance and Procurement - Prevailing Wage Rate - Calculation",
+              "topic": "labor-employment-rights",
+              "subtopic": "wages",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            }
+          ]
+        },
+        {
+          "id": "L039",
+          "name": "Veronica Turner",
+          "party": "D",
+          "chamber": "house",
+          "district": "HD-026",
+          "bills": [
+            {
+              "id": "B0264",
+              "title": "Public Health - Drugs and Medical Devices Used in Death Sentences - Prohibition",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "fines-penalties",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0265",
+              "title": "Employment Discrimination - School Employees - Use of Cannabis",
+              "topic": "labor-employment-rights",
+              "subtopic": "cannabis-discrimination",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            }
+          ]
+        },
+        {
+          "id": "L040",
+          "name": "Joanne Benson",
+          "party": "D",
+          "chamber": "senate",
+          "district": "SD-024",
+          "bills": [
+            {
+              "id": "B0266",
+              "title": "County Boards of Education - Student Technology Use Policy - Requirements",
+              "topic": "education",
+              "subtopic": "school-health-safety-policy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0267",
+              "title": "Public Middle, High, and Charter Schools - Start Time for Instruction",
+              "topic": "education",
+              "subtopic": "school-health-safety-policy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0268",
+              "title": "Comprehensive Community Safety Funding Act",
+              "topic": "taxation",
+              "subtopic": "tax-credits-incentives",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0269",
+              "title": "Food, Drugs, and Cosmetics - Gene Structure- and Function-Modifying Products - Labeling",
+              "topic": "consumer-protection",
+              "subtopic": "advertising",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0270",
+              "title": "Public Works Contracts - Apprenticeship Requirements (Maryland Workforce Apprenticeship Utilization Act)",
+              "topic": "workforce",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0271",
+              "title": "Transportation - Study on Speed Limits - Interstate 495 and Connected Highways",
+              "topic": "study",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0272",
+              "title": "Criminal Law - Obscene Matter - Visual Representation of Child",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "child-protection",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0273",
+              "title": "Juvenile Law - Probation and Treatment Services - Required Disposition (Parental Accountability Act)",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "child-protection",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            }
+          ]
+        },
+        {
+          "id": "L041",
+          "name": "Susan McComas",
+          "party": "R",
+          "chamber": "house",
+          "district": "HD-034",
+          "bills": [
+            {
+              "id": "B0274",
+              "title": "Election Law - Candidate Truthfulness - Oath",
+              "topic": "election-law-voter-registration",
+              "subtopic": "candidate-financial-disclosure",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            }
+          ]
+        },
+        {
+          "id": "L042",
+          "name": "Jay Jacobs",
+          "party": "R",
+          "chamber": "house",
+          "district": "HD-036",
+          "bills": [
+            {
+              "id": "B0275",
+              "title": "Oysters - Rotational Harvest - Pilot Program",
+              "topic": "environment",
+              "subtopic": "conservation",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0276",
+              "title": "Consumer Protection - Agricultural Equipment Warranties",
+              "topic": "consumer-protection",
+              "subtopic": "producer-regulation",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0277",
+              "title": "Shellfish Aquaculture - Penalties - Suspension or Revocation of Permit or Registration Card",
+              "topic": "business-regulation",
+              "subtopic": "license",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0278",
+              "title": "Public Safety - Stationary Energy Storage Systems",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "fines-penalties",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0279",
+              "title": "Natural Resources - Recreational Fishing - Mobile Reporting Application",
+              "topic": "environment",
+              "subtopic": "licensing",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0280",
+              "title": "Chesapeake Bay - Enhancement Program and Maryland Seafood Industry Financial Assistance Fund - Established",
+              "topic": "environment",
+              "subtopic": "conservation",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            }
+          ]
+        },
+        {
+          "id": "L043",
+          "name": "Brian Feldman",
+          "party": "D",
+          "chamber": "senate",
+          "district": "SD-015",
+          "bills": [
+            {
+              "id": "B0281",
+              "title": "Task Force on Responsible Use of Natural Psychedelic Substances - Extension and Membership",
+              "topic": "study",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0282",
+              "title": "Public Safety - Short-Term Rental Units - Safety (Jillian and Lindsay Wiener Short-Term Rental Safety Act)",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0283",
+              "title": "Carbon Dioxide Capture, Removal, and Sequestration Projects - Regulations and Standards for Biochar and Wood Vault Technologies",
+              "topic": "environment",
+              "subtopic": "waste-pollution",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0284",
+              "title": "Election Law - Actions to Influence an Election - Social Media Platform Algorithms and Bots Purchased by Foreign Nationals",
+              "topic": "election-law-voter-registration",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0285",
+              "title": "Primary and Secondary Education - Educator Professional Development - Course on Well-Being and Flourishing",
+              "topic": "education",
+              "subtopic": "teacher-support",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0286",
+              "title": "Clinical Research Pharmacies and Clinical Trials - Permits and Ownership",
+              "topic": "healthcare",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0287",
+              "title": "Better Small Business Employee Benefit Act of 2026",
+              "topic": "healthcare",
+              "subtopic": "insurance-coverage",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0288",
+              "title": "Utility RELIEF (Reducing Energy Load Inflation for Everyday Families) Act",
+              "topic": "environment",
+              "subtopic": "clean-energy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0289",
+              "title": "Public Service Commission - Administrative Operations and Personnel Matters (Public Service Commission Flexibility Act)",
+              "topic": "government-administration",
+              "subtopic": "agency-operations",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0290",
+              "title": "Net Energy Metering, SUNRISE Program, and Community Solar Energy Generating Systems Program (SUNRISE Act)",
+              "topic": "environment",
+              "subtopic": "clean-energy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0291",
+              "title": "Public Service Commission - Net Energy Metering - Successor Program",
+              "topic": "environment",
+              "subtopic": "clean-energy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0292",
+              "title": "Agriculture - Hemp Manufacturing License - Establishment",
+              "topic": "business-regulation",
+              "subtopic": "license",
+              "year": 2026,
+              "role": "sponsor",
               "outcome": "failed"
             }
           ]
@@ -678,11 +2436,8 @@
       "subtopics": {
         "training-programs": "Training programs",
         "employer-incentives": "Employer incentives",
-        "grants": "Workforce grants"
-      },
-      "guidance": {
-        "includes": "job training, apprenticeships, workforce development programs, employer hiring incentives, vocational education, skills training, labor market programs, career readiness, youth employment, unemployment insurance reform, job placement services",
-        "excludes": "veterans benefits (even if veterans are mentioned as a population), disability accommodations, general economic development, business licensing, tax credits not specifically tied to hiring/employment"
+        "grants": "Workforce grants",
+        "retirement-savings-board": "retirement-savings-board"
       }
     },
     "healthcare": {
@@ -691,10 +2446,6 @@
         "insurance-coverage": "Insurance coverage",
         "hospital-funding": "Hospital funding",
         "access-equity": "Access & equity"
-      },
-      "guidance": {
-        "includes": "health insurance coverage, Medicaid/Medicare policy, hospital funding, mental health access, prescription drug policy, telehealth, nursing home standards, public health programs, health equity, patient rights",
-        "excludes": "workplace safety (unless specifically about healthcare workers), veterinary medicine, health-related tax credits that are primarily fiscal policy, general appropriations that happen to mention health"
       }
     },
     "environment": {
@@ -702,11 +2453,9 @@
       "subtopics": {
         "clean-energy": "Clean energy",
         "conservation": "Conservation",
-        "waste-pollution": "Waste & pollution"
-      },
-      "guidance": {
-        "includes": "clean energy, renewable energy, emissions standards, conservation, water quality, wildlife protection, pollution control, climate policy, land use for environmental purposes, recycling, stormwater, forest preservation",
-        "excludes": "agricultural policy that is primarily about farm economics, transportation infrastructure (unless specifically about emissions or EV), mining/drilling that is primarily an economic bill"
+        "waste-pollution": "Waste & pollution",
+        "funds": "Funds",
+        "licensing": "Licensing"
       }
     },
     "education": {
@@ -715,18 +2464,253 @@
         "k12-funding": "K-12 funding",
         "higher-ed-funding": "Higher ed funding",
         "teacher-support": "Teacher support",
-        "school-choice": "School choice"
-      },
-      "guidance": {
-        "includes": "K-12 school funding, teacher pay and certification, curriculum standards, higher education tuition and aid, school construction, special education, early childhood education, school choice, charter schools, literacy programs",
-        "excludes": "workforce training programs (even if in schools), student loan policy that is primarily financial services, general appropriations that happen to fund schools"
+        "school-choice": "School choice",
+        "curriculum-requirements": "Curriculum Requirements",
+        "sports-gender-policy": "sports-gender-policy",
+        "civil-rights-compliance-coordinators": "Civil rights compliance coordinators",
+        "school-wellness-policy": "School wellness policy",
+        "school-health-safety-policy": "School health & safety policy"
       }
+    },
+    "estates-probate": {
+      "label": "Estates & Probate",
+      "subtopics": {
+        "training-programs": "training-programs",
+        "uniform-simultaneous-death": "uniform-simultaneous-death"
+      }
+    },
+    "taxation": {
+      "label": "Taxation",
+      "subtopics": {
+        "training-programs": "training-programs",
+        "standard-deduction": "Standard deduction",
+        "property-tax-credit": "Property tax credit",
+        "tax-credits-incentives": "Tax Credits & Incentives"
+      }
+    },
+    "firearms-weapons": {
+      "label": "Firearms & Weapons",
+      "subtopics": {
+        "training-programs": "training-programs",
+        "permit-endorsements": "Permit Endorsements"
+      }
+    },
+    "public-safety-criminal-justice": {
+      "label": "Public Safety & Criminal Justice",
+      "subtopics": {
+        "training-programs": "training-programs",
+        "fines-penalties": "Fines & Penalties",
+        "child-protection": "Child Protection",
+        "offender-registration": "Offender Registration",
+        "police-accountability": "Police Accountability",
+        "hate-crime-definitions": "Hate crime definitions",
+        "drug-overdose-review-teams": "Drug overdose review teams",
+        "expungement": "Expungement"
+      }
+    },
+    "land-use-property-rights": {
+      "label": "Land Use & Property Rights",
+      "subtopics": {
+        "training-programs": "training-programs",
+        "residential-lease-fee-disclosures": "Residential lease fee disclosures",
+        "public-land-acquisition": "Public land acquisition",
+        "zoning": "Zoning"
+      }
+    },
+    "alcoholic-beverages-licensing": {
+      "label": "Alcoholic Beverages Licensing",
+      "subtopics": {
+        "training-programs": "training-programs",
+        "off-premises-sales": "off-premises-sales"
+      }
+    },
+    "funeral-burial-services": {
+      "label": "Funeral & Burial Services",
+      "subtopics": {
+        "liability-immunity": "Liability & Immunity"
+      }
+    },
+    "consumer-protection": {
+      "label": "Consumer Protection",
+      "subtopics": {
+        "app-store-regulation": "App Store Regulation",
+        "fair-pricing-market-competition": "Fair pricing & market competition",
+        "surveillance-based-pricing-prohibition": "Surveillance-based pricing prohibition",
+        "producer-regulation": "Producer Regulation",
+        "advertising": "Advertising"
+      }
+    },
+    "family-law": {
+      "label": "Family Law",
+      "subtopics": {
+        "protective-orders": "Protective Orders",
+        "visitation-for-incapacitated-persons": "Visitation for incapacitated persons"
+      }
+    },
+    "government-administration": {
+      "label": "Government Administration",
+      "subtopics": {
+        "agency-operations": "Agency Operations",
+        "constitution": "Constitution"
+      }
+    },
+    "election-law-voter-registration": {
+      "label": "Election Law & Voter Registration",
+      "subtopics": {
+        "voter-eligibility-verification": "Voter Eligibility & Verification",
+        "district-election-administration": "District & Election Administration",
+        "candidate-financial-disclosure": "Candidate financial disclosure",
+        "campaign-contribution-restrictions": "Campaign contribution restrictions"
+      }
+    },
+    "gambling-gaming": {
+      "label": "Gambling & Gaming",
+      "subtopics": {
+        "problem-gambling-funds": "Problem Gambling Funds",
+        "fantasy-competitions-regulation": "fantasy-competitions-regulation"
+      }
+    },
+    "vehicle-transportation-law": {
+      "label": "Vehicle & Transportation Law",
+      "subtopics": {
+        "historic-special-vehicles": "Historic & Special Vehicles",
+        "electric-bicycle-registration-insurance": "Electric bicycle registration & insurance",
+        "crosswalk-monitoring-systems": "crosswalk-monitoring-systems",
+        "driver-education-requirements": "driver-education-requirements"
+      }
+    },
+    "labor-gig-economy": {
+      "label": "Labor & Gig Economy",
+      "subtopics": {
+        "gig-worker-minimum-pay": "Gig worker minimum pay"
+      }
+    },
+    "labor-employment-rights": {
+      "label": "Labor & Employment Rights",
+      "subtopics": {
+        "employee-meeting-protections": "Employee meeting protections",
+        "overtime-pay-exemptions": "Overtime pay exemptions",
+        "employee-paid-leave": "Employee paid leave",
+        "training-repayment-agreements": "Training repayment agreements",
+        "worksite-enforcement-complaint-investigation": "Worksite enforcement & complaint investigation",
+        "wages": "Wages",
+        "cannabis-discrimination": "Cannabis Discrimination"
+      }
+    },
+    "food-security-nutrition": {
+      "label": "Food Security & Nutrition",
+      "subtopics": {
+        "food-desert-study": "Food desert study"
+      }
+    },
+    "business-regulation": {
+      "label": "Business Regulation",
+      "subtopics": {
+        "cemetery-regulation-disposition": "Cemetery regulation & disposition",
+        "abandoned-cemetery-acquisition": "Abandoned cemetery acquisition",
+        "certification-renewal": "Certification Renewal",
+        "license": "License"
+      }
+    },
+    "public-pensions-retirement": {
+      "label": "Public Pensions & Retirement",
+      "subtopics": {
+        "military-service-credit-eligibility": "Military service credit eligibility"
+      }
+    },
+    "veterans-military-affairs": {
+      "label": "Veterans & Military Affairs",
+      "subtopics": {
+        "veterans-ombudsman": "Veterans ombudsman",
+        "veterans-cemetery-interment": "Veterans cemetery interment"
+      }
+    },
+    "commemorative": {
+      "label": "Commemorative",
+      "subtopics": {}
+    },
+    "construction": {
+      "label": "Construction",
+      "subtopics": {
+        "requirements": "Requirements"
+      }
+    },
+    "mail": {
+      "label": "Mail",
+      "subtopics": {
+        "theft": "Theft"
+      }
+    },
+    "legal": {
+      "label": "Legal",
+      "subtopics": {
+        "immunity": "Immunity"
+      }
+    },
+    "study": {
+      "label": "Study",
+      "subtopics": {}
     }
   },
   "meta": {
-    "nextLegislatorId": 17,
-    "nextBillId": 59
+    "nextLegislatorId": 44,
+    "nextBillId": 293
   },
-  "sponsors": {},
-  "activityLog": []
+  "sponsors": {
+    "L017": {
+      "addedAt": "2026-06-18T19:07:00.818Z",
+      "note": ""
+    }
+  },
+  "activityLog": [
+    {
+      "id": "mqpdsag3",
+      "ts": "2026-06-22T15:39:20.163Z",
+      "action": "import",
+      "detail": "Imported 6 bills for Jay Jacobs",
+      "user": "Paul"
+    },
+    {
+      "id": "mqpdpmp9",
+      "ts": "2026-06-22T15:37:16.077Z",
+      "action": "import",
+      "detail": "Imported 1 bill for Susan McComas",
+      "user": "Paul"
+    },
+    {
+      "id": "mqpdnnr3",
+      "ts": "2026-06-22T15:35:44.127Z",
+      "action": "import",
+      "detail": "Imported 8 bills for Joanne Benson",
+      "user": "Paul"
+    },
+    {
+      "id": "mqpdktvc",
+      "ts": "2026-06-22T15:33:32.088Z",
+      "action": "import",
+      "detail": "Imported 2 bills for Veronica Turner",
+      "user": "Paul"
+    },
+    {
+      "id": "mqpd8zw5",
+      "ts": "2026-06-22T15:24:20.021Z",
+      "action": "import",
+      "detail": "Imported 3 bills for Kriselda Valderrama",
+      "user": "Paul"
+    },
+    {
+      "id": "mqlf92tu",
+      "ts": "2026-06-19T21:09:18.354Z",
+      "action": "import",
+      "detail": "Imported 18 bills for Pamela Beidle",
+      "user": "Paul"
+    },
+    {
+      "id": "mqlddzpz",
+      "ts": "2026-06-19T20:17:08.375Z",
+      "action": "import",
+      "detail": "Imported 20 bills for Jeff Waldstreicher",
+      "user": "Paul"
+    }
+  ]
 }
