@@ -2606,6 +2606,24 @@
               "outcome": "failed"
             }
           ]
+        },
+        {
+          "id": "L046",
+          "name": "Ben Barnes",
+          "party": "D",
+          "chamber": "house",
+          "district": "HD-021",
+          "bills": [
+            {
+              "id": "B0311",
+              "title": "Education - Regional Resource Centers and County Libraries - Funding",
+              "topic": "education",
+              "subtopic": "k12-funding",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            }
+          ]
         }
       ]
     }
@@ -2838,8 +2856,8 @@
     }
   },
   "meta": {
-    "nextLegislatorId": 46,
-    "nextBillId": 311
+    "nextLegislatorId": 47,
+    "nextBillId": 312
   },
   "sponsors": {
     "L017": {
