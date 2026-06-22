@@ -2867,6 +2867,13 @@
   },
   "activityLog": [
     {
+      "id": "mqpgim36",
+      "ts": "2026-06-22T16:55:47.538Z",
+      "action": "import",
+      "detail": "Imported 1 bill for Ben Barnes",
+      "user": "Paul"
+    },
+    {
       "id": "mqpggspa",
       "ts": "2026-06-22T16:54:22.798Z",
       "action": "import",
