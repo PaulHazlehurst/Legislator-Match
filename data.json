@@ -2547,6 +2547,13 @@
   },
   "activityLog": [
     {
+      "id": "mqpdsag3",
+      "ts": "2026-06-22T15:39:20.163Z",
+      "action": "import",
+      "detail": "Imported 6 bills for Jay Jacobs",
+      "user": "Paul"
+    },
+    {
       "id": "mqpdpmp9",
       "ts": "2026-06-22T15:37:16.077Z",
       "action": "import",
