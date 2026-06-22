@@ -2804,6 +2804,13 @@
   },
   "activityLog": [
     {
+      "id": "mqpgfrme",
+      "ts": "2026-06-22T16:53:34.742Z",
+      "action": "import",
+      "detail": "Imported 14 bills for Samuel Rosenberg",
+      "user": "Paul"
+    },
+    {
       "id": "mqpdsag3",
       "ts": "2026-06-22T15:39:20.163Z",
       "action": "import",
