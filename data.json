@@ -2380,6 +2380,13 @@
   },
   "activityLog": [
     {
+      "id": "mqpdktvc",
+      "ts": "2026-06-22T15:33:32.088Z",
+      "action": "import",
+      "detail": "Imported 2 bills for Veronica Turner",
+      "user": "Paul"
+    },
+    {
       "id": "mqpd8zw5",
       "ts": "2026-06-22T15:24:20.021Z",
       "action": "import",
