@@ -2228,6 +2228,24 @@
               "outcome": "failed"
             }
           ]
+        },
+        {
+          "id": "L041",
+          "name": "Susan McComas",
+          "party": "R",
+          "chamber": "house",
+          "district": "HD-034",
+          "bills": [
+            {
+              "id": "B0274",
+              "title": "Election Law - Candidate Truthfulness - Oath",
+              "topic": "election-law-voter-registration",
+              "subtopic": "candidate-financial-disclosure",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            }
+          ]
         }
       ]
     }
@@ -2454,8 +2472,8 @@
     }
   },
   "meta": {
-    "nextLegislatorId": 41,
-    "nextBillId": 274
+    "nextLegislatorId": 42,
+    "nextBillId": 275
   },
   "sponsors": {
     "L017": {
