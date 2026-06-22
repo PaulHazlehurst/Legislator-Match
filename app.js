@@ -3,7 +3,7 @@
 // See README.md "Deploying the serverless function" section.
 // Example: "https://legislator-matcher-api.vercel.app"
 // ===========================================================================
-const API_BASE = "https://legislator-match.vercel.app";
+const API_BASE = "PASTE_YOUR_VERCEL_FUNCTION_URL_HERE";
 
 // Track current filter state for the custom searchable dropdowns
 let currentIssue = null;
@@ -1069,12 +1069,17 @@ async function runAiFill(payload) {
     }
 
     let fillMsg = 'Fields filled — review before saving.';
-    if (result.suggestedTopicLabel) {
-      fillMsg = `Fields filled — suggested a new topic "${result.suggestedTopicLabel}" since none of the existing ones fit. Review before saving.`;
+    if (result.reasoning) {
+      fillMsg = `💡 ${result.reasoning}`;
+    } else if (result.suggestedTopicLabel) {
+      fillMsg = `Fields filled — suggested a new topic "${result.suggestedTopicLabel}". Review before saving.`;
     } else if (result.suggestedSubtopicLabel) {
       fillMsg = `Fields filled — suggested a new subtopic "${result.suggestedSubtopicLabel}". Review before saving.`;
     }
-    setStatus('ai-status', fillMsg, 'success');
+    if (!result.topicMatch && !result.suggestedTopicLabel) {
+      fillMsg += ' ⚠ No topic match found — assign one manually.';
+    }
+    setStatus('ai-status', fillMsg, result.topicMatch ? 'success' : 'loading');
   } catch (err) {
     setStatus('ai-status', `AI fill failed: ${err.message}. You can still fill the form manually.`, 'error');
   }
@@ -1571,7 +1576,7 @@ let importSaveInProgress = false;
 
 async function handleImportSaveAll() {
   if (!apiConfigured()) return;
-  if (importSaveInProgress) return; // guard against double-clicks triggering duplicate saves
+  if (importSaveInProgress) return;
 
   const cards = document.querySelectorAll('#import-bill-list [data-bill-idx]');
   const checkedCards = Array.from(cards).filter(c => c.querySelector('.import-bill-checkbox').checked);
@@ -1586,16 +1591,12 @@ async function handleImportSaveAll() {
   saveBtn.disabled = true;
   saveBtn.textContent = 'Saving…';
 
-  // First, resolve the legislator: try to find an existing one by name in
-  // this state; if none, create one (party/chamber/district unknown from
-  // LegiScan in this simplified flow, so they're left blank for manual fill).
+  // Resolve the legislator
   const stateData = DATA.states[importState.stateCode];
   const existing = stateData.legislators.find(l =>
     l.name.toLowerCase().includes(importState.matchedName.toLowerCase()) ||
     importState.matchedName.toLowerCase().includes(l.name.replace(/^(sen\.|del\.|rep\.)\s*/i, '').toLowerCase())
   );
-
-
   const legislatorPayload = existing
     ? { mode: 'existing', legislatorId: existing.id }
     : {
@@ -1606,10 +1607,9 @@ async function handleImportSaveAll() {
         district: String(importState.district || '')
       };
 
-  let savedCount = 0, failedCount = 0;
-  let lastBillId = null;
-
-  setStatus('import-save-status', `Saving ${checkedCards.length} bill${checkedCards.length === 1 ? '' : 's'} to GitHub…`, 'loading');
+  // Build the full bills array from the checked cards — then send as ONE batch
+  const billsToSave = [];
+  let skippedCount = 0;
 
   for (const card of checkedCards) {
     const idx = parseInt(card.dataset.billIdx, 10);
@@ -1620,58 +1620,70 @@ async function handleImportSaveAll() {
     const subSel = card.querySelector('.import-subtopic-select').value;
     const subNewVal = card.querySelector('.import-subtopic-new').value.trim();
 
-    // Skip bills with no topic — user left them unclassified intentionally
-    if (!topicSel || topicSel === '') {
-      failedCount++;
-      continue;
-    }
+    // Skip unclassified — user intentionally left these without a topic
+    if (!topicSel || topicSel === '') { skippedCount++; continue; }
 
     const topic = topicSel === '__new__' ? slugify(topicNewVal) : topicSel;
     const topicLabel = topicSel === '__new__' ? topicNewVal : DATA.topics[topicSel]?.label;
     const subtopic = subSel === '__new__' ? slugify(subNewVal) : (subSel || null);
     const subtopicLabel = subSel === '__new__' ? subNewVal : (DATA.topics[topicSel]?.subtopics?.[subSel] || subSel || null);
 
-    const bill = {
+    billsToSave.push({
       title: original.title,
-      topic, topicLabel, subtopic, subtopicLabel,
-      year: parseInt(card.querySelector('.import-year').value, 10),
-      role: 'sponsor', // import flow only pulls primary-sponsored bills
+      topic, topicLabel,
+      subtopic, subtopicLabel,
+      year: parseInt(card.querySelector('.import-year').value, 10) || original.year,
+      role: 'sponsor',
       outcome: card.querySelector('.import-outcome').value
-    };
-
-    try {
-      const res = await fetch(`${API_BASE}/api/save-bill`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ stateCode: importState.stateCode, legislator: legislatorPayload, bill })
-      });
-      if (!res.ok) throw new Error('save failed');
-      const result = await res.json();
-      lastBillId = result.billId;
-      // After the first new legislator is created, subsequent bills in this
-      // loop should attach to that same legislator rather than create more.
-      if (legislatorPayload.mode === 'new') {
-        legislatorPayload.mode = 'existing';
-        legislatorPayload.legislatorId = result.legislatorId;
-      }
-      savedCount++;
-    } catch {
-      failedCount++;
-    }
+    });
   }
 
-  if (savedCount > 0) {
-    setStatus('import-save-status', `Saved ${savedCount} bill${savedCount === 1 ? '' : 's'}${failedCount > 0 ? `, ${failedCount} failed` : ''}. Waiting for the live site to update…`, 'loading');
+  if (billsToSave.length === 0) {
+    setStatus('import-save-status', 'No classified bills to save — assign topics to bills first.', 'error');
+    importSaveInProgress = false;
+    saveBtn.disabled = false;
+    saveBtn.textContent = 'Save & search next legislator →';
+    return;
+  }
+
+  setStatus('import-save-status',
+    `Saving ${billsToSave.length} bill${billsToSave.length === 1 ? '' : 's'} in one commit…`,
+    'loading');
+
+  try {
+    const res = await fetch(`${API_BASE}/api/save-bills-batch`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        stateCode: importState.stateCode,
+        legislator: legislatorPayload,
+        bills: billsToSave
+      })
+    });
+
+    if (!res.ok) {
+      const errBody = await res.json().catch(() => ({}));
+      throw new Error(errBody.error || `Server returned ${res.status}`);
+    }
+
+    const result = await res.json();
+    const savedCount = result.billIds?.length || billsToSave.length;
+    const newTopicInfo = result.newTopics?.length > 0
+      ? ` (new topics: ${result.newTopics.join(', ')})`
+      : '';
+
+    setStatus('import-save-status',
+      `Saved ${savedCount} bill${savedCount === 1 ? '' : 's'}${newTopicInfo}. Waiting for the live site to update…`,
+      'loading');
+
+    // Wait for the last bill to appear then refresh
+    const lastBillId = result.billIds?.[result.billIds.length - 1];
     await waitForBillToAppear(lastBillId);
+
     setStatus('import-save-status', `Done — ${savedCount} bill${savedCount === 1 ? '' : 's'} saved and live.`, 'success');
     logActivity('import', `Imported ${savedCount} bill${savedCount === 1 ? '' : 's'} for ${importState.matchedName}`);
-
-    // Track this legislator in the session log for the progress display
     importSessionLog.unshift({ name: importState.matchedName, count: savedCount });
 
-    // Refresh local data quietly (no full page reload) so progress counters
-    // and duplicate-detection are accurate for the next search, then jump
-    // straight back to the search box — this is the bulk-add fast path.
     try {
       const freshRes = await fetch('data.json?_=' + Date.now());
       DATA = await freshRes.json();
@@ -1690,8 +1702,9 @@ async function handleImportSaveAll() {
       render();
       document.getElementById('import-name').focus();
     }, 900);
-  } else {
-    setStatus('import-save-status', 'All saves failed. Check the Vercel logs for details.', 'error');
+
+  } catch (err) {
+    setStatus('import-save-status', `Save failed: ${err.message}`, 'error');
   }
 
   importSaveInProgress = false;
