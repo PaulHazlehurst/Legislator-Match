@@ -2309,6 +2309,123 @@
               "outcome": "passed"
             }
           ]
+        },
+        {
+          "id": "L043",
+          "name": "Brian Feldman",
+          "party": "D",
+          "chamber": "senate",
+          "district": "SD-015",
+          "bills": [
+            {
+              "id": "B0281",
+              "title": "Task Force on Responsible Use of Natural Psychedelic Substances - Extension and Membership",
+              "topic": "study",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0282",
+              "title": "Public Safety - Short-Term Rental Units - Safety (Jillian and Lindsay Wiener Short-Term Rental Safety Act)",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0283",
+              "title": "Carbon Dioxide Capture, Removal, and Sequestration Projects - Regulations and Standards for Biochar and Wood Vault Technologies",
+              "topic": "environment",
+              "subtopic": "waste-pollution",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0284",
+              "title": "Election Law - Actions to Influence an Election - Social Media Platform Algorithms and Bots Purchased by Foreign Nationals",
+              "topic": "election-law-voter-registration",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0285",
+              "title": "Primary and Secondary Education - Educator Professional Development - Course on Well-Being and Flourishing",
+              "topic": "education",
+              "subtopic": "teacher-support",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0286",
+              "title": "Clinical Research Pharmacies and Clinical Trials - Permits and Ownership",
+              "topic": "healthcare",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0287",
+              "title": "Better Small Business Employee Benefit Act of 2026",
+              "topic": "healthcare",
+              "subtopic": "insurance-coverage",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0288",
+              "title": "Utility RELIEF (Reducing Energy Load Inflation for Everyday Families) Act",
+              "topic": "environment",
+              "subtopic": "clean-energy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0289",
+              "title": "Public Service Commission - Administrative Operations and Personnel Matters (Public Service Commission Flexibility Act)",
+              "topic": "government-administration",
+              "subtopic": "agency-operations",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0290",
+              "title": "Net Energy Metering, SUNRISE Program, and Community Solar Energy Generating Systems Program (SUNRISE Act)",
+              "topic": "environment",
+              "subtopic": "clean-energy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0291",
+              "title": "Public Service Commission - Net Energy Metering - Successor Program",
+              "topic": "environment",
+              "subtopic": "clean-energy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0292",
+              "title": "Agriculture - Hemp Manufacturing License - Establishment",
+              "topic": "business-regulation",
+              "subtopic": "license",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            }
+          ]
         }
       ]
     }
@@ -2536,8 +2653,8 @@
     }
   },
   "meta": {
-    "nextLegislatorId": 43,
-    "nextBillId": 281
+    "nextLegislatorId": 44,
+    "nextBillId": 293
   },
   "sponsors": {
     "L017": {
