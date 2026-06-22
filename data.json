@@ -3074,6 +3074,13 @@
   },
   "activityLog": [
     {
+      "id": "mqpguq84",
+      "ts": "2026-06-22T17:05:12.772Z",
+      "action": "import",
+      "detail": "Imported 13 bills for Jon Cardin",
+      "user": "Paul"
+    },
+    {
       "id": "mqpgsehi",
       "ts": "2026-06-22T17:03:24.246Z",
       "action": "import",
