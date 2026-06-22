@@ -2930,6 +2930,240 @@
               "outcome": "failed"
             }
           ]
+        },
+        {
+          "id": "L050",
+          "name": "William Folden",
+          "party": "R",
+          "chamber": "senate",
+          "district": "SD-004",
+          "bills": [
+            {
+              "id": "B0343",
+              "title": "Regulated Firearms - Seven-Day Waiting Period - Exceptions",
+              "topic": "firearms-weapons",
+              "subtopic": "permit-endorsements",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0344",
+              "title": "State Retirement and Pension System - Forfeiture of Benefits",
+              "topic": "public-pensions-retirement",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0345",
+              "title": "Public Schools - Self-Contained Special Education Classrooms - Use of Video Recording Devices",
+              "topic": "education",
+              "subtopic": "school-health-safety-policy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0346",
+              "title": "Criminal Law - School Resource Officers - Prohibition on Sexual Activity with Students",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "child-protection",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0347",
+              "title": "Real Time for Violent Crime Act (Geri's Law)",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "fines-penalties",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0348",
+              "title": "Property Tax - Credit for Surviving Spouse of Fallen Public Safety Officer or Judicial Officer - Alteration",
+              "topic": "taxation",
+              "subtopic": "property-tax-credit",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0349",
+              "title": "Domestic Violence - Warrantless Arrests and Victims",
+              "topic": "family-law",
+              "subtopic": "protective-orders",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0350",
+              "title": "Public Information Act - Personnel Records of Elected Officials and Joint Ethics Committee Records",
+              "topic": "government-administration",
+              "subtopic": "agency-operations",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0351",
+              "title": "Income Tax - Credit for Individuals Residing With and Caring for Elderly Parents",
+              "topic": "taxation",
+              "subtopic": "tax-credits-incentives",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0352",
+              "title": "Police Discipline - Order to Show Cause",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "police-accountability",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0353",
+              "title": "Maryland Estate Tax - Repeal",
+              "topic": "taxation",
+              "subtopic": "tax-credits-incentives",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0354",
+              "title": "Property Tax Credit - Disabled or Fallen Public Safety Officer or Judicial Officer - Alterations",
+              "topic": "taxation",
+              "subtopic": "property-tax-credit",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0355",
+              "title": "Education - Certification of Scholarship Granting Organizations (Opting in on Opportunity Act)",
+              "topic": "education",
+              "subtopic": "school-choice",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0356",
+              "title": "Public Safety - Police Accountability - Investigation Records Relating to Not Administratively Charged, Unfounded, and Exonerated Complaints",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "police-accountability",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0357",
+              "title": "Public Safety - Handgun Permits - Expiration and Renewal Periods for Retired Law Enforcement Officer",
+              "topic": "firearms-weapons",
+              "subtopic": "permit-endorsements",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0358",
+              "title": "Public Health - Medetomidine and Xylazine Consumer Protection Act",
+              "topic": "healthcare",
+              "subtopic": "consumer-protection",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0359",
+              "title": "Minors Convicted as Adults - Sentencing - Transfer to Juvenile Court",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "fines-penalties",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0360",
+              "title": "Criminal Law – Theft and Fraud Crimes – Valuation and Forgery of Gift Cards",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "fines-penalties",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0361",
+              "title": "Private Home Detention Monitoring Agencies - Notification of Violation",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "fines-penalties",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0362",
+              "title": "Public Safety – Handgun Permits – Firearms Training Course",
+              "topic": "firearms-weapons",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0363",
+              "title": "Criminal Procedure - Forensic Genetic Genealogical DNA Analysis and Search - Affidavit for Judicial Authorization",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "fines-penalties",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0364",
+              "title": "Criminal Procedure - Motion to Reduce Duration of Sentence - Eligibility (Vincent Anthony Fisher III Act)",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "expungement",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0365",
+              "title": "Courts and Judicial Proceedings - Charging Documents - Law Enforcement Officers",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "police-accountability",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0366",
+              "title": "Criminal Procedure - Victims of Sexual Assault Offenses - Test Kit Submission Requirements",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "fines-penalties",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0367",
+              "title": "Frederick County - Alcoholic Beverages - Class L Permit",
+              "topic": "alcoholic-beverages-licensing",
+              "subtopic": "off-premises-sales",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            }
+          ]
         }
       ]
     }
@@ -2949,7 +3183,8 @@
       "subtopics": {
         "insurance-coverage": "Insurance coverage",
         "hospital-funding": "Hospital funding",
-        "access-equity": "Access & equity"
+        "access-equity": "Access & equity",
+        "consumer-protection": "Consumer Protection"
       }
     },
     "environment": {
@@ -3164,8 +3399,8 @@
     }
   },
   "meta": {
-    "nextLegislatorId": 50,
-    "nextBillId": 343
+    "nextLegislatorId": 51,
+    "nextBillId": 368
   },
   "sponsors": {
     "L017": {
