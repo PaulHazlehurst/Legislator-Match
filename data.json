@@ -2100,6 +2100,15 @@
               "year": 2026,
               "role": "sponsor",
               "outcome": "passed"
+            },
+            {
+              "id": "B0262",
+              "title": "Real Property - Short-Term Rentals",
+              "topic": "land-use-property-rights",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
             }
           ]
         }
@@ -2323,7 +2332,7 @@
   },
   "meta": {
     "nextLegislatorId": 39,
-    "nextBillId": 262
+    "nextBillId": 263
   },
   "sponsors": {
     "L017": {
