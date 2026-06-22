@@ -2483,6 +2483,13 @@
   },
   "activityLog": [
     {
+      "id": "mqpdpmp9",
+      "ts": "2026-06-22T15:37:16.077Z",
+      "action": "import",
+      "detail": "Imported 1 bill for Susan McComas",
+      "user": "Paul"
+    },
+    {
       "id": "mqpdnnr3",
       "ts": "2026-06-22T15:35:44.127Z",
       "action": "import",
