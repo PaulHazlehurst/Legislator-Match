@@ -2624,6 +2624,87 @@
               "outcome": "failed"
             }
           ]
+        },
+        {
+          "id": "L047",
+          "name": "Anne Kaiser",
+          "party": "D",
+          "chamber": "house",
+          "district": "HD-014",
+          "bills": [
+            {
+              "id": "B0312",
+              "title": "Department of Information Technology - Statewide Information Technology Master Plan - Reporting",
+              "topic": "government-administration",
+              "subtopic": "agency-operations",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0313",
+              "title": "Property Taxes - Tax Sales, Legacy Protection Program, and Tax Credits",
+              "topic": "taxation",
+              "subtopic": "property-tax-credit",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0314",
+              "title": "Public Safety - Critical Infrastructure Protection",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0315",
+              "title": "State Child Welfare System - Reporting",
+              "topic": "education",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0316",
+              "title": "Department of Information Technology - Information Technology Staffing and Capability Assessment - Independent Study",
+              "topic": "study",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0317",
+              "title": "Consumer Protection - Menstrual Hygiene Products - Labeling Requirements",
+              "topic": "consumer-protection",
+              "subtopic": "producer-regulation",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0318",
+              "title": "Prescription Drug Repository Program - Redirecting Safe Prescription Drugs Pilot Program",
+              "topic": "healthcare",
+              "subtopic": "access-equity",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0319",
+              "title": "Clinical Professional Counseling - Out-of-State Providers - Use of Telehealth for Continuity of Care",
+              "topic": "healthcare",
+              "subtopic": "access-equity",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            }
+          ]
         }
       ]
     }
@@ -2856,8 +2937,8 @@
     }
   },
   "meta": {
-    "nextLegislatorId": 47,
-    "nextBillId": 312
+    "nextLegislatorId": 48,
+    "nextBillId": 320
   },
   "sponsors": {
     "L017": {
