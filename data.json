@@ -3940,6 +3940,13 @@
   },
   "activityLog": [
     {
+      "id": "mqtqfp5r",
+      "ts": "2026-06-25T16:44:32.415Z",
+      "action": "import",
+      "detail": "Imported 19 bills for Nancy King",
+      "user": "Paul"
+    },
+    {
       "id": "mqplwyr6",
       "ts": "2026-06-22T19:26:55.218Z",
       "action": "import",
