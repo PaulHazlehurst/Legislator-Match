@@ -3509,6 +3509,186 @@
               "outcome": "failed"
             }
           ]
+        },
+        {
+          "id": "L053",
+          "name": "Nancy King",
+          "party": "D",
+          "chamber": "senate",
+          "district": "SD-039",
+          "bills": [
+            {
+              "id": "B0409",
+              "title": "County Boards of Education - Post College and Career Readiness Pathways - Payment of Costs",
+              "topic": "education",
+              "subtopic": "k12-funding",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0410",
+              "title": "Property Tax - Agricultural Use Assessment - Community Solar Energy Generating Systems",
+              "topic": "taxation",
+              "subtopic": "property-tax-credit",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0411",
+              "title": "Maryland Technology Development Corporation - Long COVID Innovation Grant and Loan Program",
+              "topic": "healthcare",
+              "subtopic": "access-equity",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0412",
+              "title": "Community College Facilities Renewal Grant Program - Alterations",
+              "topic": "education",
+              "subtopic": "higher-ed-funding",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0413",
+              "title": "Public Libraries - State Library Resource Center - Funding",
+              "topic": "education",
+              "subtopic": "higher-ed-funding",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0414",
+              "title": "Income Tax - Credit for Physician Preceptors in Areas With Health Care Workforce Shortages - Alterations",
+              "topic": "taxation",
+              "subtopic": "tax-credits-incentives",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0415",
+              "title": "Maryland Child Care Credential Program - Extension of Funding",
+              "topic": "education",
+              "subtopic": "k12-funding",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0416",
+              "title": "Local Government - Grant for Recipients of State Child Tax Credit - Authorization",
+              "topic": "taxation",
+              "subtopic": "tax-credits-incentives",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0417",
+              "title": "Language Acquisition Tracking Program for Deaf and Hard of Hearing Children - Establishment",
+              "topic": "education",
+              "subtopic": "curriculum-requirements",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0418",
+              "title": "Growing Family Child Care Opportunities Program - Funding",
+              "topic": "education",
+              "subtopic": "k12-funding",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0419",
+              "title": "Earned Income Tax Credit - Assistance Program Implementation Delay and Study",
+              "topic": "taxation",
+              "subtopic": "tax-credits-incentives",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0420",
+              "title": "County Boards of Library Trustees - Membership - Student Member",
+              "topic": "government-administration",
+              "subtopic": "agency-operations",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0421",
+              "title": "Sales and Use Tax - Certificates Indicating Multiple Points of Use - Alterations",
+              "topic": "taxation",
+              "subtopic": "tax-credits-incentives",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0422",
+              "title": "State Board of Sign Language Interpreters - Membership and Licensing",
+              "topic": "business-regulation",
+              "subtopic": "license",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0423",
+              "title": "Public School System Contracts - Prohibited Provisions",
+              "topic": "education",
+              "subtopic": "k12-funding",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0424",
+              "title": "Property Tax - Petition to Review Value of Commercial Real Property",
+              "topic": "taxation",
+              "subtopic": "property-tax-credit",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            },
+            {
+              "id": "B0425",
+              "title": "Health Insurance - Provider Panels - Requirements",
+              "topic": "healthcare",
+              "subtopic": "insurance-coverage",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0426",
+              "title": "Supporting Our Caregiver Infrastructure Program - Feasibility Study",
+              "topic": "study",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0427",
+              "title": "Immigration Enforcement - Expanding Sensitive Locations, Notification, and Guidance (Maryland Values Act of 2026)",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "child-protection",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            }
+          ]
         }
       ]
     }
@@ -3749,8 +3929,8 @@
     }
   },
   "meta": {
-    "nextLegislatorId": 53,
-    "nextBillId": 409
+    "nextLegislatorId": 54,
+    "nextBillId": 428
   },
   "sponsors": {
     "L017": {
