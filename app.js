@@ -3,7 +3,7 @@
 // See README.md "Deploying the serverless function" section.
 // Example: "https://legislator-matcher-api.vercel.app"
 // ===========================================================================
-const API_BASE = "https://legislator-match.vercel.app";
+const API_BASE = "PASTE_YOUR_VERCEL_FUNCTION_URL_HERE";
 
 // Track current filter state for the custom searchable dropdowns
 let currentIssue = null;
@@ -358,42 +358,96 @@ function populateExistingLegislatorDropdown(filterText) {
 // Scoring + rendering
 // ---------------------------------------------------------------------------
 function computeScore(bills, issue, subtopic, legId) {
-  let relevant = bills.filter(b => b.topic === issue);
-  if (subtopic && subtopic !== 'any') {
-    relevant = relevant.filter(b => b.subtopic === subtopic);
-  }
-  if (relevant.length === 0) return { score: 0, relevant, passed: 0, rate: 0 };
+  // First pass: get all bills on this topic
+  const topicBills = bills.filter(b => b.topic === issue);
+  if (topicBills.length === 0) return { score: 0, relevant: [], passed: 0, rate: 0 };
 
+  // Item 3: subtopic-weighted scoring. When the caller specifies a subtopic
+  // (e.g. from the Propose tab), bills that match BOTH topic AND subtopic
+  // count more than bills that only match the topic. This makes a legislator
+  // who has sponsored multiple apprenticeship bills score higher than one who
+  // has the same number of general workforce bills, when you're pitching an
+  // apprenticeship proposal.
+  const relevant = topicBills; // all topic bills shown in the card
   const currentYear = new Date().getFullYear();
 
-  const activityWeights = relevant.map(b => {
-    const age = Math.max(0, currentYear - b.year);
-    return Math.max(0.4, 1 - age * 0.1);
+  const activityWeights = topicBills.map(b => {
+    const age = Math.max(0, currentYear - (b.year || currentYear));
+    let weight = Math.max(0.4, 1 - age * 0.1);
+
+    // Item 3: subtopic match bonus — bills in the exact subtopic
+    // the user cares about count 1.5× as much
+    if (subtopic && subtopic !== 'any' && b.subtopic === subtopic) {
+      weight *= 1.5;
+    }
+
+    // Item 4: bill status granularity — bills that progressed further
+    // are stronger signals of real engagement than bills that never
+    // moved. "Passed committee" is meaningful even if it died on the floor.
+    if (b.statusStage === 'committee_passed' || b.statusStage === 'advancing') {
+      weight *= 1.2;
+    } else if (b.statusStage === 'committee_failed') {
+      // Still got a hearing — better than never introduced
+      weight *= 0.9;
+    }
+    // 'introduced' stays at base weight — no adjustment
+
+    return weight;
   });
+
   const totalActivity = activityWeights.reduce((a, b) => a + b, 0);
   const volumeScore = Math.min(100, Math.sqrt(totalActivity / 5) * 100);
 
-  const decided = relevant.filter(b => b.outcome === 'passed' || b.outcome === 'failed');
-  const passed = relevant.filter(b => b.outcome === 'passed').length;
+  // Item 4: passage rate with granular status awareness.
+  // "Passed committee" bills count as a partial positive signal (0.6 weight)
+  // rather than being lumped in with "never moved" as undecided.
+  let positiveSignal = 0, negativeSignal = 0, decidedWeight = 0;
+  const decidedBills = [];
+  const passedBills = [];
+
+  topicBills.forEach(b => {
+    if (b.outcome === 'passed') {
+      positiveSignal += 1;
+      decidedWeight += 1;
+      decidedBills.push(b);
+      passedBills.push(b);
+    } else if (b.outcome === 'failed') {
+      // Distinguish "failed after committee pass" from "failed in committee"
+      if (b.statusStage === 'committee_passed') {
+        // Got out of committee — more positive signal than a clean failure
+        positiveSignal += 0.3;
+      }
+      negativeSignal += 1;
+      decidedWeight += 1;
+      decidedBills.push(b);
+    } else if (b.statusStage === 'committee_passed' || b.statusStage === 'advancing') {
+      // Still technically pending but clearly moving — partial positive signal
+      positiveSignal += 0.4;
+      decidedWeight += 0.5;
+    }
+  });
+
   let passageMultiplier = 1.0;
-  if (decided.length > 0) {
-    const passRate = passed / decided.length;
-    const confidence = Math.min(1, decided.length / 4);
-    const rawMultiplier = 0.85 + passRate * 0.30;
+  if (decidedWeight > 0) {
+    const effectiveRate = positiveSignal / Math.max(decidedWeight, 1);
+    const confidence = Math.min(1, decidedBills.length / 4);
+    const rawMultiplier = 0.85 + effectiveRate * 0.30;
     passageMultiplier = 1 + (rawMultiplier - 1) * confidence;
   }
 
   let baseScore = Math.round(Math.min(100, volumeScore * passageMultiplier));
 
-  // Sponsor bonus: +8 points for legislators we have a relationship with,
-  // capped at 100. This nudges them up in rankings to reflect the real-world
-  // advantage of having an existing relationship.
+  // Sponsor bonus
   if (legId && isSponsor(legId)) {
     baseScore = Math.min(100, baseScore + 8);
   }
 
-  const rate = decided.length > 0 ? Math.round((passed / decided.length) * 100) : 0;
-  return { score: baseScore, relevant, passed, rate };
+  const passed = passedBills.length;
+  const rate = decidedBills.length > 0
+    ? Math.round((passed / decidedBills.length) * 100)
+    : 0;
+
+  return { score: baseScore, relevant, passed, rate, decidedCount: decidedBills.length };
 }
 
 function render() {
@@ -485,7 +539,15 @@ function render() {
           ? DATA.topics[b.topic].subtopics[b.subtopic] : null;
         let tagClass = 'tag-pending', tagLabel = 'Prior session';
         if (b.outcome === 'passed') { tagClass = 'tag-passed'; tagLabel = 'Passed'; }
-        else if (b.outcome === 'failed') { tagClass = 'tag-failed'; tagLabel = 'Did not pass'; }
+        else if (b.outcome === 'failed') {
+          tagClass = 'tag-failed';
+          // Item 4: show more granular status when available
+          if (b.statusStage === 'committee_failed') tagLabel = 'Failed in committee';
+          else if (b.statusStage === 'committee_passed') tagLabel = 'Passed committee, failed floor';
+          else tagLabel = 'Did not pass';
+        } else if (b.statusStage === 'committee_passed' || b.statusStage === 'advancing') {
+          tagClass = 'tag-pending'; tagLabel = 'Advancing';
+        }
         return `<li>
           <span>${escapeHtml(b.title)} <span style="color:var(--text-tertiary);">&middot; ${roleLabel}, ${b.year}</span></span>
           <span class="bill-tags">
@@ -1511,7 +1573,7 @@ function renderImportReview() {
           ${descHtml}
           <div class="ibr-badges" style="margin-top:5px;">
             ${confidenceBadge}
-            <span style="font-size:11px;color:var(--text-tertiary);">${b.billNumber || ''} &middot; ${b.year || ''}</span>
+            <span style="font-size:11px;color:var(--text-tertiary);">${b.billNumber || ''} &middot; ${b.year || ''}${b.committeeName ? ' &middot; ' + escapeHtml(b.committeeName) : ''}</span>
             ${subjectBadges}
           </div>
           ${reasoningHtml}
@@ -1639,7 +1701,10 @@ async function handleImportSaveAll() {
       subtopic, subtopicLabel,
       year: parseInt(card.querySelector('.import-year').value, 10) || original.year,
       role: 'sponsor',
-      outcome: card.querySelector('.import-outcome').value
+      outcome: card.querySelector('.import-outcome').value,
+      // Store the granular status stage so scoring can distinguish
+      // "passed committee" from "never got a hearing" from "failed on floor"
+      statusStage: original.statusStage || null
     });
   }
 
