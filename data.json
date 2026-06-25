@@ -4055,6 +4055,13 @@
   },
   "activityLog": [
     {
+      "id": "mqtrdbuy",
+      "ts": "2026-06-25T17:10:41.482Z",
+      "action": "import",
+      "detail": "Imported 6 bills for David Moon",
+      "user": "Paul"
+    },
+    {
       "id": "mqtqrsc7",
       "ts": "2026-06-25T16:53:56.407Z",
       "action": "import",
