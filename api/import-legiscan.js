@@ -178,25 +178,44 @@ async function fetchBills(req, res, legiscanKey, anthropicKey) {
     return res.status(200).json({ bills: [], note: `No primary-sponsored bills found specifically in ${TARGET_YEAR} (some may exist in prior years of this session).` });
   }
 
-  let classified = inTargetYear.map(bill => ({
-    title: bill.title || bill.bill_number || 'Untitled bill',
-    billNumber: bill.bill_number,
-    year: billYear(bill) || TARGET_YEAR,
-    legiscanUrl: bill.url || bill.state_link,
-    statusCode: bill.status,
-    // Option 2: extract LegiScan's own description — far more informative
-    // than the title alone for classification purposes.
-    description: bill.description || null,
-    // Option 1: extract LegiScan's own subject tags — they've already run
-    // their own classification and these are a strong prior signal.
-    legiscanSubjects: Array.isArray(bill.subjects)
-      ? bill.subjects.map(s => s.subject_name).filter(Boolean)
-      : [],
-    topicMatch: null,
-    subtopicMatch: null,
-    suggestedTopicLabel: null,
-    suggestedSubtopicLabel: null
-  }));
+  let classified = inTargetYear.map(bill => {
+    // Item 4: Map LegiScan status codes to granular outcome stages
+    // 1=Introduced, 2=Engrossed, 3=Enrolled, 4=Passed, 5=Vetoed,
+    // 6=Failed, 7=Override, 8=Chaptered, 9=Refer, 10=Report Pass,
+    // 11=Report DNP (Did Not Pass committee), 12=Draft
+    const statusCode = bill.status;
+    let statusStage = 'introduced'; // default
+    if (statusCode === 4 || statusCode === 8) statusStage = 'passed';
+    else if (statusCode === 5) statusStage = 'vetoed';
+    else if (statusCode === 6 || statusCode === 11) statusStage = 'failed';
+    else if (statusCode === 10) statusStage = 'committee_passed'; // passed committee but not yet floor
+    else if (statusCode === 11) statusStage = 'committee_failed'; // died in committee
+    else if (statusCode === 2 || statusCode === 3) statusStage = 'advancing'; // engrossed/enrolled = moving forward
+
+    // Item 1: Extract committee name from getBill — extremely informative
+    // for classification. A bill in "House Health and Government Operations
+    // Committee" is almost certainly healthcare regardless of title ambiguity.
+    const committeeObj = bill.committee || {};
+    const committeeName = committeeObj.name || null;
+
+    return {
+      title: bill.title || bill.bill_number || 'Untitled bill',
+      billNumber: bill.bill_number,
+      year: billYear(bill) || TARGET_YEAR,
+      legiscanUrl: bill.url || bill.state_link,
+      statusCode,
+      statusStage,
+      description: bill.description || null,
+      committeeName,
+      legiscanSubjects: Array.isArray(bill.subjects)
+        ? bill.subjects.map(s => s.subject_name).filter(Boolean)
+        : [],
+      topicMatch: null,
+      subtopicMatch: null,
+      suggestedTopicLabel: null,
+      suggestedSubtopicLabel: null
+    };
+  });
 
   if (anthropicKey && classified.length > 0) {
     classified = await classifyBillsWithClaude(classified, knownTopics, anthropicKey);
@@ -222,20 +241,24 @@ async function classifyBillsWithClaude(bills, knownTopics, apiKey) {
 
   const systemPrompt = `You are classifying Maryland state legislative bills for a professional lobbying firm. Your classifications directly affect which legislators get recommended to clients, so accuracy is critical.
 
-You will receive bills with THREE pieces of information:
-1. The official bill TITLE (can be misleading — titles are formal/legal and often don't reveal the real subject)
+You will receive bills with FOUR pieces of information:
+1. The official bill TITLE (can be misleading — formal/legal language often obscures the real subject)
 2. The DESCRIPTION — a plain-language summary of what the bill actually does (more reliable than the title)
-3. LEGISCAN SUBJECT TAGS — LegiScan's own classification of the bill (use as a strong prior signal)
+3. LEGISCAN SUBJECT TAGS — LegiScan's own classification (strong prior signal — trust this heavily)
+4. COMMITTEE NAME — which legislative committee reviewed this bill (extremely informative: "Health and Government Operations Committee" = healthcare bill, "Economic Matters Committee" = business/workforce, "Environment and Transportation Committee" = environment)
 
-Use ALL THREE to determine the correct topic. When the description and LegiScan subjects agree, that's a high-confidence classification. When they conflict with the title, trust the description and subjects over the title.
+Use ALL FOUR signals. Prioritize: committee name > LegiScan subjects > description > title.
+When committee name clearly maps to a topic, that's almost always correct.
+When description and LegiScan subjects agree, that's high confidence.
+When they conflict with the title alone, trust the other signals over the title.
 
 CRITICAL RULES:
 1. Only match a topic if the bill CLEARLY belongs there based on its actual policy content.
-2. A bill affecting a particular population (veterans, seniors, teachers) does NOT automatically belong in any topic — what matters is what the bill actually DOES, not who it affects.
+2. A bill affecting a particular population (veterans, seniors, teachers) does NOT automatically belong in any topic — what matters is what the bill DOES, not who it affects.
 3. If a bill clearly belongs in a topic we don't have defined yet, suggest a new topic label.
 4. If a bill doesn't fit any topic at all (procedural bills, administrative changes, naming bills), return null — do NOT force a fit.
-5. Return confidence: "high" = clearly fits, "low" = loosely fits or you're not certain, null = no match.
-6. A null classification is far better than a wrong one — the user will classify unmatched bills manually.
+5. Return confidence: "high" = clearly fits (especially when committee name matches), "low" = loosely fits or uncertain, null = no match.
+6. A null is far better than a wrong classification — the user will classify unmatched bills manually.
 
 ${topicList ? `THE AVAILABLE TOPICS:\n\n${topicList}` : 'No topics defined yet — return null for all.'}
 
@@ -249,13 +272,12 @@ Respond with ONLY a JSON array (same length and order as the input), no markdown
   "reasoning": "one sentence explaining your classification or why you returned null"
 }]`;
 
-  // Send all three signals per bill — much richer than title alone
+  // Send all four signals per bill
   const userPayload = bills.map(b => ({
     title: b.title,
     description: b.description || null,
-    legiscanSubjects: b.legiscanSubjects && b.legiscanSubjects.length > 0
-      ? b.legiscanSubjects
-      : null
+    legiscanSubjects: b.legiscanSubjects && b.legiscanSubjects.length > 0 ? b.legiscanSubjects : null,
+    committeeName: b.committeeName || null
   }));
 
   const response = await fetch('https://api.anthropic.com/v1/messages', {
