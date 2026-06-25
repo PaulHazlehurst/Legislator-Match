@@ -72,7 +72,13 @@ async function findPerson(req, res, legiscanKey) {
   const matches = people.filter(p => {
     const fullName = `${p.first_name || ''} ${p.last_name || ''}`.toLowerCase();
     const lastNameOnly = (p.last_name || '').toLowerCase();
-    return fullName.includes(cleanedQuery) || cleanedQuery.includes(lastNameOnly) || (p.name || '').toLowerCase().includes(cleanedQuery);
+    const nameMatch = fullName.includes(cleanedQuery) || cleanedQuery.includes(lastNameOnly) || (p.name || '').toLowerCase().includes(cleanedQuery);
+    if (!nameMatch) return false;
+    // Filter out clearly inactive members: no district usually means
+    // they've left the chamber mid-session or are former members carried
+    // over in LegiScan's roster from a prior year.
+    if (!p.district && !p.role) return false;
+    return true;
   });
 
   return res.status(200).json({
@@ -200,35 +206,16 @@ async function fetchBills(req, res, legiscanKey, anthropicKey) {
 }
 
 async function classifyBillsWithClaude(bills, knownTopics, apiKey) {
-  // Option 5: Build rich per-topic guidance rather than just listing labels.
-  // Explicitly tell Claude what belongs in each topic AND common
-  // things that do NOT belong, since those edge cases cause most errors.
-  const TOPIC_GUIDANCE = {
-    workforce: {
-      includes: 'job training, apprenticeships, workforce development programs, employer hiring incentives, vocational education, skills training, labor market programs, career readiness, youth employment, unemployment insurance reform, job placement services',
-      excludes: 'veterans benefits (even if veterans are mentioned as a population), disability accommodations, general economic development, business licensing, tax credits that are not specifically tied to hiring/employment'
-    },
-    healthcare: {
-      includes: 'health insurance coverage, Medicaid/Medicare policy, hospital funding, mental health access, prescription drug policy, telehealth, nursing home standards, public health programs, health equity, patient rights',
-      excludes: 'workplace safety (unless specifically about healthcare workers), veterinary medicine, health-related tax credits that are primarily fiscal policy, general appropriations that happen to mention health'
-    },
-    environment: {
-      includes: 'clean energy, renewable energy, emissions standards, conservation, water quality, wildlife protection, pollution control, climate policy, land use for environmental purposes, recycling, stormwater, forest preservation',
-      excludes: 'agricultural policy that is primarily about farm economics, mining/drilling that is primarily an economic bill, transportation infrastructure (unless specifically about emissions or EV)'
-    },
-    education: {
-      includes: 'K-12 school funding, teacher pay and certification, curriculum standards, higher education tuition and aid, school construction, special education, early childhood education, school choice, charter schools, literacy programs',
-      excludes: 'workforce training programs (even if in schools), student loan policy that is primarily financial services, general appropriations that happen to fund schools'
-    }
-  };
-
+  // Build topic guidance dynamically from whatever is stored in data.json
+  // under each topic's `guidance` field — this means guidance stays accurate
+  // as the user's taxonomy grows and evolves, no code changes needed.
   const topicList = Object.entries(knownTopics || {}).map(([code, t]) => {
     const subs = Object.entries(t.subtopics || {}).map(([sc, sl]) => `  • ${sc}: ${sl}`).join('\n');
-    const guidance = TOPIC_GUIDANCE[code];
+    const g = t.guidance || {};
     return [
       `TOPIC: ${code} — "${t.label}"`,
-      guidance ? `  Includes: ${guidance.includes}` : '',
-      guidance ? `  Does NOT include: ${guidance.excludes}` : '',
+      g.includes ? `  Includes: ${g.includes}` : '',
+      g.excludes ? `  Does NOT include: ${g.excludes}` : '',
       subs ? `  Subtopics:\n${subs}` : ''
     ].filter(Boolean).join('\n');
   }).join('\n\n');
