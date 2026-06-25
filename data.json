@@ -3689,6 +3689,51 @@
               "outcome": "passed"
             }
           ]
+        },
+        {
+          "id": "L054",
+          "name": "Luke Clippinger",
+          "party": "D",
+          "chamber": "house",
+          "district": "HD-046",
+          "bills": [
+            {
+              "id": "B0428",
+              "title": "Baltimore City – Alcoholic Beverages – 46th Alcoholic Beverages District",
+              "topic": "alcoholic-beverages-licensing",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0429",
+              "title": "Alcoholic Beverages - Class 9 Limited Distillery License - Alteration",
+              "topic": "alcoholic-beverages-licensing",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0430",
+              "title": "Baltimore City - Alcoholic Beverages Licenses - Revisions",
+              "topic": "alcoholic-beverages-licensing",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed"
+            },
+            {
+              "id": "B0431",
+              "title": "Labor Law - Child Labor Penalties, Private Sector Employee Labor Relations, and State Employee Labor Standards",
+              "topic": "labor-employment-rights",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed"
+            }
+          ]
         }
       ]
     }
@@ -3929,8 +3974,8 @@
     }
   },
   "meta": {
-    "nextLegislatorId": 54,
-    "nextBillId": 428
+    "nextLegislatorId": 55,
+    "nextBillId": 432
   },
   "sponsors": {
     "L017": {
