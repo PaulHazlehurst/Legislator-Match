@@ -3985,6 +3985,13 @@
   },
   "activityLog": [
     {
+      "id": "mqtqrsc7",
+      "ts": "2026-06-25T16:53:56.407Z",
+      "action": "import",
+      "detail": "Imported 4 bills for Luke Clippinger",
+      "user": "Paul"
+    },
+    {
       "id": "mqtqfp5r",
       "ts": "2026-06-25T16:44:32.415Z",
       "action": "import",
