@@ -3734,6 +3734,75 @@
               "outcome": "failed"
             }
           ]
+        },
+        {
+          "id": "L055",
+          "name": "David Moon",
+          "party": "D",
+          "chamber": "house",
+          "district": "HD-020",
+          "bills": [
+            {
+              "id": "B0432",
+              "title": "Criminal Procedure - Expungement - Adverse Actions and Removal From Maryland Electronic Courts (MDEC) System",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "expungement",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "statusStage": "introduced"
+            },
+            {
+              "id": "B0433",
+              "title": "Civil Actions - Violation of Constitutional Rights (No Kings Act)",
+              "topic": "legal",
+              "subtopic": "constitution",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed",
+              "statusStage": "passed"
+            },
+            {
+              "id": "B0434",
+              "title": "Criminal Procedure - Automated Expungement (Clean Slate Act of 2026)",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "expungement",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "statusStage": "introduced"
+            },
+            {
+              "id": "B0435",
+              "title": "State Finance - Delinquent Federal Funds (Federal Obligations Enforcement Act)",
+              "topic": "government-administration",
+              "subtopic": "agency-operations",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "statusStage": "advancing"
+            },
+            {
+              "id": "B0436",
+              "title": "Law Enforcement - Protective Body Armor - Requirements and Reporting",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "police-accountability",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed",
+              "statusStage": "passed"
+            },
+            {
+              "id": "B0437",
+              "title": "Criminal Law - Third-Degree Assault",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "expungement",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "statusStage": "advancing"
+            }
+          ]
         }
       ]
     }
@@ -3957,7 +4026,8 @@
       "subtopics": {
         "immunity": "Immunity",
         "filing": "Filing",
-        "authority": "Authority"
+        "authority": "Authority",
+        "constitution": "Constitution"
       }
     },
     "study": {
@@ -3974,8 +4044,8 @@
     }
   },
   "meta": {
-    "nextLegislatorId": 55,
-    "nextBillId": 432
+    "nextLegislatorId": 56,
+    "nextBillId": 438
   },
   "sponsors": {
     "L017": {
