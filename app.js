@@ -3,7 +3,7 @@
 // See README.md "Deploying the serverless function" section.
 // Example: "https://legislator-matcher-api.vercel.app"
 // ===========================================================================
-const API_BASE = "https://legislator-match.vercel.app";
+const API_BASE = "PASTE_YOUR_VERCEL_FUNCTION_URL_HERE";
 
 // Track current filter state for the custom searchable dropdowns
 let currentIssue = null;
@@ -330,7 +330,7 @@ function populateExistingLegislatorDropdown(filterText) {
     const row = document.createElement('div');
     row.className = 'leg-pick-row';
     row.dataset.legId = l.id;
-    row.innerHTML = `<span class="leg-pick-badge ${l.party || ''}">${l.party || '?'}</span><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(l.name)}</span><span style="font-size:11px;color:var(--text-tertiary);flex-shrink:0;">${l.chamber === 'senate' ? 'Sen.' : 'Del.'} D${l.district || '—'}</span>`;
+    row.innerHTML = `<span class="leg-pick-badge ${l.party || ''}">${l.party || '?'}</span><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(l.name)}</span><span style="font-size:11px;color:var(--text-3);flex-shrink:0;">${l.chamber === 'senate' ? 'Sen.' : 'Del.'} D${l.district || '—'}</span>`;
     row.addEventListener('click', () => {
       sel.value = l.id;
       listEl.querySelectorAll('.leg-pick-row').forEach(r => r.classList.remove('selected'));
@@ -464,10 +464,10 @@ function render() {
   const anyWithBills = legislators.some(l => l.bills.length > 0);
   if (!anyWithBills) {
     document.getElementById('results-meta').textContent = '';
-    document.getElementById('results').innerHTML = `<div style="text-align:center;padding:3rem 1.5rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);">
+    document.getElementById('results').innerHTML = `<div style="text-align:center;padding:3rem 1.5rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--shadow-sm);">
       <div style="font-size:38px;margin-bottom:14px;">🏛️</div>
       <p style="font-size:16px;font-weight:700;color:var(--blue-900);margin:0 0 6px;">No legislators tracked yet for ${escapeHtml(stateData?.name || state)}</p>
-      <p style="font-size:13.5px;color:var(--text-secondary);margin:0 0 18px;max-width:420px;margin-left:auto;margin-right:auto;">Start building your roster — import legislators from LegiScan one at a time, or add bills manually if you already have the details.</p>
+      <p style="font-size:13.5px;color:var(--text-2);margin:0 0 18px;max-width:420px;margin-left:auto;margin-right:auto;">Start building your roster — import legislators from LegiScan one at a time, or add bills manually if you already have the details.</p>
       <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
         <button class="btn-outline" onclick="document.getElementById('open-import').click()" style="background:var(--blue-600);color:white;border-color:var(--blue-600);">⬇ Import from LegiScan</button>
         <button class="btn-outline" onclick="document.getElementById('open-add').click()">+ Add manually</button>
@@ -501,7 +501,7 @@ function render() {
     results.innerHTML = `<div style="text-align:center;padding:2.5rem 1rem;">
       <div style="font-size:32px;margin-bottom:12px;">🔍</div>
       <p style="font-size:15px;font-weight:600;color:var(--blue-900);margin:0 0 6px;">No legislators found for this combination</p>
-      <p style="font-size:13px;color:var(--text-secondary);margin:0 0 16px;">Try broadening your filters, or import bills for legislators in this topic area.</p>
+      <p style="font-size:13px;color:var(--text-2);margin:0 0 16px;">Try broadening your filters, or import bills for legislators in this topic area.</p>
       <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
         <button class="btn-outline" onclick="document.getElementById('open-import').click()">⬇ Import from LegiScan</button>
         <button class="btn-outline" onclick="document.getElementById('open-add').click()">+ Add a bill manually</button>
@@ -549,7 +549,7 @@ function render() {
           tagClass = 'tag-pending'; tagLabel = 'Advancing';
         }
         return `<li>
-          <span>${escapeHtml(b.title)} <span style="color:var(--text-tertiary);">&middot; ${roleLabel}, ${b.year}</span></span>
+          <span>${escapeHtml(b.title)} <span style="color:var(--text-3);">&middot; ${roleLabel}, ${b.year}</span></span>
           <span class="bill-tags">
             ${subLabelInner ? `<span class="tag tag-sub">${escapeHtml(subLabelInner)}</span>` : ''}
             <span class="tag ${tagClass}">${tagLabel}</span>
@@ -565,7 +565,7 @@ function render() {
             <span class="party-badge ${l.party || ''}">${l.party || ''}</span>
             ${sponsorData ? '<span class="star-badge">⭐ Sponsor</span>' : ''}
           </p>
-          <p class="card-meta">${chamberLabel}${districtLabel ? ' &middot; ' + districtLabel : ''} &middot; ${partyLabel}</p>
+          <p class="card-meta">${chamberLabel}${districtLabel ? `<span class="card-meta-sep">·</span>${districtLabel}` : ''}<span class="card-meta-sep">·</span>${partyLabel}</p>
         </div>
         <div class="score-col">
           <div class="score-ring ${scoreClass}">${score}</div>
@@ -888,7 +888,7 @@ function renderStats() {
         const d = crosstab[k] || { total: 0, passed: 0, decided: 0 };
         const rate = d.decided > 0 ? Math.round((d.passed / d.decided) * 100) : null;
         const chipClass = rate === null ? 'na' : rate >= 60 ? 'high' : rate >= 35 ? 'mid' : 'low';
-        return `<td><span class="rate-chip ${chipClass}">${rate !== null ? rate + '%' : '—'}</span> <span style="font-size:11px;color:var(--text-secondary)">(${d.total})</span></td>`;
+        return `<td><span class="rate-chip ${chipClass}">${rate !== null ? rate + '%' : '—'}</span> <span style="font-size:11px;color:var(--text-2)">(${d.total})</span></td>`;
       }).join('')}
     </tr>`;
   }
@@ -1371,13 +1371,13 @@ function renderImportSessionLog() {
   const container = document.getElementById('import-session-log');
   if (importSessionLog.length === 0) { container.innerHTML = ''; return; }
   container.innerHTML = `
-    <p style="font-size:10.5px;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.05em;margin:0 0 6px;">Added this session</p>
+    <p style="font-size:10.5px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:0.05em;margin:0 0 6px;">Added this session</p>
     <div style="display:flex;flex-direction:column;gap:4px;">
       ${importSessionLog.map(entry => `
-        <div style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--text-secondary);padding:4px 0;">
+        <div style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--text-2);padding:4px 0;">
           <span style="color:var(--green);">✓</span>
           <span style="flex:1;">${escapeHtml(entry.name)}</span>
-          <span style="color:var(--text-tertiary);">${entry.count} bill${entry.count === 1 ? '' : 's'}</span>
+          <span style="color:var(--text-3);">${entry.count} bill${entry.count === 1 ? '' : 's'}</span>
         </div>
       `).join('')}
     </div>`;
@@ -1496,15 +1496,15 @@ function renderImportReview() {
   const highConfCount = importState.bills.filter(b => b.topicMatch && b.confidence === 'high').length;
 
   // Summary bar above the list
-  const summaryHtml = `<div style="background:var(--surface-raised);border:1px solid var(--border);border-radius:var(--radius-md);padding:10px 14px;margin-bottom:12px;font-size:12.5px;">
+  const summaryHtml = `<div style="background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-md);padding:10px 14px;margin-bottom:12px;font-size:12.5px;">
     <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center;">
       <span style="color:var(--green);font-weight:600;">✓ ${highConfCount} classified with high confidence</span>
       ${needsReviewCount > 0 ? `<span style="color:var(--amber);font-weight:600;">⚠ ${needsReviewCount} need your review</span>` : ''}
-      <label style="margin-left:auto;display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text-secondary);text-transform:none;cursor:pointer;">
+      <label style="margin-left:auto;display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text-2);text-transform:none;cursor:pointer;">
         <input type="checkbox" id="filter-needs-review" /> Show only needs-review
       </label>
     </div>
-    ${needsReviewCount > 0 ? `<p style="margin:6px 0 0;color:var(--text-secondary);font-size:12px;">Bills marked ⚠ are unchecked by default. Assign them a topic before saving, or leave them unchecked to skip.</p>` : ''}
+    ${needsReviewCount > 0 ? `<p style="margin:6px 0 0;color:var(--text-2);font-size:12px;">Bills marked ⚠ are unchecked by default. Assign them a topic before saving, or leave them unchecked to skip.</p>` : ''}
   </div>`;
 
   const topicOptionsHtml = (selectedCode) => {
@@ -1554,12 +1554,12 @@ function renderImportReview() {
 
     // Claude's reasoning is surfaced inline so users know why each bill was classified (or not)
     const reasoningHtml = b.reasoning
-      ? `<div style="font-size:11px;color:var(--text-secondary);margin-top:4px;font-style:italic;">💡 ${escapeHtml(b.reasoning)}</div>`
+      ? `<div style="font-size:11px;color:var(--text-2);margin-top:4px;font-style:italic;">💡 ${escapeHtml(b.reasoning)}</div>`
       : '';
 
     // Description preview — most valuable signal, collapsed if long
     const descHtml = b.description
-      ? `<div style="font-size:11px;color:var(--text-tertiary);margin-top:3px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;" title="${escapeHtml(b.description)}">${escapeHtml(b.description)}</div>`
+      ? `<div style="font-size:11px;color:var(--text-3);margin-top:3px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;" title="${escapeHtml(b.description)}">${escapeHtml(b.description)}</div>`
       : '';
 
     // Only pre-check high-confidence bills; user must actively check low/unclassified ones
@@ -1574,7 +1574,7 @@ function renderImportReview() {
           ${descHtml}
           <div class="ibr-badges" style="margin-top:5px;">
             ${confidenceBadge}
-            <span style="font-size:11px;color:var(--text-tertiary);">${b.billNumber || ''} &middot; ${b.year || ''}${b.committeeName ? ' &middot; ' + escapeHtml(b.committeeName) : ''}</span>
+            <span style="font-size:11px;color:var(--text-3);">${b.billNumber || ''} &middot; ${b.year || ''}${b.committeeName ? ' &middot; ' + escapeHtml(b.committeeName) : ''}</span>
             ${subjectBadges}
           </div>
           ${reasoningHtml}
@@ -1930,7 +1930,7 @@ function renderAudit() {
     totalBills += bills.length;
     unclassifiedCount += bills.filter(b => !b.topic).length;
 
-    rows.push(`<div class="audit-leg-header">${escapeHtml(l.name)} <span style="font-weight:400;color:var(--text-tertiary)">&middot; ${bills.length} bill${bills.length === 1 ? '' : 's'}</span></div>`);
+    rows.push(`<div class="audit-leg-header">${escapeHtml(l.name)} <span style="font-weight:400;color:var(--text-3)">&middot; ${bills.length} bill${bills.length === 1 ? '' : 's'}</span></div>`);
 
     bills.slice().sort((a, b) => b.year - a.year).forEach(b => {
       const topicLabel = b.topic && DATA.topics[b.topic] ? DATA.topics[b.topic].label : null;
@@ -1938,7 +1938,7 @@ function renderAudit() {
         ? DATA.topics[b.topic].subtopics[b.subtopic] : null;
       const isUnclassified = !b.topic;
       const outcomeLabel = b.outcome === 'passed' ? 'Passed' : b.outcome === 'failed' ? 'Did not pass' : 'Prior session';
-      const outcomeColor = b.outcome === 'passed' ? 'var(--green)' : 'var(--text-tertiary)';
+      const outcomeColor = b.outcome === 'passed' ? 'var(--green)' : 'var(--text-3)';
 
       rows.push(`<div class="audit-row${isUnclassified ? ' unclassified' : ''}" data-leg-id="${l.id}" data-bill-id="${b.id}" data-state="${stateCode}">
         <div>
@@ -1962,7 +1962,7 @@ function renderAudit() {
     return;
   }
 
-  container.innerHTML = `<p style="font-size:12px;color:var(--text-secondary);margin:0 0 10px;">${totalBills} bill${totalBills === 1 ? '' : 's'}${unclassifiedCount > 0 ? ` &middot; <span style="color:var(--amber);font-weight:600;">${unclassifiedCount} unclassified</span>` : ''}</p>` + rows.join('');
+  container.innerHTML = `<p style="font-size:12px;color:var(--text-2);margin:0 0 10px;">${totalBills} bill${totalBills === 1 ? '' : 's'}${unclassifiedCount > 0 ? ` &middot; <span style="color:var(--amber);font-weight:600;">${unclassifiedCount} unclassified</span>` : ''}</p>` + rows.join('');
 
   container.querySelectorAll('.audit-edit-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -2228,7 +2228,7 @@ function populateSponsorDropdown(filter = '') {
     const row = document.createElement('div');
     row.className = 'leg-pick-row';
     row.dataset.legId = l.id;
-    row.innerHTML = `<span class="leg-pick-badge ${l.party || ''}">${l.party || '?'}</span><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${alreadySponsor ? '⭐ ' : ''}${escapeHtml(l.name)}</span><span style="font-size:11px;color:var(--text-tertiary);flex-shrink:0;">${l.chamber === 'senate' ? 'Sen.' : 'Del.'}</span>`;
+    row.innerHTML = `<span class="leg-pick-badge ${l.party || ''}">${l.party || '?'}</span><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${alreadySponsor ? '⭐ ' : ''}${escapeHtml(l.name)}</span><span style="font-size:11px;color:var(--text-3);flex-shrink:0;">${l.chamber === 'senate' ? 'Sen.' : 'Del.'}</span>`;
     row.addEventListener('click', () => {
       sel.value = l.id;
       listEl.querySelectorAll('.leg-pick-row').forEach(r => r.classList.remove('selected'));
@@ -2283,7 +2283,7 @@ function renderFeed() {
   const log = DATA.activityLog;
 
   if (!log || log.length === 0) {
-    container.innerHTML = `<div class="feed-card"><p style="font-size:13px;color:var(--text-secondary);text-align:center;padding:1rem 0;">No activity yet. When you add bills, import legislators, or edit data, it will appear here for the whole team to see.</p></div>`;
+    container.innerHTML = `<div class="feed-card"><p style="font-size:13px;color:var(--text-2);text-align:center;padding:1rem 0;">No activity yet. When you add bills, import legislators, or edit data, it will appear here for the whole team to see.</p></div>`;
     return;
   }
 
@@ -2574,16 +2574,16 @@ function renderProposeResults(topicCode, subtopicCode) {
     .sort((a, b) => b.score - a.score);
 
   if (scored.length === 0) {
-    container.innerHTML = `<div style="text-align:center;padding:2rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);margin-top:1rem;">
+    container.innerHTML = `<div style="text-align:center;padding:2rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);margin-top:1rem;">
       <p style="font-size:15px;font-weight:600;color:var(--blue-900);margin:0 0 6px;">No legislators tracked on this topic yet</p>
-      <p style="font-size:13px;color:var(--text-secondary);margin:0 0 16px;">Import legislators who work on ${DATA.topics[topicCode]?.label || topicCode} to build your database.</p>
+      <p style="font-size:13px;color:var(--text-2);margin:0 0 16px;">Import legislators who work on ${DATA.topics[topicCode]?.label || topicCode} to build your database.</p>
       <button class="btn-outline" onclick="document.getElementById('open-import').click()">⬇ Import from LegiScan</button>
     </div>`;
     return;
   }
 
   container.innerHTML = `
-    <div style="font-size:12.5px;color:var(--text-secondary);margin:10px 0 10px;">${scored.length} potential champion${scored.length === 1 ? '' : 's'} — ranked by track record on ${DATA.topics[topicCode]?.label || topicCode}</div>
+    <div style="font-size:12.5px;color:var(--text-2);margin:10px 0 10px;">${scored.length} potential champion${scored.length === 1 ? '' : 's'} — ranked by track record on ${DATA.topics[topicCode]?.label || topicCode}</div>
     <div style="display:flex;flex-direction:column;gap:10px;">
       ${scored.map(({ l, score, relevant, passed, rate }) => {
         const scoreClass = scoreColorClass(score);
@@ -2670,7 +2670,7 @@ function renderSearch() {
 
   container.innerHTML = results.slice(0,200).map(({l,b}) => {
     const topicLabel = DATA.topics[b.topic]?.label || b.topic || 'Unclassified';
-    const outcomeColor = b.outcome==='passed'?'var(--green)':'var(--text-tertiary)';
+    const outcomeColor = b.outcome==='passed'?'var(--green)':'var(--text-3)';
     const outcomeLabel = b.outcome==='passed'?'Passed':b.outcome==='failed'?'Did not pass':'Prior session';
     return `<div class="search-result-row">
       <div style="flex:1;min-width:0;">
@@ -2684,7 +2684,7 @@ function renderSearch() {
         </div>
       </div>
     </div>`;
-  }).join('') + (results.length > 200 ? `<p style="font-size:12px;color:var(--text-tertiary);text-align:center;padding:8px;">Showing first 200 of ${results.length} results — narrow your search to see more.</p>` : '');
+  }).join('') + (results.length > 200 ? `<p style="font-size:12px;color:var(--text-3);text-align:center;padding:8px;">Showing first 200 of ${results.length} results — narrow your search to see more.</p>` : '');
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -2798,7 +2798,7 @@ function loadPendingBills() {
   );
 
   if (allNonPassed.length===0) {
-    container.innerHTML='<p style="font-size:13px;color:var(--text-secondary);padding:8px 0;">No non-passed bills found.</p>';
+    container.innerHTML='<p style="font-size:13px;color:var(--text-2);padding:8px 0;">No non-passed bills found.</p>';
     return;
   }
 
@@ -2854,7 +2854,7 @@ function renderRosterCoverage(stateCode, stateData) {
     <div style="display:flex;gap:16px;margin-bottom:10px;flex-wrap:wrap;">
       <span style="font-size:13px;"><strong style="color:var(--green);">${done.length}</strong> strong (4+ bills)</span>
       <span style="font-size:13px;"><strong style="color:var(--amber);">${partial.length}</strong> partial (1–3 bills)</span>
-      <span style="font-size:13px;"><strong style="color:var(--text-tertiary);">${empty.length}</strong> not imported</span>
+      <span style="font-size:13px;"><strong style="color:var(--text-3);">${empty.length}</strong> not imported</span>
       <span style="font-size:13px;margin-left:auto;font-weight:700;color:var(--blue-900);">${pct}% complete</span>
     </div>
     <div style="height:8px;background:var(--bg);border-radius:4px;overflow:hidden;margin-bottom:14px;">
@@ -2866,7 +2866,7 @@ function renderRosterCoverage(stateCode, stateData) {
         return `<div class="progress-item ${cls}">
           <div class="progress-dot ${cls}"></div>
           <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11.5px;">${escapeHtml(l.name.replace(/^(sen\.|del\.|rep\.)\s*/i,''))}</span>
-          <span style="font-size:10px;color:var(--text-tertiary);flex-shrink:0;margin-left:auto;">${l.bills.length}</span>
+          <span style="font-size:10px;color:var(--text-3);flex-shrink:0;margin-left:auto;">${l.bills.length}</span>
         </div>`;
       }).join('')}
     </div>
@@ -3013,7 +3013,7 @@ function renderCoalition() {
 
     <div style="margin-bottom:12px;">
       <h3 style="font-size:13px;font-weight:700;color:var(--blue-900);text-transform:uppercase;letter-spacing:0.04em;margin:0 0 10px;">Coalition network</h3>
-      <p style="font-size:12.5px;color:var(--text-secondary);margin:0 0 12px;">Legislators who co-sponsor, work parallel issue areas, or consistently introduce bills in the same topic + year as ${escapeHtml(focusLeg.name)}. Strength is based on overlap signals in the bill database.</p>
+      <p style="font-size:12.5px;color:var(--text-2);margin:0 0 12px;">Legislators who co-sponsor, work parallel issue areas, or consistently introduce bills in the same topic + year as ${escapeHtml(focusLeg.name)}. Strength is based on overlap signals in the bill database.</p>
     </div>
 
     ${sortedAllies.map(([allyId, signal]) => {
@@ -3032,12 +3032,12 @@ function renderCoalition() {
           <div>
             <span class="coalition-title">${escapeHtml(ally.name)}</span>
             <span class="party-badge ${ally.party||''}" style="margin-left:6px;">${ally.party||''}</span>
-            <span style="font-size:11.5px;color:var(--text-secondary);margin-left:6px;">${ally.chamber==='senate'?'Senate':'House'}${ally.district?' · D'+ally.district:''}</span>
+            <span style="font-size:11.5px;color:var(--text-2);margin-left:6px;">${ally.chamber==='senate'?'Senate':'House'}${ally.district?' · D'+ally.district:''}</span>
           </div>
           <span class="coalition-strength ${strength}">${strengthLabel}</span>
         </div>
         <div style="height:6px;background:var(--bg);border-radius:3px;overflow:hidden;margin-bottom:10px;">
-          <div style="height:100%;width:${pct}%;background:${strength==='strong'?'var(--green)':strength==='moderate'?'var(--amber)':'var(--text-tertiary)'};border-radius:3px;"></div>
+          <div style="height:100%;width:${pct}%;background:${strength==='strong'?'var(--green)':strength==='moderate'?'var(--amber)':'var(--text-3)'};border-radius:3px;"></div>
         </div>
         <div class="coalition-bills">
           Shared focus areas: <strong>${sharedTopics.length > 0 ? sharedTopics.map(t => escapeHtml(t)).join(', ') : 'general overlap'}</strong>
