@@ -30,7 +30,7 @@ export default async function handler(req, res) {
   try {
     const { action } = req.body;
     if (action === 'findPerson') return await findPerson(req, res, legiscanKey);
-    if (action === 'fetchBills') return await fetchBills(req, res, legiscanKey, anthropicKey);
+    if (action === 'fetchBills') return await fetchBills(req, res, legiscanKey, anthropicKey, geminiKey);
     return res.status(400).json({ error: 'Unknown action. Use "findPerson" or "fetchBills".' });
   } catch (err) {
     return res.status(500).json({ error: err.message });
@@ -120,7 +120,7 @@ function normalizeChamber(role) {
 // the lightweight getSponsoredList response), keep primary-sponsor-only,
 // then classify each one with Claude against the existing topic list.
 // ---------------------------------------------------------------------------
-async function fetchBills(req, res, legiscanKey, anthropicKey) {
+async function fetchBills(req, res, legiscanKey, anthropicKey, geminiKey) {
   const { peopleId, knownTopics } = req.body;
   if (!peopleId) return res.status(400).json({ error: 'peopleId is required.' });
 
