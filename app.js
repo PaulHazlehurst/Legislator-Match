@@ -3,7 +3,7 @@
 // See README.md "Deploying the serverless function" section.
 // Example: "https://legislator-matcher-api.vercel.app"
 // ===========================================================================
-const API_BASE = "https://legislator-match.vercel.app";
+const API_BASE = "PASTE_YOUR_VERCEL_FUNCTION_URL_HERE";
 
 // Track current filter state for the custom searchable dropdowns
 let currentIssue = null;
@@ -703,6 +703,7 @@ function setupTabs() {
       if (tab.dataset.tab === 'feed') { renderFeed(); }
       if (tab.dataset.tab === 'propose') { setupProposeTab(); }
       if (tab.dataset.tab === 'search') { setupSearchTab(); }
+      if (tab.dataset.tab === 'coalition') { setupCoalitionTab(); }
     });
   });
 }
@@ -1541,10 +1542,10 @@ function renderImportReview() {
 
     const borderColor = isHighConf ? 'var(--green)' : needsReview ? 'var(--amber)' : 'var(--border)';
     const confidenceBadge = isHighConf
-      ? `<span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:100px;background:var(--green-bg);color:var(--green);flex-shrink:0;">✓ High confidence</span>`
+      ? `<span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:100px;background:var(--green-bg);color:var(--green);flex-shrink:0;">✓ ${b.consensusNote === 'Claude & Gemini agree' ? '🤝 Both AIs agree' : 'High confidence'}</span>`
       : isLowConf
-        ? `<span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:100px;background:var(--amber-bg);color:var(--amber);flex-shrink:0;">⚠ Low confidence — review</span>`
-        : `<span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:100px;background:var(--red-bg);color:var(--red);flex-shrink:0;">✕ Unclassified — assign topic</span>`;
+        ? `<span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:100px;background:var(--amber-bg);color:var(--amber);flex-shrink:0;">⚠ Low confidence${b.consensusNote ? ' — ' + b.consensusNote : ' — review'}</span>`
+        : `<span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:100px;background:var(--red-bg);color:var(--red);flex-shrink:0;">✕ ${b.consensusNote && b.consensusNote.startsWith('Disagree') ? '🔀 AIs disagree — assign topic' : 'Unclassified — assign topic'}</span>`;
 
     // LegiScan subject tags give the user immediate context
     const subjectBadges = (b.legiscanSubjects || []).slice(0, 4).map(s =>
@@ -2870,6 +2871,184 @@ function renderRosterCoverage(stateCode, stateData) {
       }).join('')}
     </div>
   </div>`;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// COALITION INTELLIGENCE TAB
+// Pure frontend computation from existing co-sponsorship data.
+// Finds which legislators consistently work together on the same bills.
+// ─────────────────────────────────────────────────────────────────────────────
+let coalitionSetup = false;
+
+function setupCoalitionTab() {
+  if (coalitionSetup) { renderCoalition(); return; }
+  coalitionSetup = true;
+
+  const stateCode = document.getElementById('state').value;
+  const stateData = DATA.states[stateCode];
+
+  // Populate legislator selector
+  const legSel = document.getElementById('coalition-leg-sel');
+  legSel.innerHTML = '<option value="">— Select a legislator —</option>';
+  if (stateData) {
+    stateData.legislators
+      .filter(l => l.bills.length > 0)
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .forEach(l => {
+        const opt = document.createElement('option');
+        opt.value = l.id;
+        opt.textContent = `${l.name} (${l.party}, ${l.chamber === 'senate' ? 'Sen.' : 'Del.'})`;
+        legSel.appendChild(opt);
+      });
+  }
+
+  // Populate topic filter
+  const topicSel = document.getElementById('coalition-topic-sel');
+  Object.entries(DATA.topics).forEach(([code, t]) => {
+    const opt = document.createElement('option');
+    opt.value = code; opt.textContent = t.label;
+    topicSel.appendChild(opt);
+  });
+
+  legSel.addEventListener('change', renderCoalition);
+  topicSel.addEventListener('change', renderCoalition);
+}
+
+function buildCoalitionMap(stateData, topicFilter) {
+  // For each pair of legislators, count shared bills (both have a bill with
+  // the same title or in the same topic/year, suggesting co-authorship or
+  // parallel action). Also count by topic area.
+  // Since co-sponsor data may be limited, we use topic+year co-occurrence
+  // as a proxy: two legislators with many bills in the same topic area in
+  // the same years are likely working the same coalition.
+
+  const legs = stateData.legislators.filter(l => l.bills.length > 0);
+  const coOccurrence = {}; // legId → legId → count
+
+  legs.forEach(legA => {
+    legs.forEach(legB => {
+      if (legA.id >= legB.id) return;
+      const billsA = topicFilter ? legA.bills.filter(b => b.topic === topicFilter) : legA.bills;
+      const billsB = topicFilter ? legB.bills.filter(b => b.topic === topicFilter) : legB.bills;
+      if (billsA.length === 0 || billsB.length === 0) return;
+
+      let sharedSignal = 0;
+
+      // Exact title match → definitive co-sponsorship signal (weight 10)
+      const titlesA = new Set(billsA.map(b => b.title.toLowerCase().trim()));
+      billsB.forEach(b => {
+        if (titlesA.has(b.title.toLowerCase().trim())) sharedSignal += 10;
+      });
+
+      // Same topic + same year → coalition signal (weight 1 per overlap)
+      const topicYearA = new Set(billsA.map(b => `${b.topic}:${b.year}`));
+      billsB.forEach(b => {
+        if (topicYearA.has(`${b.topic}:${b.year}`)) sharedSignal += 1;
+      });
+
+      if (sharedSignal > 0) {
+        if (!coOccurrence[legA.id]) coOccurrence[legA.id] = {};
+        if (!coOccurrence[legB.id]) coOccurrence[legB.id] = {};
+        coOccurrence[legA.id][legB.id] = (coOccurrence[legA.id][legB.id] || 0) + sharedSignal;
+        coOccurrence[legB.id][legA.id] = (coOccurrence[legB.id][legA.id] || 0) + sharedSignal;
+      }
+    });
+  });
+
+  return coOccurrence;
+}
+
+function renderCoalition() {
+  const container = document.getElementById('coalition-content');
+  const stateCode = document.getElementById('state').value;
+  const stateData = DATA.states[stateCode];
+  const legId = document.getElementById('coalition-leg-sel').value;
+  const topicFilter = document.getElementById('coalition-topic-sel').value;
+
+  if (!legId) {
+    container.innerHTML = '<p class="empty">Select a legislator to see their coalition network.</p>';
+    return;
+  }
+  if (!stateData) { container.innerHTML = '<p class="empty">No data for this state.</p>'; return; }
+
+  const focusLeg = stateData.legislators.find(l => l.id === legId);
+  if (!focusLeg) { container.innerHTML = '<p class="empty">Legislator not found.</p>'; return; }
+
+  const coMap = buildCoalitionMap(stateData, topicFilter || null);
+  const allies = coMap[legId] || {};
+  const legLookup = {};
+  stateData.legislators.forEach(l => { legLookup[l.id] = l; });
+
+  const sortedAllies = Object.entries(allies)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 12);
+
+  if (sortedAllies.length === 0) {
+    container.innerHTML = `<p class="empty">No coalition signals found for ${escapeHtml(focusLeg.name)} ${topicFilter ? 'on this topic' : ''}. Add more bills to build a richer picture.</p>`;
+    return;
+  }
+
+  const maxSignal = sortedAllies[0][1];
+
+  // Insight card — top strategic takeaway
+  const topAlly = legLookup[sortedAllies[0][0]];
+  const strongAllies = sortedAllies.filter(([, s]) => s >= maxSignal * 0.6);
+
+  const html = `
+    <div class="coalition-insight">
+      <h3>Strategic insight — ${escapeHtml(focusLeg.name)}</h3>
+      <div class="coalition-insight-row">
+        <span>Primary coalition partner</span>
+        <span style="font-weight:700;">${topAlly ? escapeHtml(topAlly.name) : '—'}</span>
+      </div>
+      <div class="coalition-insight-row">
+        <span>Strong allies (move together)</span>
+        <span style="font-weight:700;">${strongAllies.length} legislator${strongAllies.length === 1 ? '' : 's'}</span>
+      </div>
+      <div class="coalition-insight-row">
+        <span>If you land ${escapeHtml(focusLeg.name.split(' ').pop())}, likely also get</span>
+        <span style="font-weight:700;">${strongAllies.slice(0, 3).map(([id]) => legLookup[id]?.name.split(' ').pop() || id).join(', ')}</span>
+      </div>
+    </div>
+
+    <div style="margin-bottom:12px;">
+      <h3 style="font-size:13px;font-weight:700;color:var(--blue-900);text-transform:uppercase;letter-spacing:0.04em;margin:0 0 10px;">Coalition network</h3>
+      <p style="font-size:12.5px;color:var(--text-secondary);margin:0 0 12px;">Legislators who co-sponsor, work parallel issue areas, or consistently introduce bills in the same topic + year as ${escapeHtml(focusLeg.name)}. Strength is based on overlap signals in the bill database.</p>
+    </div>
+
+    ${sortedAllies.map(([allyId, signal]) => {
+      const ally = legLookup[allyId];
+      if (!ally) return '';
+      const pct = Math.round((signal / maxSignal) * 100);
+      const strength = pct >= 70 ? 'strong' : pct >= 40 ? 'moderate' : 'weak';
+      const strengthLabel = pct >= 70 ? 'Strong ally' : pct >= 40 ? 'Moderate ally' : 'Weak signal';
+      const sharedTopics = [...new Set(
+        (topicFilter ? ally.bills.filter(b => b.topic === topicFilter) : ally.bills)
+          .map(b => DATA.topics[b.topic]?.label || b.topic)
+      )].slice(0, 3);
+
+      return `<div class="coalition-card">
+        <div class="coalition-header">
+          <div>
+            <span class="coalition-title">${escapeHtml(ally.name)}</span>
+            <span class="party-badge ${ally.party||''}" style="margin-left:6px;">${ally.party||''}</span>
+            <span style="font-size:11.5px;color:var(--text-secondary);margin-left:6px;">${ally.chamber==='senate'?'Senate':'House'}${ally.district?' · D'+ally.district:''}</span>
+          </div>
+          <span class="coalition-strength ${strength}">${strengthLabel}</span>
+        </div>
+        <div style="height:6px;background:var(--bg);border-radius:3px;overflow:hidden;margin-bottom:10px;">
+          <div style="height:100%;width:${pct}%;background:${strength==='strong'?'var(--green)':strength==='moderate'?'var(--amber)':'var(--text-tertiary)'};border-radius:3px;"></div>
+        </div>
+        <div class="coalition-bills">
+          Shared focus areas: <strong>${sharedTopics.length > 0 ? sharedTopics.map(t => escapeHtml(t)).join(', ') : 'general overlap'}</strong>
+          &middot; ${ally.bills.length} bill${ally.bills.length===1?'':'s'} tracked
+          ${isSponsor(allyId) ? ' &middot; <span style="color:var(--gold);">⭐ Sponsor</span>' : ''}
+        </div>
+      </div>`;
+    }).join('')}
+  `;
+
+  container.innerHTML = html;
 }
 
 init();

@@ -22,6 +22,7 @@ export default async function handler(req, res) {
 
   const legiscanKey = process.env.LEGISCAN_API_KEY;
   const anthropicKey = process.env.ANTHROPIC_API_KEY;
+  const geminiKey = process.env.GEMINI_API_KEY || null; // optional — falls back to Claude-only
   if (!legiscanKey) {
     return res.status(500).json({ error: 'Server is missing LEGISCAN_API_KEY. Set it in Vercel project settings.' });
   }
@@ -218,16 +219,14 @@ async function fetchBills(req, res, legiscanKey, anthropicKey) {
   });
 
   if (anthropicKey && classified.length > 0) {
-    classified = await classifyBillsWithClaude(classified, knownTopics, anthropicKey);
+    classified = await classifyBillsWithClaude(classified, knownTopics, anthropicKey, geminiKey);
   }
 
   return res.status(200).json({ bills: classified });
 }
 
-async function classifyBillsWithClaude(bills, knownTopics, apiKey) {
+async function classifyBillsWithClaude(bills, knownTopics, apiKey, geminiKey) {
   // Build topic guidance dynamically from whatever is stored in data.json
-  // under each topic's `guidance` field — this means guidance stays accurate
-  // as the user's taxonomy grows and evolves, no code changes needed.
   const topicList = Object.entries(knownTopics || {}).map(([code, t]) => {
     const subs = Object.entries(t.subtopics || {}).map(([sc, sl]) => `  • ${sc}: ${sl}`).join('\n');
     const g = t.guidance || {};
@@ -272,7 +271,6 @@ Respond with ONLY a JSON array (same length and order as the input), no markdown
   "reasoning": "one sentence explaining your classification or why you returned null"
 }]`;
 
-  // Send all four signals per bill
   const userPayload = bills.map(b => ({
     title: b.title,
     description: b.description || null,
@@ -280,6 +278,74 @@ Respond with ONLY a JSON array (same length and order as the input), no markdown
     committeeName: b.committeeName || null
   }));
 
+  // Run Claude and Gemini in parallel — zero extra time cost vs sequential
+  const [claudeResults, geminiResults] = await Promise.all([
+    runClaudeClassifier(userPayload, systemPrompt, apiKey),
+    geminiKey ? runGeminiClassifier(userPayload, systemPrompt, geminiKey) : Promise.resolve(null)
+  ]);
+
+  // Merge results using consensus logic
+  return bills.map((b, i) => {
+    const c = claudeResults[i] || {};
+    const g = geminiResults ? (geminiResults[i] || {}) : null;
+
+    let topicMatch = c.topicMatch || null;
+    let subtopicMatch = c.subtopicMatch || null;
+    let confidence = c.confidence || null;
+    let reasoning = c.reasoning || null;
+    let consensusNote = null;
+
+    if (g) {
+      const claudeTopic = c.topicMatch || null;
+      const geminiTopic = g.topicMatch || null;
+
+      if (claudeTopic && geminiTopic && claudeTopic === geminiTopic) {
+        // Both models agree on topic → high confidence regardless of individual confidence
+        topicMatch = claudeTopic;
+        confidence = 'high';
+        // For subtopic, prefer Claude's answer but note if they disagree
+        subtopicMatch = c.subtopicMatch || g.subtopicMatch || null;
+        consensusNote = 'Claude & Gemini agree';
+        reasoning = c.reasoning || g.reasoning;
+      } else if (claudeTopic && !geminiTopic) {
+        // Only Claude found a topic — keep it but lower confidence
+        topicMatch = claudeTopic;
+        confidence = 'low';
+        consensusNote = 'Gemini found no match';
+        reasoning = c.reasoning;
+      } else if (!claudeTopic && geminiTopic) {
+        // Only Gemini found a topic — use it with low confidence
+        topicMatch = geminiTopic;
+        subtopicMatch = g.subtopicMatch || null;
+        confidence = 'low';
+        consensusNote = 'Claude found no match';
+        reasoning = g.reasoning;
+      } else if (claudeTopic && geminiTopic && claudeTopic !== geminiTopic) {
+        // Both found topics but disagree — flag for human review
+        topicMatch = null;
+        subtopicMatch = null;
+        confidence = null;
+        consensusNote = `Disagree: Claude→${claudeTopic}, Gemini→${geminiTopic}`;
+        reasoning = `Models disagree: Claude suggests ${claudeTopic}, Gemini suggests ${geminiTopic}. Human review needed.`;
+      }
+      // Both null → stays null, no match
+    }
+
+    return {
+      ...b,
+      topicMatch,
+      subtopicMatch,
+      confidence,
+      reasoning,
+      consensusNote,
+      suggestedTopicLabel: c.suggestedTopicLabel || (g && g.suggestedTopicLabel) || null,
+      suggestedSubtopicLabel: c.suggestedSubtopicLabel || (g && g.suggestedSubtopicLabel) || null,
+      needsReview: !topicMatch || confidence === 'low'
+    };
+  });
+}
+
+async function runClaudeClassifier(userPayload, systemPrompt, apiKey) {
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
@@ -289,34 +355,44 @@ Respond with ONLY a JSON array (same length and order as the input), no markdown
     },
     body: JSON.stringify({
       model: 'claude-sonnet-4-6',
-      max_tokens: 4000, // more output needed now that each response includes reasoning
+      max_tokens: 4000,
       system: systemPrompt,
       messages: [{ role: 'user', content: JSON.stringify(userPayload) }]
     })
   });
 
-  if (!response.ok) return bills;
+  if (!response.ok) return userPayload.map(() => ({}));
 
   const data = await response.json();
   const rawText = data.content.find(b => b.type === 'text')?.text || '[]';
-  const cleaned = rawText.replace(/```json|```/g, '').trim();
-
   try {
-    const classifications = JSON.parse(cleaned);
-    return bills.map((b, i) => {
-      const c = classifications[i] || {};
-      return {
-        ...b,
-        topicMatch: c.topicMatch || null,
-        subtopicMatch: c.subtopicMatch || null,
-        confidence: c.confidence || null,
-        reasoning: c.reasoning || null, // surface this in the UI so users can see why
-        suggestedTopicLabel: c.suggestedTopicLabel || null,
-        suggestedSubtopicLabel: c.suggestedSubtopicLabel || null,
-        needsReview: !c.topicMatch || c.confidence === 'low'
-      };
-    });
+    return JSON.parse(rawText.replace(/```json|```/g, '').trim());
   } catch {
-    return bills.map(b => ({ ...b, needsReview: true }));
+    return userPayload.map(() => ({}));
+  }
+}
+
+async function runGeminiClassifier(userPayload, systemPrompt, geminiKey) {
+  try {
+    const prompt = `${systemPrompt}\n\nClassify these bills:\n${JSON.stringify(userPayload)}`;
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { temperature: 0.1, maxOutputTokens: 4000 }
+        })
+      }
+    );
+
+    if (!response.ok) return null;
+
+    const data = await response.json();
+    const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text || '[]';
+    return JSON.parse(rawText.replace(/```json|```/g, '').trim());
+  } catch {
+    return null; // Gemini failure is non-fatal — fall back to Claude-only
   }
 }
