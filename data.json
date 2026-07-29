@@ -3803,6 +3803,115 @@
               "statusStage": "advancing"
             }
           ]
+        },
+        {
+          "id": "L056",
+          "name": "Eric Ebersole",
+          "party": "D",
+          "chamber": "house",
+          "district": "HD-044",
+          "bills": [
+            {
+              "id": "B0438",
+              "title": "Education - Maryland Center for School Safety - Anonymous Reporting System",
+              "topic": "education",
+              "subtopic": "school-health-safety-policy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed",
+              "statusStage": "passed"
+            },
+            {
+              "id": "B0439",
+              "title": "State Lottery - Courier Services - Licensure",
+              "topic": "gambling-gaming",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "statusStage": "introduced"
+            },
+            {
+              "id": "B0440",
+              "title": "Fantasy Competitions - Alterations and Voluntary Exclusion Requirements",
+              "topic": "gambling-gaming",
+              "subtopic": "fantasy-competitions-regulation",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "statusStage": "introduced"
+            },
+            {
+              "id": "B0441",
+              "title": "Alcoholic Beverage Tax - Ready-to-Drink Cocktails",
+              "topic": "taxation",
+              "subtopic": "tax-credits-incentives",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "statusStage": "introduced"
+            },
+            {
+              "id": "B0442",
+              "title": "State Board of Education - Membership - Employee of a County Board of Education",
+              "topic": "education",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed",
+              "statusStage": "passed"
+            },
+            {
+              "id": "B0443",
+              "title": "Public Utilities - For-Hire Drivers and Transportation Network Operators - Human Trafficking Awareness and Prevention Training and Liability",
+              "topic": "public-safety-criminal-justice",
+              "subtopic": "training-programs",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed",
+              "statusStage": "passed"
+            },
+            {
+              "id": "B0444",
+              "title": "Education - Student Athletic Activities - Cardiovascular Prescreening",
+              "topic": "education",
+              "subtopic": "school-health-safety-policy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "statusStage": "advancing"
+            },
+            {
+              "id": "B0445",
+              "title": "Local School Systems - Educator Screening - Educator Identification Clearinghouse (School Personnel Vetting and Hiring Transparency Act)",
+              "topic": "education",
+              "subtopic": "school-health-safety-policy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed",
+              "statusStage": "passed"
+            },
+            {
+              "id": "B0446",
+              "title": "Education - Artificial Intelligence - Guidelines, Professional Development, and Collaborative (Artificial Intelligence Ready Schools Act)",
+              "topic": "education",
+              "subtopic": "curriculum-requirements",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "statusStage": "advancing"
+            },
+            {
+              "id": "B0447",
+              "title": "Immigration Enforcement - Expanding Sensitive Locations, Notification, and Guidance (Maryland Values Act of 2026)",
+              "topic": "education",
+              "subtopic": "school-health-safety-policy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "statusStage": "advancing"
+            }
+          ]
         }
       ]
     }
@@ -4044,8 +4153,8 @@
     }
   },
   "meta": {
-    "nextLegislatorId": 56,
-    "nextBillId": 438
+    "nextLegislatorId": 57,
+    "nextBillId": 448
   },
   "sponsors": {
     "L017": {
