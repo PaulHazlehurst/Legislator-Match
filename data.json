@@ -4119,6 +4119,175 @@
               "statusStage": "introduced"
             }
           ]
+        },
+        {
+          "id": "L060",
+          "name": "Justin Ready",
+          "party": "R",
+          "chamber": "senate",
+          "district": "SD-005",
+          "bills": [
+            {
+              "id": "B0466",
+              "title": "Vehicle Laws - Vehicle Emissions Inspection Program - Repeal",
+              "topic": "environment",
+              "subtopic": "waste-pollution",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "statusStage": "introduced"
+            },
+            {
+              "id": "B0467",
+              "title": "Education - Agreements, Procurement Contracts, and Memoranda of Understanding - Reporting and Publication",
+              "topic": "education",
+              "subtopic": "school-wellness-policy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "statusStage": "introduced"
+            },
+            {
+              "id": "B0468",
+              "title": "Family Law - Marriage License Applications - Appearance in Court",
+              "topic": "family-law",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "statusStage": "introduced"
+            },
+            {
+              "id": "B0469",
+              "title": "Eminent Domain - Just Compensation - Fees and Costs",
+              "topic": "land-use-property-rights",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "statusStage": "introduced"
+            },
+            {
+              "id": "B0470",
+              "title": "Amendments Convention Called Under Article V of the U.S. Constitution - Delegation to the Convention",
+              "topic": "legal",
+              "subtopic": "constitution",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "statusStage": "introduced"
+            },
+            {
+              "id": "B0471",
+              "title": "Vehicle Laws - Historic Motor Vehicles - Minimum Age",
+              "topic": "vehicle-transportation-law",
+              "subtopic": "historic-special-vehicles",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "statusStage": "introduced"
+            },
+            {
+              "id": "B0472",
+              "title": "Elections - In-Person Voting - Proof of Identity",
+              "topic": "election-law-voter-registration",
+              "subtopic": "voter-eligibility-verification",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "statusStage": "introduced"
+            },
+            {
+              "id": "B0473",
+              "title": "Condominiums - Unit Owner Responsibility for Damage or Destruction",
+              "topic": "land-use-property-rights",
+              "subtopic": "hoa",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "statusStage": "introduced"
+            },
+            {
+              "id": "B0474",
+              "title": "Mental Health Law - Danger to the Life or Safety of the Individual or of Others - Definition (Right to Treatment)",
+              "topic": "healthcare",
+              "subtopic": "access-equity",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed",
+              "statusStage": "passed"
+            },
+            {
+              "id": "B0475",
+              "title": "Maryland Medical Assistance Program and Health Insurance - Coverage and Utilization Review - Drugs Reviewed by the Prescription Drug Affordability Board",
+              "topic": "healthcare",
+              "subtopic": "insurance-coverage",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "statusStage": "introduced"
+            },
+            {
+              "id": "B0476",
+              "title": "Public Health - Cottage Food Businesses and Home Bakeries",
+              "topic": "business-regulation",
+              "subtopic": "license",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "statusStage": "introduced"
+            },
+            {
+              "id": "B0477",
+              "title": "Medical Assistance Programs - Drug Dispensing - Cost-of-Dispensing Survey",
+              "topic": "healthcare",
+              "subtopic": "hospital-funding",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed",
+              "statusStage": "passed"
+            },
+            {
+              "id": "B0478",
+              "title": "Firearms Dealers - Firearm Hold Agreements",
+              "topic": "firearms-weapons",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "statusStage": "introduced"
+            },
+            {
+              "id": "B0479",
+              "title": "Noncompete and Conflict of Interest Clauses - Licensed Architects - Employer Workforce Relocation and Out-of-State Employers",
+              "topic": "labor-employment-rights",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "statusStage": "advancing"
+            },
+            {
+              "id": "B0480",
+              "title": "Income Tax - Credit for Long-Term Care Premiums",
+              "topic": "taxation",
+              "subtopic": "tax-credits-incentives",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "statusStage": "introduced"
+            },
+            {
+              "id": "B0481",
+              "title": "Frontotemporal Degeneration Awareness Week",
+              "topic": "commemorative",
+              "subtopic": null,
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "statusStage": "introduced"
+            }
+          ]
         }
       ]
     }
@@ -4361,8 +4530,8 @@
     }
   },
   "meta": {
-    "nextLegislatorId": 60,
-    "nextBillId": 466
+    "nextLegislatorId": 61,
+    "nextBillId": 482
   },
   "sponsors": {
     "L017": {
