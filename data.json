@@ -3981,6 +3981,55 @@
               "statusStage": "introduced"
             }
           ]
+        },
+        {
+          "id": "L058",
+          "name": "Brian Chisholm",
+          "party": "R",
+          "chamber": "house",
+          "district": "HD-031",
+          "bills": [
+            {
+              "id": "B0454",
+              "title": "Environment - Regional Greenhouse Gas Initiative - Withdrawal (Restoring Energy Freedom Act)",
+              "topic": "environment",
+              "subtopic": "clean-energy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "statusStage": "introduced"
+            },
+            {
+              "id": "B0455",
+              "title": "Climate Solutions Affordability Act of 2026",
+              "topic": "environment",
+              "subtopic": "clean-energy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "statusStage": "introduced"
+            },
+            {
+              "id": "B0456",
+              "title": "Electric Companies and Gas Companies - Customer Bill Surcharge - Repeal",
+              "topic": "environment",
+              "subtopic": "clean-energy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "statusStage": "introduced"
+            },
+            {
+              "id": "B0457",
+              "title": "Electricity and Gas - Retail Supply (Freedom From Monopolies Act)",
+              "topic": "environment",
+              "subtopic": "clean-energy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "statusStage": "introduced"
+            }
+          ]
         }
       ]
     }
@@ -4222,8 +4271,8 @@
     }
   },
   "meta": {
-    "nextLegislatorId": 58,
-    "nextBillId": 454
+    "nextLegislatorId": 59,
+    "nextBillId": 458
   },
   "sponsors": {
     "L017": {
