@@ -1211,15 +1211,211 @@
   }
   .shortcut-toast.show{ opacity:1; transform:translateX(-50%) translateY(-2px); }
 
+  /* ── LOADING SCREEN ─────────────────────────────────────────────────────
+     Shown only on the very first load. Pure CSS — zero JS weight.
+     Fades out after 2s, revealing the app beneath.
+  ──────────────────────────────────────────────────────────────────────── */
+  #loading-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: #0B2A4A;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    animation: loadingFadeOut 0.6s ease-out 2.2s forwards;
+    pointer-events: none;
+  }
+  @keyframes loadingFadeOut {
+    from { opacity: 1; visibility: visible; }
+    to   { opacity: 0; visibility: hidden; }
+  }
+  .loading-logo {
+    width: 120px;
+    height: auto;
+    object-fit: contain;
+    opacity: 0;
+    transform: translateY(8px);
+    animation: loadingLogoIn 0.7s cubic-bezier(0.16,1,0.3,1) 0.25s forwards;
+    filter: drop-shadow(0 8px 24px rgba(0,0,0,0.35));
+  }
+  @keyframes loadingLogoIn {
+    to { opacity: 1; transform: none; }
+  }
+  .loading-logo-fallback {
+    width: 80px; height: 80px;
+    border-radius: 16px;
+    background: linear-gradient(140deg, #2C7BCB, #0B2A4A);
+    border: 2px solid rgba(255,255,255,0.15);
+    opacity: 0;
+    animation: loadingLogoIn 0.7s cubic-bezier(0.16,1,0.3,1) 0.25s forwards;
+  }
+  .loading-divider {
+    width: 1px;
+    height: 32px;
+    background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.20), transparent);
+    margin: 20px 0 18px;
+    opacity: 0;
+    animation: loadingLogoIn 0.5s ease 0.7s forwards;
+  }
+  .loading-title {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.75);
+    opacity: 0;
+    animation: loadingLogoIn 0.5s ease 0.85s forwards;
+    margin-bottom: 8px;
+  }
+  .loading-subtitle {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.32);
+    letter-spacing: 0.06em;
+    opacity: 0;
+    animation: loadingLogoIn 0.5s ease 1.1s forwards;
+  }
+  .loading-bar-track {
+    width: 120px;
+    height: 2px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 1px;
+    margin-top: 28px;
+    overflow: hidden;
+    opacity: 0;
+    animation: loadingLogoIn 0.4s ease 1.0s forwards;
+  }
+  .loading-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #2C7BCB, #5DA3E8);
+    border-radius: 1px;
+    animation: loadingBarFill 1.0s cubic-bezier(0.4,0,0.2,1) 1.2s forwards;
+  }
+  @keyframes loadingBarFill {
+    from { width: 0%; }
+    to   { width: 100%; }
+  }
   footer{
     margin-top:3rem;font-size:11px;color:var(--text-3);text-align:center;
   }
   footer code{
     background:var(--surface-2);padding:1px 5px;border-radius:4px;font-size:10.5px;
   }
+
+  /* ── LOADING SCREEN ─────────────────────────────────────────────────────
+     Shown only on the very first load. Pure CSS — zero JS weight.
+     Fades out after 2s, revealing the app beneath.
+  ──────────────────────────────────────────────────────────────────────── */
+  #loading-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: #0B2A4A;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    animation: loadingFadeOut 0.6s ease-out 2.2s forwards;
+    pointer-events: none;
+  }
+  @keyframes loadingFadeOut {
+    from { opacity: 1; visibility: visible; }
+    to   { opacity: 0; visibility: hidden; }
+  }
+  .loading-logo {
+    width: 120px;
+    height: auto;
+    object-fit: contain;
+    opacity: 0;
+    transform: translateY(8px);
+    animation: loadingLogoIn 0.7s cubic-bezier(0.16,1,0.3,1) 0.25s forwards;
+    filter: drop-shadow(0 8px 24px rgba(0,0,0,0.35));
+  }
+  @keyframes loadingLogoIn {
+    to { opacity: 1; transform: none; }
+  }
+  .loading-logo-fallback {
+    width: 80px; height: 80px;
+    border-radius: 16px;
+    background: linear-gradient(140deg, #2C7BCB, #0B2A4A);
+    border: 2px solid rgba(255,255,255,0.15);
+    opacity: 0;
+    animation: loadingLogoIn 0.7s cubic-bezier(0.16,1,0.3,1) 0.25s forwards;
+  }
+  .loading-divider {
+    width: 1px;
+    height: 28px;
+    background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.18), transparent);
+    margin: 18px 0 16px;
+    opacity: 0;
+    animation: loadingLogoIn 0.5s ease 0.7s forwards;
+  }
+  .loading-title {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.20em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.70);
+    opacity: 0;
+    animation: loadingLogoIn 0.5s ease 0.85s forwards;
+    margin-bottom: 7px;
+  }
+  .loading-subtitle {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 10.5px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.28);
+    letter-spacing: 0.05em;
+    opacity: 0;
+    animation: loadingLogoIn 0.5s ease 1.1s forwards;
+  }
+  .loading-bar-track {
+    width: 110px;
+    height: 2px;
+    background: rgba(255,255,255,0.07);
+    border-radius: 1px;
+    margin-top: 26px;
+    overflow: hidden;
+    opacity: 0;
+    animation: loadingLogoIn 0.4s ease 1.0s forwards;
+  }
+  .loading-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #2C7BCB, #5DA3E8);
+    border-radius: 1px;
+    animation: loadingBarFill 1.0s cubic-bezier(0.4,0,0.2,1) 1.2s forwards;
+  }
+  @keyframes loadingBarFill {
+    from { width: 0%; }
+    to   { width: 100%; }
+  }
 </style>
 </head>
 <body>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     LOADING SCREEN — pure CSS, no JS required.
+     Logo fades in at 250ms → title at 850ms → progress bar fills 1.2–2.2s
+     → entire screen fades to transparent at 2.2s, revealing the app.
+═══════════════════════════════════════════════════════════════════════════ -->
+<div id="loading-screen" aria-hidden="true">
+  <img src="logo.png" alt="Pinnacle Strategies LLC" class="loading-logo"
+    onerror="this.classList.add('loading-logo-fallback'); this.removeAttribute('src');" />
+  <div class="loading-divider"></div>
+  <div class="loading-title">Legislator Database</div>
+  <div class="loading-subtitle">Built by Paul Hazlehurst</div>
+  <div class="loading-bar-track">
+    <div class="loading-bar-fill"></div>
+  </div>
+</div>
 
 <!-- TOP NAV -->
 <div class="topnav">
@@ -1232,9 +1428,9 @@
   <div class="topnav-right">
     <span class="topnav-label">You are</span>
     <input type="text" id="user-name" placeholder="Your name" autocomplete="name" />
-    <span class="kbd-hint" title="Keyboard shortcuts&#10;M — Matcher&#10;B — Propose a bill&#10;/ — Search bills&#10;S — Statistics&#10;E — Audit&#10;F — Team Feed&#10;A — Add bill&#10;I — Import&#10;P — Print&#10;Esc — Close panel">⌨ ?</span>
+    <span class="kbd-hint" id="open-help" title="How to use Bill Matcher">⌨ ?</span>
     <button id="theme-toggle" title="Toggle dark mode">🌙</button>
-    <span class="built-by">Pinnacle Strategies LLC</span>
+    <span class="built-by" style="color:var(--text-3);font-size:11px;">Pinnacle Strategies</span>
   </div>
 </div>
 
@@ -1247,6 +1443,7 @@
       <input type="text" id="sidebar-search" placeholder="Search…" autocomplete="off" />
     </div>
     <div class="sidebar-list" id="sidebar-list"></div>
+    <div id="sidebar-seating" style="border-top:1px solid rgba(255,255,255,0.07);padding:10px 14px 6px;flex-shrink:0;"></div>
     <div class="sidebar-count" id="sidebar-count"></div>
   </div>
 
@@ -1266,14 +1463,14 @@
 
     <!-- MAIN TABS -->
     <div class="main-tabs">
-      <button class="main-tab active" data-tab="matcher">🎯 Matcher</button>
-      <button class="main-tab" data-tab="propose">💡 Propose a Bill</button>
-      <button class="main-tab" data-tab="search">🔍 Search Bills</button>
-      <button class="main-tab" data-tab="stats">📊 Statistics</button>
-      <button class="main-tab" data-tab="sponsors">⭐ Our Sponsors</button>
-      <button class="main-tab" data-tab="coalition">🔗 Coalitions</button>
-      <button class="main-tab" data-tab="audit">✏️ Audit</button>
-      <button class="main-tab" data-tab="feed">📋 Team Feed</button>
+      <button class="main-tab active" data-tab="matcher">Matcher</button>
+      <button class="main-tab" data-tab="propose">Propose a Bill</button>
+      <button class="main-tab" data-tab="search">Search</button>
+      <button class="main-tab" data-tab="stats">Statistics</button>
+      <button class="main-tab" data-tab="coalition">Coalitions</button>
+      <button class="main-tab" data-tab="sponsors">Sponsors</button>
+      <button class="main-tab" data-tab="audit">Audit</button>
+      <button class="main-tab" data-tab="feed">Team Feed</button>
     </div>
 
     <!-- MATCHER TAB -->
@@ -1438,8 +1635,8 @@
     <div class="tab-pane" id="tab-audit">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:1rem;">
         <div>
-          <h2 style="font-size:18px;font-weight:700;color:var(--blue-900);margin:0 0 3px;">Bill Audit</h2>
-          <p style="font-size:13px;color:var(--text-2);margin:0;">Review and edit any bill's topic, subtopic, outcome, or title inline.</p>
+          <h2 style="font-size:18px;font-weight:700;color:var(--text);margin:0 0 3px;letter-spacing:-0.01em;">Bill Audit</h2>
+          <p style="font-size:13px;color:var(--text-2);margin:0;">Review and correct individual bills, or run a bulk AI re-audit to fix classification errors across the whole database.</p>
         </div>
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
           <select id="audit-filter-leg" style="height:34px;font-size:12.5px;max-width:200px;"></select>
@@ -1449,6 +1646,7 @@
           <label style="display:flex;align-items:center;gap:5px;font-size:12.5px;color:var(--text-2);white-space:nowrap;">
             <input type="checkbox" id="audit-filter-unclassified" /> Unclassified
           </label>
+          <button class="btn-outline" id="open-bulk-audit" style="color:var(--blue-600);border-color:var(--blue-400);">🤖 Bulk Re-Audit</button>
           <button class="btn-outline" id="open-session-end" style="color:var(--amber);border-color:var(--amber);">🏁 Session End</button>
         </div>
       </div>
@@ -1492,7 +1690,59 @@
       <div id="feed-content"><p class="empty">Loading activity…</p></div>
     </div>
 
-    <footer>Data lives in <code>data.json</code> on GitHub. Press <code>?</code> for keyboard shortcuts.</footer>
+    <footer>
+      Pinnacle Strategies LLC — Bill Intelligence Platform &middot;
+      Data in <code>data.json</code> on GitHub &middot;
+      Press <code>?</code> for help &middot;
+      Built by <strong>Paul Hazlehurst</strong>
+    </footer>
+  </div>
+</div>
+
+<!-- HELP PANEL -->
+<div class="overlay" id="help-overlay">
+  <div class="panel" style="max-width:640px;">
+    <div class="panel-header">
+      <h2>How to use Bill Matcher</h2>
+      <button class="panel-close" id="close-help">✕</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:18px;font-size:13.5px;line-height:1.6;color:var(--text-2);">
+      <div>
+        <p style="font-weight:700;color:var(--text);margin:0 0 4px;font-size:14px;">🎯 The Interest Score</p>
+        <p style="margin:0;">Scores run 0–100 and reflect how likely a legislator is to champion your bill, based on their track record. Scores are built from three signals: <strong>volume</strong> (how many bills they've sponsored on this topic), <strong>passage rate</strong> (how often those bills pass into law), and <strong>recency</strong> (recent bills count more than old ones). A <span style="color:var(--green);font-weight:600;">green score</span> (81–100) means strong track record with high passage. <span style="color:var(--amber);font-weight:600;">Amber</span> (51–80) means solid but not dominant. <span style="color:var(--red);font-weight:600;">Red</span> (0–50) means limited history on this topic. Hover over the score ring to see the exact breakdown.</p>
+      </div>
+      <div>
+        <p style="font-weight:700;color:var(--text);margin:0 0 4px;font-size:14px;">⬇ Importing legislators</p>
+        <p style="margin:0;">Click the <strong>Import</strong> button (bottom right) to pull bills directly from LegiScan. Search by name, pick the right legislator, review their 2026 bills in the classification panel, and save. Bills marked "🤝 Both AIs agree" are high-confidence. Bills marked "⚠ Low confidence" should be reviewed before saving. Unclassified bills won't affect scores — assign them a topic or skip them.</p>
+      </div>
+      <div>
+        <p style="font-weight:700;color:var(--text);margin:0 0 4px;font-size:14px;">💡 Propose a Bill</p>
+        <p style="margin:0;">Describe a bill in plain English and hit "Find Champions." The AI classifies your description against the topic taxonomy and shows you ranked legislators based on their track record on that topic. Use the party and chamber filters to narrow results.</p>
+      </div>
+      <div>
+        <p style="font-weight:700;color:var(--text);margin:0 0 4px;font-size:14px;">🔗 Coalitions</p>
+        <p style="margin:0;">Select a legislator to see who consistently works alongside them — useful for understanding who you'd likely bring along if you land your primary target. "Crossfiled bills" shows companion legislation introduced in both chambers simultaneously, a sign of coordinated legislative strategy.</p>
+      </div>
+      <div>
+        <p style="font-weight:700;color:var(--text);margin:0 0 4px;font-size:14px;">✏️ Audit &amp; accuracy</p>
+        <p style="margin:0;">Use the Audit tab to fix any misclassifications. The <strong>Bulk Re-Audit</strong> button reclassifies every bill in the database using the latest Claude + Gemini dual-classifier and your current topic guidance — run it after updating guidance or importing many legislators at once.</p>
+      </div>
+      <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-md);padding:12px 16px;">
+        <p style="font-weight:700;color:var(--text);margin:0 0 6px;font-size:13px;">⌨ Keyboard shortcuts</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px 20px;font-size:12.5px;">
+          <span><kbd style="background:var(--surface-3);border:1px solid var(--border-strong);border-radius:4px;padding:1px 6px;font-size:11px;">M</kbd> Matcher</span>
+          <span><kbd style="background:var(--surface-3);border:1px solid var(--border-strong);border-radius:4px;padding:1px 6px;font-size:11px;">B</kbd> Propose a Bill</span>
+          <span><kbd style="background:var(--surface-3);border:1px solid var(--border-strong);border-radius:4px;padding:1px 6px;font-size:11px;">/</kbd> Search Bills</span>
+          <span><kbd style="background:var(--surface-3);border:1px solid var(--border-strong);border-radius:4px;padding:1px 6px;font-size:11px;">S</kbd> Statistics</span>
+          <span><kbd style="background:var(--surface-3);border:1px solid var(--border-strong);border-radius:4px;padding:1px 6px;font-size:11px;">E</kbd> Audit tab</span>
+          <span><kbd style="background:var(--surface-3);border:1px solid var(--border-strong);border-radius:4px;padding:1px 6px;font-size:11px;">F</kbd> Team Feed</span>
+          <span><kbd style="background:var(--surface-3);border:1px solid var(--border-strong);border-radius:4px;padding:1px 6px;font-size:11px;">A</kbd> Add bill</span>
+          <span><kbd style="background:var(--surface-3);border:1px solid var(--border-strong);border-radius:4px;padding:1px 6px;font-size:11px;">I</kbd> Import</span>
+          <span><kbd style="background:var(--surface-3);border:1px solid var(--border-strong);border-radius:4px;padding:1px 6px;font-size:11px;">P</kbd> Print report</span>
+          <span><kbd style="background:var(--surface-3);border:1px solid var(--border-strong);border-radius:4px;padding:1px 6px;font-size:11px;">Esc</kbd> Close panel</span>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1657,6 +1907,30 @@
   </div>
 </div>
 
+<!-- BULK RE-AUDIT MODAL -->
+<div class="overlay" id="bulk-audit-overlay">
+  <div class="panel">
+    <div class="panel-header">
+      <h2>🤖 Bulk Re-Audit</h2>
+      <button class="panel-close" id="close-bulk-audit">✕</button>
+    </div>
+    <p style="font-size:13px;color:var(--text-2);margin-top:-6px;margin-bottom:1rem;">Uses Claude + Gemini to reclassify every bill in the database using your current topic guidance. Fixes misclassifications from before the dual-classifier was active.</p>
+    <div style="background:var(--blue-50);border:1px solid var(--blue-100);border-radius:var(--r-md);padding:10px 14px;margin-bottom:14px;font-size:13px;color:var(--blue-700);">
+      💡 Run a <strong>Preview</strong> first to see what would change without saving, then <strong>Apply</strong> to commit.
+    </div>
+    <div class="form-group">
+      <label>State</label>
+      <select id="bulk-audit-state"></select>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:14px;">
+      <button class="btn btn-secondary" id="bulk-audit-preview-btn" style="flex:1;height:38px;">Preview changes</button>
+      <button class="btn" id="bulk-audit-apply-btn" style="flex:1;height:38px;" disabled>Apply changes</button>
+    </div>
+    <div class="status-msg" id="bulk-audit-status"></div>
+    <div id="bulk-audit-results" style="margin-top:10px;max-height:360px;overflow-y:auto;"></div>
+  </div>
+</div>
+
 <!-- SESSION END MODAL -->
 <div class="overlay" id="session-end-overlay">
   <div class="panel">
@@ -1729,6 +2003,6 @@
   </div>
 </div>
 
-<script src="app.js?v=20260619i"></script>
+<script src="app.js?v=20260619k"></script>
 </body>
 </html>

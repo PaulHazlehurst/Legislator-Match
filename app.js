@@ -3,7 +3,12 @@
 // See README.md "Deploying the serverless function" section.
 // Example: "https://legislator-matcher-api.vercel.app"
 // ===========================================================================
-const API_BASE = "https://legislator-match.vercel.app";
+const API_BASE = "PASTE_YOUR_VERCEL_FUNCTION_URL_HERE";
+
+// Optional: paste your free Gemini API key here to enable browser-side
+// classification for the Propose a Bill tab (no server call needed).
+// Get a free key at aistudio.google.com — no credit card required.
+const GEMINI_API_KEY = ""; // e.g. "AIzaSy..."
 
 // Track current filter state for the custom searchable dropdowns
 let currentIssue = null;
@@ -30,8 +35,7 @@ async function init() {
 
   ['state', 'party', 'chamber'].forEach(id => {
     document.getElementById(id).addEventListener('change', () => {
-      render(); renderStats(); renderSidebar();
-      // Refresh audit filters if audit tab is active
+      render(); renderStats(); renderSidebar(); renderSeatingChart();
       if (document.getElementById('tab-audit')?.classList.contains('active')) setupAudit();
     });
   });
@@ -54,6 +58,7 @@ async function init() {
   setupSponsorPanel();
   setupKeyboardShortcuts();
   setupSessionEnd();
+  setupBulkAudit();
   populateImportStateDropdown();
 
   // Restore user name from localStorage
@@ -78,9 +83,16 @@ async function init() {
   document.getElementById('export-btn').addEventListener('click', handleExport);
   document.getElementById('copy-btn').addEventListener('click', handleCopyResults);
 
+  // Help panel
+  const helpOverlay = document.getElementById('help-overlay');
+  document.getElementById('open-help').addEventListener('click', () => helpOverlay.classList.add('open'));
+  document.getElementById('close-help').addEventListener('click', () => helpOverlay.classList.remove('open'));
+  helpOverlay.addEventListener('click', e => { if (e.target === helpOverlay) helpOverlay.classList.remove('open'); });
+
   render();
   renderSidebar();
   renderStats();
+  renderSeatingChart();
 }
 
 function normalizePendingToFailed() {
@@ -115,7 +127,7 @@ function buildSearchSelectDropdowns() {
     triggerId: 'ss-issue-trigger',
     dropdownId: 'ss-issue-dropdown',
     optionsId: 'ss-issue-options',
-    getOptions: () => Object.entries(DATA.topics).map(([code, t]) => ({ value: code, label: t.label })),
+    getOptions: () => sortedTopicEntries().map(([code, t]) => ({ value: code, label: t.label })),
     anyOption: null,
     onSelect: (code, label) => {
       currentIssue = code;
@@ -146,7 +158,7 @@ function buildSubissueOptions() {
     optionsId: 'ss-subissue-options',
     getOptions: () => {
       if (!currentIssue || !DATA.topics[currentIssue]) return [];
-      return Object.entries(DATA.topics[currentIssue].subtopics).map(([code, label]) => ({ value: code, label }));
+      return sortedSubtopicEntries(currentIssue).map(([code, label]) => ({ value: code, label }));
     },
     anyOption: 'All subtopics',
     onSelect: (code, label) => {
@@ -231,15 +243,13 @@ function buildSearchSelect({ triggerId, dropdownId, optionsId, getOptions, anyOp
 function populateTopicFormDropdown() {
   const formSel = document.getElementById('f-topic');
   formSel.innerHTML = '';
-  Object.entries(DATA.topics).forEach(([code, t]) => {
+  sortedTopicEntries().forEach(([code, t]) => {
     const opt = document.createElement('option');
-    opt.value = code;
-    opt.textContent = t.label;
+    opt.value = code; opt.textContent = t.label;
     formSel.appendChild(opt);
   });
   const newOpt = document.createElement('option');
-  newOpt.value = '__new__';
-  newOpt.textContent = '+ Add new topic…';
+  newOpt.value = '__new__'; newOpt.textContent = '+ Add new topic…';
   formSel.appendChild(newOpt);
 }
 
@@ -250,25 +260,20 @@ function populateSubtopicFormSelect(topicSelId, subSelId) {
 
   if (topicCode === '__new__') {
     const newOpt = document.createElement('option');
-    newOpt.value = '__new__';
-    newOpt.textContent = '+ Add new subtopic…';
-    newOpt.selected = true;
+    newOpt.value = '__new__'; newOpt.textContent = '+ Add new subtopic…'; newOpt.selected = true;
     sel.appendChild(newOpt);
     return;
   }
 
   const topic = DATA.topics[topicCode];
   if (!topic) return;
-  Object.entries(topic.subtopics).forEach(([code, label]) => {
+  sortedSubtopicEntries(topicCode).forEach(([code, label]) => {
     const opt = document.createElement('option');
-    opt.value = code;
-    opt.textContent = label;
+    opt.value = code; opt.textContent = label;
     sel.appendChild(opt);
   });
-
   const newOpt = document.createElement('option');
-  newOpt.value = '__new__';
-  newOpt.textContent = '+ Add new subtopic…';
+  newOpt.value = '__new__'; newOpt.textContent = '+ Add new subtopic…';
   sel.appendChild(newOpt);
 }
 
@@ -568,7 +573,7 @@ function render() {
           <p class="card-meta">${chamberLabel}${districtLabel ? `<span class="card-meta-sep">·</span>${districtLabel}` : ''}<span class="card-meta-sep">·</span>${partyLabel}</p>
         </div>
         <div class="score-col">
-          <div class="score-ring ${scoreClass}">${score}</div>
+          <div class="score-ring ${scoreClass}" title="Interest Score: ${score}/100&#10;${relevant.length} bill${relevant.length===1?'':'s'} on this topic&#10;${decidedCount > 0 ? `${rate}% passage rate (${passed}/${decidedCount} decided)` : 'No decided bills yet'}${sponsorData ? '&#10;+8 sponsor relationship bonus' : ''}&#10;${dataQuality.label} — ${billCount >= 4 ? 'score is reliable' : billCount >= 2 ? 'add more bills for higher confidence' : 'minimal data, treat as directional only'}">${score}</div>
           <span class="score-label">Interest</span>
         </div>
       </div>
@@ -742,10 +747,8 @@ function renderSidebar(filter = '') {
   list.querySelectorAll('.sidebar-leg').forEach(el => {
     el.addEventListener('click', () => {
       const legId = el.dataset.legid;
-      // Highlight in sidebar
       list.querySelectorAll('.sidebar-leg').forEach(e => e.classList.remove('active'));
       el.classList.add('active');
-      // Scroll to the matching card in the results, or highlight legislator
       const card = document.querySelector(`.card[data-legid="${legId}"]`);
       if (card) {
         card.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -754,6 +757,8 @@ function renderSidebar(filter = '') {
       }
     });
   });
+
+  renderSeatingChart();
 }
 
 // ── STATISTICS TAB ─────────────────────────────────────────────────────────────
@@ -762,7 +767,12 @@ function renderStats() {
   const stateCode = document.getElementById('state').value;
   const stateData = DATA.states[stateCode];
   if (!stateData || stateData.legislators.length === 0) {
-    container.innerHTML = '<p class="empty">No data yet for this state.</p>';
+    container.innerHTML = `<div style="text-align:center;padding:3rem 1.5rem;">
+      <div style="font-size:36px;margin-bottom:16px;">📊</div>
+      <p style="font-size:15px;font-weight:700;color:var(--text);margin:0 0 6px;letter-spacing:-0.01em;">No data yet for this state</p>
+      <p style="font-size:13px;color:var(--text-2);margin:0 0 20px;max-width:380px;margin-left:auto;margin-right:auto;">Import legislators from LegiScan to start building your intelligence database. Statistics update automatically as you add data.</p>
+      <button class="btn-outline" onclick="document.getElementById('open-import').click()" style="display:inline-flex;">⬇ Import from LegiScan</button>
+    </div>`;
     return;
   }
 
@@ -1245,6 +1255,21 @@ async function handleSaveBill(e) {
   } catch (err) {
     setStatus('save-status', `Save failed: ${err.message}`, 'error');
   }
+}
+
+// ---------------------------------------------------------------------------
+// Helper: return DATA.topics sorted alphabetically by label — used everywhere
+// we build a dropdown so the order is always consistent regardless of the
+// order keys were added to data.json.
+// ---------------------------------------------------------------------------
+function sortedTopicEntries() {
+  return Object.entries(DATA.topics).sort((a, b) => a[1].label.localeCompare(b[1].label));
+}
+
+function sortedSubtopicEntries(topicCode) {
+  const topic = DATA.topics[topicCode];
+  if (!topic || !topic.subtopics) return [];
+  return Object.entries(topic.subtopics).sort((a, b) => a[1].localeCompare(b[1]));
 }
 
 function slugify(str) {
@@ -1861,7 +1886,7 @@ function setStatus(elId, msg, type) {
 
 function apiConfigured(silent = false) {
   if (!API_BASE || API_BASE === "PASTE_YOUR_VERCEL_FUNCTION_URL_HERE") {
-    if (!silent) alert('The serverless function URL is not set yet. See README.md to deploy it, then paste the URL into app.js (API_BASE).');
+    if (!silent) showToast('Server not configured — paste your Vercel URL into app.js (line 6) to enable saving.', 'error');
     return false;
   }
   return true;
@@ -1958,11 +1983,18 @@ function renderAudit() {
   });
 
   if (rows.length === 0) {
-    container.innerHTML = '<p class="empty">No bills match these filters.</p>';
+    container.innerHTML = `<div style="text-align:center;padding:2.5rem 1rem;">
+      <div style="font-size:32px;margin-bottom:12px;">✓</div>
+      <p style="font-size:15px;font-weight:700;color:var(--text);margin:0 0 6px;">All bills are classified</p>
+      <p style="font-size:13px;color:var(--text-2);margin:0;">No bills match these filters. ${filterUnclassified ? 'Every bill in this view has a topic assigned.' : 'Try a different filter.'}</p>
+    </div>`;
     return;
   }
 
-  container.innerHTML = `<p style="font-size:12px;color:var(--text-2);margin:0 0 10px;">${totalBills} bill${totalBills === 1 ? '' : 's'}${unclassifiedCount > 0 ? ` &middot; <span style="color:var(--amber);font-weight:600;">${unclassifiedCount} unclassified</span>` : ''}</p>` + rows.join('');
+  container.innerHTML = `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
+    <p style="font-size:12px;color:var(--text-2);margin:0;">${totalBills} bill${totalBills === 1 ? '' : 's'}${unclassifiedCount > 0 ? ` &middot; <span style="color:var(--amber);font-weight:600;">${unclassifiedCount} unclassified</span>` : ' &middot; <span style="color:var(--green);font-weight:600;">All classified ✓</span>'}</p>
+    ${unclassifiedCount > 0 ? `<button class="btn-outline" style="font-size:11.5px;height:28px;" onclick="document.getElementById('audit-filter-unclassified').checked=true;document.getElementById('audit-filter-unclassified').dispatchEvent(new Event('change'))">Show unclassified only</button>` : ''}
+  </div>` + rows.join('');
 
   container.querySelectorAll('.audit-edit-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -2447,6 +2479,10 @@ function setupKeyboardShortcuts() {
         document.getElementById('print-btn')?.click();
         showToast('P — Print report');
         break;
+      case '?':
+        e.preventDefault();
+        document.getElementById('help-overlay')?.classList.add('open');
+        break;
       case 'Escape':
         document.querySelectorAll('.overlay.open').forEach(o => o.classList.remove('open'));
         break;
@@ -2510,28 +2546,40 @@ function setupProposeTab() {
 
 async function handlePropose() {
   const text = document.getElementById('propose-text').value.trim();
-  if (!text) return;
-  if (!apiConfigured()) return;
+  if (!text) { showToast('Describe your bill first.', 'error'); return; }
 
   const btn = document.getElementById('propose-btn');
   btn.disabled = true; btn.textContent = 'Classifying…';
-  setStatus('propose-status', 'Analyzing your bill description…', 'loading');
+  setStatus('propose-status', 'Analyzing your bill with AI…', 'loading');
   document.getElementById('propose-context').style.display = 'none';
   document.getElementById('propose-results').innerHTML = '';
 
   try {
-    const res = await fetch(`${API_BASE}/api/parse-bill`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text, knownTopics: DATA.topics })
-    });
-    if (!res.ok) throw new Error(`Server returned ${res.status}`);
-    const result = await res.json();
-    const topicCode = result.topicMatch;
+    let result;
 
+    // Use Gemini directly from the browser when a key is configured —
+    // faster, free, and doesn't consume a Vercel function invocation.
+    if (GEMINI_API_KEY) {
+      result = await classifyWithGeminiBrowser(text);
+    } else if (apiConfigured(true)) {
+      // Fall back to server-side parse-bill (uses Claude + Gemini on server)
+      const res = await fetch(`${API_BASE}/api/parse-bill`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, knownTopics: DATA.topics })
+      });
+      if (!res.ok) throw new Error(`Server returned ${res.status}`);
+      result = await res.json();
+    } else {
+      setStatus('propose-status', 'Configure either GEMINI_API_KEY in app.js or your Vercel URL to use this feature.', 'error');
+      btn.disabled = false; btn.textContent = 'Find Champions';
+      return;
+    }
+
+    const topicCode = result.topicMatch;
     if (!topicCode || !DATA.topics[topicCode]) {
       setStatus('propose-status',
-        `⚠ ${result.reasoning || 'Could not match this bill to any topic in your system.'} — Try describing the policy goal more specifically, or add the relevant topic to your taxonomy first.`,
+        `⚠ ${result.reasoning || 'Could not match this bill to a topic in your system.'} — Try being more specific about the policy goal, or make sure the relevant topic exists in your taxonomy.`,
         'error');
       btn.disabled = false; btn.textContent = 'Find Champions';
       return;
@@ -2543,17 +2591,78 @@ async function handlePropose() {
     ctxEl._topicCode = topicCode;
     ctxEl._subtopicCode = result.subtopicMatch || null;
 
+    const topicLabel = DATA.topics[topicCode].label;
     const subtopicLabel = result.subtopicMatch && DATA.topics[topicCode].subtopics[result.subtopicMatch]
       ? ' → ' + DATA.topics[topicCode].subtopics[result.subtopicMatch] : '';
     document.getElementById('propose-topic-label').textContent =
-      `🎯 Matched to: ${DATA.topics[topicCode].label}${subtopicLabel}`;
+      `🎯 Classified as: ${topicLabel}${subtopicLabel}`;
     document.getElementById('propose-reasoning').textContent = result.reasoning || '';
+
     renderProposeResults(topicCode, result.subtopicMatch);
 
   } catch (err) {
-    setStatus('propose-status', `Error: ${err.message}`, 'error');
+    setStatus('propose-status', `Classification failed: ${err.message}`, 'error');
   }
   btn.disabled = false; btn.textContent = 'Find Champions';
+}
+
+async function classifyWithGeminiBrowser(text) {
+  // Build the same rich topic list used on the server
+  const topicList = Object.entries(DATA.topics)
+    .sort((a, b) => a[1].label.localeCompare(b[1].label))
+    .map(([code, t]) => {
+      const subs = Object.entries(t.subtopics || {}).map(([sc, sl]) => `  • ${sc}: ${sl}`).join('\n');
+      const g = t.guidance || {};
+      return [
+        `TOPIC: ${code} — "${t.label}"`,
+        g.includes ? `  Includes: ${g.includes}` : '',
+        g.excludes ? `  Does NOT include: ${g.excludes}` : '',
+        subs ? `  Subtopics:\n${subs}` : ''
+      ].filter(Boolean).join('\n');
+    }).join('\n\n');
+
+  const prompt = `You classify legislative bill proposals for a professional lobbying firm.
+
+A lobbyist has described a bill they want to propose. Identify the best matching topic from the firm's taxonomy.
+
+AVAILABLE TOPICS:
+${topicList}
+
+CRITICAL RULES:
+1. Match based on what the bill DOES, not who it affects.
+2. Return null if no topic clearly fits — never force a classification.
+3. confidence "high" = clearly fits, "low" = loosely fits, null = no match.
+
+Bill description: "${text}"
+
+Respond ONLY with a JSON object, no markdown:
+{
+  "topicMatch": "topic code or null",
+  "subtopicMatch": "subtopic code or null",
+  "confidence": "high" | "low" | null,
+  "reasoning": "one sentence explaining the classification"
+}`;
+
+  const res = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { temperature: 0.1, maxOutputTokens: 500 }
+      })
+    }
+  );
+
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`Gemini API error: ${res.status} — ${errText.slice(0, 100)}`);
+  }
+
+  const data = await res.json();
+  const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
+  return JSON.parse(rawText.replace(/```json|```/g, '').trim());
 }
 
 function renderProposeResults(topicCode, subtopicCode) {
@@ -3046,9 +3155,263 @@ function renderCoalition() {
         </div>
       </div>`;
     }).join('')}
+
+    ${(() => {
+      // Crossfiled bills involving this legislator — companion bills introduced
+      // in both chambers, a strong indicator of bipartisan or cross-chamber strategy
+      const crossfiles = findCrossfiledBills(stateData).filter(cf =>
+        cf.senateBill.legId === legId || cf.houseBill.legId === legId
+      );
+      if (crossfiles.length === 0) return '';
+
+      return `<div style="margin-top:var(--sp-4);">
+        <h3 style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:0.08em;margin:0 0 10px;">🔀 Crossfiled bills — introduced in both chambers</h3>
+        <p style="font-size:12px;color:var(--text-2);margin:0 0 10px;">These bills appear to have companion legislation introduced simultaneously in the Senate and House — a sign of coordinated strategy.</p>
+        ${crossfiles.map(cf => {
+          const isSenateLeg = cf.senateBill.legId === legId;
+          const partner = isSenateLeg ? cf.houseBill : cf.senateBill;
+          const partnerLeg = legLookup[partner.legId];
+          return `<div style="background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-md);padding:10px 14px;margin-bottom:6px;">
+            <div style="font-weight:600;font-size:13px;color:var(--text);margin-bottom:4px;">${escapeHtml(isSenateLeg ? cf.senateBill.title : cf.houseBill.title)}</div>
+            <div style="font-size:12px;color:var(--text-2);">
+              ${cf.year} &middot;
+              Senate: <strong>${escapeHtml(legLookup[cf.senateBill.legId]?.name || '?')}</strong>
+              &middot; House: <strong>${escapeHtml(legLookup[cf.houseBill.legId]?.name || '?')}</strong>
+              ${partnerLeg ? `<span class="party-badge ${partnerLeg.party||''}" style="margin-left:4px;">${partnerLeg.party||''}</span>` : ''}
+              <span style="color:var(--text-3);margin-left:6px;">${cf.overlap}% title match</span>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>`;
+    })()}
   `;
 
   container.innerHTML = html;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SEATING CHART — sidebar bottom panel showing D/R counts by chamber
+// ─────────────────────────────────────────────────────────────────────────────
+function renderSeatingChart() {
+  const el = document.getElementById('sidebar-seating');
+  if (!el) return;
+  const stateCode = document.getElementById('state')?.value;
+  const stateData = DATA.states[stateCode];
+  if (!stateData || stateData.legislators.length === 0) { el.innerHTML = ''; return; }
+
+  const legs = stateData.legislators;
+  const senate = { D: 0, R: 0, total: 0 };
+  const house = { D: 0, R: 0, total: 0 };
+
+  legs.forEach(l => {
+    const ch = l.chamber === 'senate' ? senate : house;
+    ch.total++;
+    if (l.party === 'D') ch.D++;
+    else if (l.party === 'R') ch.R++;
+  });
+
+  const withBills = legs.filter(l => l.bills.length > 0).length;
+
+  function chamberRow(label, data) {
+    if (data.total === 0) return '';
+    const dPct = data.total > 0 ? Math.round((data.D / data.total) * 100) : 0;
+    return `<div style="margin-bottom:8px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+        <span style="font-size:9.5px;font-weight:700;color:rgba(255,255,255,0.40);text-transform:uppercase;letter-spacing:0.07em;">${label}</span>
+        <span style="font-size:10.5px;color:rgba(255,255,255,0.50);">${data.total} seats</span>
+      </div>
+      <div style="height:6px;background:rgba(255,255,255,0.10);border-radius:3px;overflow:hidden;margin-bottom:3px;">
+        <div style="height:100%;width:${dPct}%;background:linear-gradient(90deg,#5BA4EF,#3D8BD4);border-radius:3px;"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:10.5px;">
+        <span style="color:#5BA4EF;font-weight:600;">${data.D}D</span>
+        <span style="color:#E87575;font-weight:600;">${data.R}R</span>
+      </div>
+    </div>`;
+  }
+
+  el.innerHTML = `
+    <div style="font-size:9px;font-weight:700;color:rgba(255,255,255,0.30);text-transform:uppercase;letter-spacing:0.09em;margin-bottom:8px;">
+      Database coverage · ${withBills}/${legs.length}
+    </div>
+    ${chamberRow('Senate', senate)}
+    ${chamberRow('House / Delegates', house)}
+  `;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// BULK RE-AUDIT — reclassify all bills using current dual-classifier
+// ─────────────────────────────────────────────────────────────────────────────
+let bulkAuditPendingChanges = null;
+
+function setupBulkAudit() {
+  const overlay = document.getElementById('bulk-audit-overlay');
+  if (!overlay) return;
+
+  // Populate state dropdown
+  const stateSel = document.getElementById('bulk-audit-state');
+  stateSel.innerHTML = '';
+  Object.entries(DATA.states).forEach(([code, st]) => {
+    const opt = document.createElement('option');
+    opt.value = code; opt.textContent = st.name;
+    stateSel.appendChild(opt);
+  });
+  // Default to current state
+  const currentState = document.getElementById('state')?.value;
+  if (currentState) stateSel.value = currentState;
+
+  document.getElementById('open-bulk-audit').addEventListener('click', () => {
+    bulkAuditPendingChanges = null;
+    document.getElementById('bulk-audit-apply-btn').disabled = true;
+    document.getElementById('bulk-audit-results').innerHTML = '';
+    setStatus('bulk-audit-status', '', '');
+    overlay.classList.add('open');
+  });
+  document.getElementById('close-bulk-audit').addEventListener('click', () => overlay.classList.remove('open'));
+  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('open'); });
+
+  document.getElementById('bulk-audit-preview-btn').addEventListener('click', () => runBulkAudit(true));
+  document.getElementById('bulk-audit-apply-btn').addEventListener('click', () => runBulkAudit(false));
+}
+
+async function runBulkAudit(dryRun) {
+  if (!apiConfigured()) return;
+  const stateCode = document.getElementById('bulk-audit-state').value;
+  const stateData = DATA.states[stateCode];
+  if (!stateData) return;
+
+  const totalBills = stateData.legislators.reduce((n, l) => n + l.bills.length, 0);
+  if (totalBills === 0) {
+    setStatus('bulk-audit-status', 'No bills in this state to re-audit.', 'error');
+    return;
+  }
+
+  const previewBtn = document.getElementById('bulk-audit-preview-btn');
+  const applyBtn = document.getElementById('bulk-audit-apply-btn');
+  const resultsEl = document.getElementById('bulk-audit-results');
+
+  previewBtn.disabled = true;
+  applyBtn.disabled = true;
+  previewBtn.textContent = dryRun ? 'Analyzing…' : 'Previewing…';
+  setStatus('bulk-audit-status',
+    `${dryRun ? 'Analyzing' : 'Reclassifying'} ${totalBills} bills using Claude + Gemini…`,
+    'loading');
+  resultsEl.innerHTML = '';
+
+  try {
+    const res = await fetch(`${API_BASE}/api/bulk-audit`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ stateCode, knownTopics: DATA.topics, dryRun })
+    });
+    if (!res.ok) throw new Error(`Server returned ${res.status}`);
+    const result = await res.json();
+
+    if (!dryRun) {
+      // Reload local DATA to reflect saved changes
+      try {
+        const fresh = await fetch('data.json?_=' + Date.now());
+        DATA = await fresh.json();
+        normalizePendingToFailed();
+        render(); renderStats(); renderAudit();
+      } catch { /* best effort */ }
+    }
+
+    const statusMsg = dryRun
+      ? `Preview: ${result.updated} bill${result.updated === 1 ? '' : 's'} would be reclassified, ${result.unchanged} already correct.`
+      : `Done: ${result.updated} bill${result.updated === 1 ? '' : 's'} reclassified and saved.`;
+
+    setStatus('bulk-audit-status', statusMsg, result.updated > 0 ? 'success' : 'loading');
+
+    if (dryRun && result.updated > 0) {
+      bulkAuditPendingChanges = result.changes;
+      applyBtn.disabled = false;
+    }
+
+    if (result.changes && result.changes.length > 0) {
+      resultsEl.innerHTML = `
+        <p style="font-size:12px;color:var(--text-3);margin-bottom:8px;font-weight:600;">
+          ${dryRun ? 'Would change' : 'Changed'} ${result.changes.length} classification${result.changes.length === 1 ? '' : 's'}:
+        </p>
+        ${result.changes.slice(0, 50).map(c => `
+          <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-sm);padding:7px 10px;margin-bottom:5px;font-size:12px;">
+            <div style="font-weight:600;color:var(--text);margin-bottom:2px;">${escapeHtml(c.billTitle)}</div>
+            <div style="color:var(--text-2);">${escapeHtml(c.legName)} &middot;
+              <span style="color:var(--red);">${escapeHtml(c.oldTopic || 'unclassified')}</span>
+              → <span style="color:var(--green);font-weight:600;">${escapeHtml(c.newTopic)}</span>
+              <span style="color:var(--text-3);">(${c.confidence || 'low'} confidence)</span>
+            </div>
+            ${c.reasoning ? `<div style="color:var(--text-3);font-style:italic;font-size:11px;margin-top:2px;">💡 ${escapeHtml(c.reasoning)}</div>` : ''}
+          </div>`).join('')}
+        ${result.changes.length > 50 ? `<p style="font-size:11px;color:var(--text-3);text-align:center;padding:6px;">…and ${result.changes.length - 50} more</p>` : ''}`;
+    } else if (result.updated === 0) {
+      resultsEl.innerHTML = '<p style="font-size:13px;color:var(--text-2);padding:8px 0;">All bills are already correctly classified. No changes needed.</p>';
+    }
+
+    if (!dryRun && result.updated > 0) {
+      logActivity('edit_bill', `Bulk re-audit: reclassified ${result.updated} bills in ${stateCode}`);
+    }
+
+  } catch (err) {
+    setStatus('bulk-audit-status', `Failed: ${err.message}`, 'error');
+  }
+
+  previewBtn.disabled = false;
+  previewBtn.textContent = 'Preview changes';
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CROSSFILE DETECTION — find companion bills across chambers in coalitions
+// ─────────────────────────────────────────────────────────────────────────────
+function findCrossfiledBills(stateData) {
+  // A crossfiled bill is when the same legislation is introduced in both
+  // chambers simultaneously — a Senate bill and House bill with near-identical
+  // titles in the same year. This is a strong coalition signal in Maryland.
+  const crossfiles = [];
+  const senBills = [];
+  const houseBills = [];
+
+  stateData.legislators.forEach(l => {
+    l.bills.forEach(b => {
+      const entry = { ...b, legName: l.name, legId: l.id, chamber: l.chamber, party: l.party };
+      if (l.chamber === 'senate') senBills.push(entry);
+      else houseBills.push(entry);
+    });
+  });
+
+  senBills.forEach(sb => {
+    houseBills.forEach(hb => {
+      if (sb.year !== hb.year) return;
+      // Normalize title for comparison — strip chamber prefixes and punctuation
+      const normalize = t => t.toLowerCase()
+        .replace(/^(sb|hb|senate bill|house bill)\s*\d+\s*[-—:]/i, '')
+        .replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, ' ').trim();
+      const a = normalize(sb.title);
+      const b = normalize(hb.title);
+      // Require at least 70% word overlap for a match
+      const wordsA = new Set(a.split(' ').filter(w => w.length > 3));
+      const wordsB = new Set(b.split(' ').filter(w => w.length > 3));
+      if (wordsA.size === 0 || wordsB.size === 0) return;
+      const shared = [...wordsA].filter(w => wordsB.has(w)).length;
+      const overlap = shared / Math.max(wordsA.size, wordsB.size);
+      if (overlap >= 0.70) {
+        crossfiles.push({
+          senateBill: sb, houseBill: hb,
+          overlap: Math.round(overlap * 100),
+          year: sb.year
+        });
+      }
+    });
+  });
+
+  // Deduplicate — one entry per pair
+  const seen = new Set();
+  return crossfiles.filter(cf => {
+    const key = `${cf.senateBill.legId}:${cf.houseBill.legId}:${cf.year}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }
 
 init();
