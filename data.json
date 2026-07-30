@@ -4372,6 +4372,13 @@
   },
   "activityLog": [
     {
+      "id": "ms7lovv0",
+      "ts": "2026-07-30T14:20:11.724Z",
+      "action": "import",
+      "detail": "Imported 8 bills for Stephen Hershey",
+      "user": "Paul"
+    },
+    {
       "id": "ms7llso5",
       "ts": "2026-07-30T14:17:47.621Z",
       "action": "import",
