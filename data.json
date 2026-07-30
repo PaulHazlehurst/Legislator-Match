@@ -3912,6 +3912,75 @@
               "statusStage": "advancing"
             }
           ]
+        },
+        {
+          "id": "L057",
+          "name": "Mark Fisher",
+          "party": "R",
+          "chamber": "house",
+          "district": "HD-027",
+          "bills": [
+            {
+              "id": "B0448",
+              "title": "Moratorium on Construction of New Data Centers - Co-Location and Generation Contingency",
+              "topic": "environment",
+              "subtopic": "clean-energy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "statusStage": "introduced"
+            },
+            {
+              "id": "B0449",
+              "title": "Income Tax - Tips or Gratuities - Subtraction Modification (No Income Taxes on Tips Act)",
+              "topic": "taxation",
+              "subtopic": "tax-credits-incentives",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "statusStage": "introduced"
+            },
+            {
+              "id": "B0450",
+              "title": "Amendments Convention Called Under Article V of the U.S. Constitution - Delegation to the Convention",
+              "topic": "government-administration",
+              "subtopic": "constitution",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "statusStage": "introduced"
+            },
+            {
+              "id": "B0451",
+              "title": "Income Tax - Subtraction Modification - Overtime Compensation",
+              "topic": "taxation",
+              "subtopic": "tax-credits-incentives",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "statusStage": "introduced"
+            },
+            {
+              "id": "B0452",
+              "title": "Education – Primary and Secondary Schools – Alternative School Options (Right to Learn Act)",
+              "topic": "education",
+              "subtopic": "school-choice",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "statusStage": "introduced"
+            },
+            {
+              "id": "B0453",
+              "title": "Calvert County - County Commissioners - Prohibited Agreements",
+              "topic": "government-administration",
+              "subtopic": "agency-operations",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "statusStage": "introduced"
+            }
+          ]
         }
       ]
     }
@@ -4153,8 +4222,8 @@
     }
   },
   "meta": {
-    "nextLegislatorId": 57,
-    "nextBillId": 448
+    "nextLegislatorId": 58,
+    "nextBillId": 454
   },
   "sponsors": {
     "L017": {
