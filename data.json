@@ -4233,6 +4233,13 @@
   },
   "activityLog": [
     {
+      "id": "ms7lkh7k",
+      "ts": "2026-07-30T14:16:46.112Z",
+      "action": "import",
+      "detail": "Imported 6 bills for Mark Fisher",
+      "user": "Paul"
+    },
+    {
       "id": "ms5jaeku",
       "ts": "2026-07-29T03:37:24.558Z",
       "action": "import",
