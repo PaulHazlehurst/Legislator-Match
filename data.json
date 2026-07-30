@@ -4282,6 +4282,13 @@
   },
   "activityLog": [
     {
+      "id": "ms7llso5",
+      "ts": "2026-07-30T14:17:47.621Z",
+      "action": "import",
+      "detail": "Imported 4 bills for Brian Chisholm",
+      "user": "Paul"
+    },
+    {
       "id": "ms7lkh7k",
       "ts": "2026-07-30T14:16:46.112Z",
       "action": "import",
