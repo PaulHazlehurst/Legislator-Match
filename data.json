@@ -4030,6 +4030,95 @@
               "statusStage": "introduced"
             }
           ]
+        },
+        {
+          "id": "L059",
+          "name": "Stephen Hershey",
+          "party": "R",
+          "chamber": "senate",
+          "district": "SD-036",
+          "bills": [
+            {
+              "id": "B0458",
+              "title": "Legislative and Congressional Redistricting and Legislative and Congressional Redistricting and Apportionment Commission (Fair Districts for Maryland Act)",
+              "topic": "election-law-voter-registration",
+              "subtopic": "district-election-administration",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "statusStage": "introduced"
+            },
+            {
+              "id": "B0459",
+              "title": "Environment - Regional Greenhouse Gas Initiative - Withdrawal (Restoring Energy Freedom Act)",
+              "topic": "environment",
+              "subtopic": "clean-energy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "statusStage": "introduced"
+            },
+            {
+              "id": "B0460",
+              "title": "Maryland Medical Assistance Program - Coverage for the Treatment of Obesity - Authorization",
+              "topic": "healthcare",
+              "subtopic": "insurance-coverage",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "passed",
+              "statusStage": "passed"
+            },
+            {
+              "id": "B0461",
+              "title": "Renewable Energy Portfolio Standard - Alterations",
+              "topic": "environment",
+              "subtopic": "clean-energy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "statusStage": "introduced"
+            },
+            {
+              "id": "B0462",
+              "title": "Nonprofit Hospitals - Community Benefits",
+              "topic": "healthcare",
+              "subtopic": "hospital-funding",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "statusStage": "introduced"
+            },
+            {
+              "id": "B0463",
+              "title": "Energy Efficiency and Conservation Programs, Services, and Plans - Moratorium",
+              "topic": "environment",
+              "subtopic": "clean-energy",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "statusStage": "introduced"
+            },
+            {
+              "id": "B0464",
+              "title": "Vehicle Laws - Registration Fees - Alterations",
+              "topic": "vehicle-transportation-law",
+              "subtopic": "motor-vehicle-registration-fees",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "statusStage": "introduced"
+            },
+            {
+              "id": "B0465",
+              "title": "Alcohol and Cannabis - Cannabinoid Beverages Off-Premises Sales Permit - Establishment",
+              "topic": "alcoholic-beverages-licensing",
+              "subtopic": "off-premises-sales",
+              "year": 2026,
+              "role": "sponsor",
+              "outcome": "failed",
+              "statusStage": "introduced"
+            }
+          ]
         }
       ]
     }
@@ -4183,7 +4272,8 @@
         "historic-special-vehicles": "Historic & Special Vehicles",
         "electric-bicycle-registration-insurance": "Electric bicycle registration & insurance",
         "crosswalk-monitoring-systems": "crosswalk-monitoring-systems",
-        "driver-education-requirements": "driver-education-requirements"
+        "driver-education-requirements": "driver-education-requirements",
+        "motor-vehicle-registration-fees": "Motor vehicle registration fees"
       }
     },
     "labor-gig-economy": {
@@ -4271,8 +4361,8 @@
     }
   },
   "meta": {
-    "nextLegislatorId": 59,
-    "nextBillId": 458
+    "nextLegislatorId": 60,
+    "nextBillId": 466
   },
   "sponsors": {
     "L017": {
