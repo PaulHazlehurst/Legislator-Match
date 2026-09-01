@@ -1,0 +1,56 @@
+name: Data ingest
+
+# Run manually from the Actions tab. No local machine needed.
+on:
+  workflow_dispatch:
+    inputs:
+      step:
+        description: 'Which step to run'
+        required: true
+        default: 'seed+ingest'
+        type: choice
+        options:
+          - seed          # load state + taxonomy (run once)
+          - ingest        # pull the sessions, classify from subjects
+          - reclassify    # Gemini pass over the leftovers (resumable)
+          - seed+ingest   # seed then ingest, in one run
+          - all           # seed, ingest, reclassify
+      years:
+        description: 'Years (comma-separated)'
+        required: false
+        default: '2024,2025,2026'
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    defaults:
+      run:
+        working-directory: ingest
+    env:
+      SUPABASE_URL:         ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+      LEGISCAN_API_KEY:     ${{ secrets.LEGISCAN_API_KEY }}
+      GEMINI_API_KEY:       ${{ secrets.GEMINI_API_KEY }}
+      STATE: MD
+      YEARS: ${{ inputs.years }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Seed taxonomy
+        if: ${{ inputs.step == 'seed' || inputs.step == 'seed+ingest' || inputs.step == 'all' }}
+        run: npm run seed
+
+      - name: Ingest sessions
+        if: ${{ inputs.step == 'ingest' || inputs.step == 'seed+ingest' || inputs.step == 'all' }}
+        run: npm run ingest
+
+      - name: Reclassify leftovers (Gemini)
+        if: ${{ inputs.step == 'reclassify' || inputs.step == 'all' }}
+        run: npm run reclassify
