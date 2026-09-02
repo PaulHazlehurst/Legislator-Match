@@ -13,8 +13,9 @@ on:
           - seed          # load state + taxonomy (run once)
           - ingest        # pull the sessions, classify from subjects
           - reclassify    # Gemini pass over the leftovers (resumable)
+          - enrich        # OpenStates committees + leadership + roster
           - seed+ingest   # seed then ingest, in one run
-          - all           # seed, ingest, reclassify
+          - all           # seed, ingest, enrich, reclassify
       years:
         description: 'Years (comma-separated)'
         required: false
@@ -33,6 +34,7 @@ jobs:
       LEGISCAN_API_KEY:     ${{ secrets.LEGISCAN_API_KEY }}
       GEMINI_API_KEY:       ${{ secrets.GEMINI_API_KEY }}
       GEMINI_MODEL:         ${{ secrets.GEMINI_MODEL }}
+      OPENSTATES_API_KEY:   ${{ secrets.OPENSTATES_API_KEY }}
       STATE: MD
       YEARS: ${{ inputs.years }}
     steps:
@@ -51,6 +53,10 @@ jobs:
       - name: Ingest sessions
         if: ${{ inputs.step == 'ingest' || inputs.step == 'seed+ingest' || inputs.step == 'all' }}
         run: npm run ingest
+
+      - name: Enrich (OpenStates committees + leadership)
+        if: ${{ inputs.step == 'enrich' || inputs.step == 'all' }}
+        run: npm run enrich
 
       - name: Reclassify leftovers (Gemini)
         if: ${{ inputs.step == 'reclassify' || inputs.step == 'all' }}
