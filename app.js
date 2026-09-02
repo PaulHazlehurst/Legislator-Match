@@ -15,7 +15,7 @@ let currentIssue = null;
 let currentSubissue = 'any';
 
 async function init() {
-  try {
+    try {
     DATA = await loadDataFromSupabase();
   } catch (err) {
     document.getElementById('results').innerHTML =
