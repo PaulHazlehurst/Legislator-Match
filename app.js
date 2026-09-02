@@ -16,11 +16,10 @@ let currentSubissue = 'any';
 
 async function init() {
   try {
-    const res = await fetch('data.json?_=' + Date.now());
-    DATA = await res.json();
+    DATA = await loadDataFromSupabase();
   } catch (err) {
     document.getElementById('results').innerHTML =
-      '<p class="empty">Could not load data.json. Make sure it is in the same folder as this page.</p>';
+      '<p class="empty">Could not load data from Supabase: ' + err.message + '</p>';
     return;
   }
 
