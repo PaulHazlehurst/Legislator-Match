@@ -15,8 +15,8 @@
 // ─── CONFIG ─────────────────────────────────────────────────────────────────
 // Project URL + PUBLIC anon key (Settings → API). Safe in the browser:
 // rls.sql makes the anon key read-only.
-const SB_URL  = "PASTE_YOUR_SUPABASE_URL";
-const SB_ANON = "PASTE_YOUR_ANON_KEY";
+const SB_URL  = "https://pnqbhsckbcrfbksymyxh.supabase.co";
+const SB_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBucWJoc2NrYmNyZmJrc3lteXhoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgyOTM4NDQsImV4cCI6MjEwMzg2OTg0NH0.FDSVZDCwjuRc29Z3Rkcr0M_4gX9KMVK0hzHzC11ckH0";
 // ────────────────────────────────────────────────────────────────────────────
 
 const _sb = window.supabase.createClient(SB_URL, SB_ANON);
