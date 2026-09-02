@@ -32,6 +32,7 @@ jobs:
       SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
       LEGISCAN_API_KEY:     ${{ secrets.LEGISCAN_API_KEY }}
       GEMINI_API_KEY:       ${{ secrets.GEMINI_API_KEY }}
+      GEMINI_MODEL:         ${{ secrets.GEMINI_MODEL }}
       STATE: MD
       YEARS: ${{ inputs.years }}
     steps:
