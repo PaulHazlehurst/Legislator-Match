@@ -63,16 +63,18 @@ async function main() {
       backoff = DELAY_MS;
       await sleep(DELAY_MS);
     } catch (e) {
-      if (e.code === 429) {
-        backoff = Math.min(backoff * 2, 60000);
-        console.log(`  rate limited — backing off ${Math.round(backoff/1000)}s (done ${done})`);
-        await sleep(backoff);
-        // If we're hitting the daily cap repeatedly, bail gracefully; resume later.
-        if (backoff >= 60000) { console.log('  Daily cap likely reached. Re-run tomorrow to continue.'); break; }
-      } else {
-        console.error(`  error on bill ${b.id}: ${e.message}`);
-        stillNull++; done++;
+      // Transient service problems (rate limit / Google overloaded) that survived
+      // the in-call retries: stop cleanly and resume later. The bill was NOT
+      // updated, so it stays unclassified and a re-run picks it up.
+      if (e.retryable || e.code === 429 || e.code === 503 || e.code === 500) {
+        console.log(`\n  Gemini is unavailable right now (HTTP ${e.code}). ` +
+                    `Classified ${matched} this run before stopping.`);
+        console.log('  This is temporary on Google\'s side — re-run reclassify later to continue.');
+        break;
       }
+      // Anything else (e.g. a single malformed bill): skip just that one.
+      console.error(`  skipped bill ${b.id}: ${e.message}`);
+      stillNull++; done++;
     }
   }
 
