@@ -72,18 +72,33 @@ export async function classifyWithGemini(bill) {
   }`;
 
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-goog-api-key': GEMINI_KEY },
-    body: JSON.stringify({
-      system_instruction: { parts: [{ text: PROMPT }] },
-      contents: [{ role: 'user', parts: [{ text: content }] }],
-      generationConfig: { temperature: 0, responseMimeType: 'application/json' },
-    }),
+  const body = JSON.stringify({
+    system_instruction: { parts: [{ text: PROMPT }] },
+    contents: [{ role: 'user', parts: [{ text: content }] }],
+    generationConfig: { temperature: 0, responseMimeType: 'application/json' },
   });
 
-  if (res.status === 429) { const e = new Error('rate_limited'); e.code = 429; throw e; }
-  if (!res.ok) throw new Error(`Gemini HTTP ${res.status}: ${await res.text()}`);
+  // Retry transient conditions: 429 (rate limit) and 500/503 (Google overloaded).
+  // Backoff 2s,4s,8s,16s,32s. If still failing, throw a tagged error so the
+  // caller can stop the run and resume later — no bill gets marked as failed.
+  const RETRYABLE = new Set([429, 500, 503]);
+  let res;
+  for (let attempt = 0; ; attempt++) {
+    res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-goog-api-key': GEMINI_KEY },
+      body,
+    });
+    if (res.ok) break;
+    if (RETRYABLE.has(res.status) && attempt < 5) {
+      await new Promise(r => setTimeout(r, 2000 * Math.pow(2, attempt)));
+      continue;
+    }
+    const err = new Error(`Gemini HTTP ${res.status}: ${await res.text()}`);
+    err.code = res.status;
+    err.retryable = RETRYABLE.has(res.status);
+    throw err;
+  }
 
   const json = await res.json();
   let raw = json.candidates?.[0]?.content?.parts?.[0]?.text || '';
