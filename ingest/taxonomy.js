@@ -212,3 +212,26 @@ export const SESSION_CONTROL = {
   house: 'D',
   senate: 'D',
 };
+
+// ── Keyword rules: matched (in order) against a bill's subjects + TITLE. ──
+// Maryland titles begin with the subject area ("Income Tax - ...", "Public
+// Health - ...", "Criminal Law - ..."), so this catches most bills the exact
+// SUBJECT_TO_TOPIC map misses — for free, no AI. Order = priority; first hit
+// wins, so put specific topics before general ones.
+export const KEYWORD_RULES = [
+  ['firearms',          ['firearm','handgun',' gun',' guns','ammunition','assault weapon']],
+  ['alcohol-licensing', ['alcoholic beverage','alcohol','liquor',' beer',' wine','distiller','brewery','winery']],
+  ['workforce',         ['workforce','apprentic','vocational','job training','worker training','career and technical']],
+  ['veterans-military', ['veteran','military','armed forces','national guard']],
+  ['taxation',          ['income tax','property tax','sales and use tax','tax credit','taxation',' tax ','tax -','taxes','tax exemption','recordation tax','estate tax']],
+  ['transportation',    ['motor vehicle','vehicle law','transportation','transit','highway','traffic','toll ','driver','license plate','road ']],
+  ['education',         ['higher education','public school','education -','education,','schools','student','teacher','university','college','community college','curriculum','child care','early childhood','prekindergarten']],
+  ['health',            ['public health','behavioral health','mental health','health occupation','health insurance','health -','medicaid','medical','hospital','substance use','prescription','pharmac','nursing','disease','dental','developmental disabilit','opioid']],
+  ['labor-employment',  ['labor and employment','labor -','employment','wages','minimum wage','collective bargaining','unemployment','occupational safety','workers compensation','workplace']],
+  ['environment',       ['environment','natural resources','energy','renewable','conservation','water quality','water -','air quality','emission','wildlife','forest','climate','pollution','recycl','solar','chesapeake','stormwater','pesticide','public utilit']],
+  ['land-use-property', ['land use','zoning','real property','landlord','tenant','housing','rental','condominium','homeowners','eminent domain','ground rent']],
+  ['public-safety',     ['criminal law','criminal procedure','crimes','correctional','public safety','police','law enforcement','sentenc','juvenile','victim','expungement','courts and judicial','judicial proceedings','domestic violence','human trafficking','controlled dangerous']],
+  ['consumer-protection',['consumer protection','consumer','deceptive trade','data privacy','identity theft','debt collection']],
+  ['business-regulation',['economic development','professions and occupations','occupational licens','business regulation','financial institution','commercial law','corporations and associations','banking','insurance','public utilities regulation','licens']],
+  ['government-admin',  ['election','voter','voting','ballot','state government','local government','procurement','appropriation','budget','public information act','ethics','state personnel','general assembly','open meetings','baltimore city -','county -']],
+];

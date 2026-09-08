@@ -1,4 +1,4 @@
-import { TOPICS, SUBJECT_TO_TOPIC } from '../taxonomy.js';
+import { TOPICS, SUBJECT_TO_TOPIC, KEYWORD_RULES } from '../taxonomy.js';
 
 // ── significance: keep commemorative/local/procedural noise out of passage rate ──
 export function significanceOf(bill) {
@@ -19,6 +19,8 @@ export function significanceOf(bill) {
 export function classifyBySubject(bill) {
   const significance = significanceOf(bill);
   const subjects = bill.subjects || [];
+
+  // 1. exact official subject tag — highest precision
   for (const s of subjects) {
     const name = s.subject_name || s.subject || '';
     if (SUBJECT_TO_TOPIC[name]) {
@@ -26,6 +28,24 @@ export function classifyBySubject(bill) {
                significance, classifiedBy: 'legiscan_subject', confidence: 'high' };
     }
   }
+
+  // 2. keyword match. MD titles lead with the subject area ("Property Tax - ..."),
+  //    so match the title PREFIX (before the first dash) first — it's authoritative —
+  //    then fall back to the full subjects + title text.
+  const title = bill.title || '';
+  const prefix = title.split(/\s[-–—]\s/)[0].toLowerCase();
+  const hay = (subjects.map(s => s.subject_name || s.subject || '').join(' ')
+               + ' ' + title).toLowerCase();
+  for (const haystack of [prefix, hay]) {
+    for (const [topic, patterns] of KEYWORD_RULES) {
+      if (patterns.some(p => haystack.includes(p))) {
+        return { topicCode: topic, subtopicCode: null,
+                 significance, classifiedBy: 'subject_keyword', confidence: 'medium' };
+      }
+    }
+  }
+
+  // 3. still nothing — leave for the AI pass
   return { topicCode: null, subtopicCode: null, significance,
            classifiedBy: 'unclassified', confidence: null };
 }

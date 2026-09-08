@@ -49,13 +49,15 @@ async function ingestSession(dataset, tax) {
       { onConflict: 'session_id,chamber' });
   }
 
-  // ── people → legislators ──
-  const legRows = data.people.map(p => ({
+  // ── people → legislators (only real legislators: role_id 1=Rep, 2=Sen) ──
+  const legRows = data.people
+    .filter(p => p.role_id === 1 || p.role_id === 2)
+    .map(p => ({
     state_code: STATE,
     legiscan_people_id: p.people_id,
     name: p.name || [p.first_name, p.last_name].filter(Boolean).join(' '),
     party: PARTY[p.party_id] || (p.party ? p.party[0] : null),
-    chamber: chamberFromBody(p.role || p.role_id === 2 ? 'S' : 'H'),
+    chamber: p.role_id === 2 ? 'senate' : p.role_id === 1 ? 'house' : chamberFromBody(p.role),
     district: p.district || null,
   }));
   for (const c of chunk(legRows, CHUNK)) {

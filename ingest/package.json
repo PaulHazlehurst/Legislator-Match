@@ -7,7 +7,9 @@
     "seed": "node seed.js",
     "ingest": "node ingest.js",
     "reclassify": "node reclassify.js",
-    "enrich": "node enrich.js"
+    "enrich": "node enrich.js",
+    "relink": "node relink.js",
+    "classify-subjects": "node classify-subjects.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.4",
