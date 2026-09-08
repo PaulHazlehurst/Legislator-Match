@@ -14,6 +14,8 @@ on:
           - ingest        # pull the sessions, classify from subjects
           - reclassify    # Gemini pass over the leftovers (resumable)
           - enrich        # OpenStates committees + leadership + roster
+          - relink        # repair roster + sponsorships (keeps bills/topics)
+          - classify-subjects  # free keyword pass over unclassified bills
           - seed+ingest   # seed then ingest, in one run
           - all           # seed, ingest, enrich, reclassify
       years:
@@ -57,6 +59,14 @@ jobs:
       - name: Enrich (OpenStates committees + leadership)
         if: ${{ inputs.step == 'enrich' || inputs.step == 'all' }}
         run: npm run enrich
+
+      - name: Repair roster + sponsorships (relink)
+        if: ${{ inputs.step == 'relink' }}
+        run: npm run relink
+
+      - name: Classify from subjects + title (free)
+        if: ${{ inputs.step == 'classify-subjects' }}
+        run: npm run classify-subjects
 
       - name: Reclassify leftovers (Gemini)
         if: ${{ inputs.step == 'reclassify' || inputs.step == 'all' }}
