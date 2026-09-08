@@ -3,2008 +3,370 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Legislator Bill Matcher — Pinnacle Strategies</title>
+<title>Pinnacle — Bill Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-  /* ═══════════════════════════════════════════════════════════════════════
-     PINNACLE STRATEGIES — DESIGN SYSTEM
-     Built for efficiency, professionalism, and focus.
-     Inspired by Linear, Notion, and enterprise SaaS — not bootstrap defaults.
-  ═══════════════════════════════════════════════════════════════════════ */
-  :root {
-    /* Brand palette */
-    --navy:       #0B2A4A;
-    --navy-mid:   #0F3460;
-    --blue-900:   #0B2A4A;
-    --blue-700:   #154D85;
-    --blue-600:   #1B63AC;
-    --blue-500:   #2C7BCB;
-    --blue-400:   #4A93DD;
-    --blue-100:   #D6E9F8;
-    --blue-50:    #EBF4FC;
+  :root{
+    --paper:#F7F5F0; --surface:#FFFFFF; --ink:#1A1D23; --muted:#5E6572;
+    --line:#E5E1D9; --line-2:#D4CEC2;
+    --willing:#2E5E8C; --willing-ink:#264F76;
+    --effect:#B5852A; --effect-ink:#8A6410;
+    --d:#3B67A8; --r:#B0473C; --i:#6B7280;
+    --good:#3E7A54; --warn:#B5852A; --thin:#9AA0AB;
+    --shadow:0 1px 2px rgba(26,29,35,.04), 0 6px 20px rgba(26,29,35,.06);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--paper);color:var(--ink);font-family:"Libre Franklin",system-ui,sans-serif;font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased}
+  button{font-family:inherit;cursor:pointer}
+  h1,h2,h3{margin:0}
 
-    /* Surface & background */
-    --bg:           #F0F4F8;
-    --surface:      #FFFFFF;
-    --surface-2:    #F8FAFB;
-    --surface-3:    #F0F4F8;
+  header{position:sticky;top:0;z-index:20;background:rgba(247,245,240,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .bar{max-width:1120px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:28px;height:60px}
+  .brand{font-weight:800;letter-spacing:-.01em;font-size:16px}
+  .brand span{color:var(--effect-ink)}
+  nav{display:flex;gap:4px;margin-left:auto}
+  nav button{background:none;border:none;padding:8px 14px;border-radius:8px;font-size:14px;font-weight:600;color:var(--muted)}
+  nav button.active{color:var(--ink);background:#EEEAE1}
+  nav button:hover{color:var(--ink)}
 
-    /* Borders */
-    --border:       rgba(11,42,74,0.08);
-    --border-strong: rgba(11,42,74,0.16);
-    --border-focus: var(--blue-500);
+  main{max-width:1120px;margin:0 auto;padding:28px 24px 90px}
+  .hide{display:none !important}
 
-    /* Text */
-    --text:         #0D1F35;
-    --text-2:       #3D5068;
-    --text-3:       #7A90A8;
-    --text-inverse: #FFFFFF;
+  .lead{font-family:"Newsreader",serif;font-weight:500;font-size:30px;letter-spacing:-.01em;margin-bottom:4px}
+  .sub{color:var(--muted);margin-bottom:26px;max-width:60ch}
+  .tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+  .tile{position:relative;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 16px 16px;box-shadow:var(--shadow);transition:border-color .12s,transform .12s}
+  .tile:hover,.tile:focus-visible{border-color:var(--line-2);transform:translateY(-2px);outline:none}
+  .tile:focus-visible{box-shadow:0 0 0 2px var(--willing)}
+  .tile .tname{font-family:"Newsreader",serif;font-size:19px;font-weight:500;line-height:1.2}
+  .tile .tcount{margin-top:10px;color:var(--muted);font-size:12.5px;font-variant-numeric:tabular-nums}
+  .tile::after{content:"";position:absolute;left:16px;bottom:0;width:26px;height:3px;background:var(--effect);border-radius:3px 3px 0 0;opacity:0;transition:opacity .12s}
+  .tile:hover::after{opacity:1}
 
-    /* Semantic */
-    --green:      #0F7B45; --green-bg:  #E8F5EE; --green-border: #8DD0AC;
-    --amber:      #8A5C00; --amber-bg:  #FDF5E4; --amber-border: #D4A843;
-    --red:        #A61A13; --red-bg:    #FEF0EF; --red-border:   #E09390;
+  .rhead{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:8px}
+  .back{background:none;border:1px solid var(--line-2);border-radius:8px;padding:7px 12px;font-size:13px;font-weight:600;color:var(--muted)}
+  .back:hover{color:var(--ink);border-color:var(--muted)}
+  .rtitle{font-family:"Newsreader",serif;font-weight:500;font-size:26px;letter-spacing:-.01em}
+  .refine{display:flex;gap:10px;align-items:center;margin:14px 0 20px;flex-wrap:wrap}
+  select{font:inherit;font-size:13.5px;color:var(--ink);background:var(--surface);border:1px solid var(--line-2);border-radius:8px;padding:8px 28px 8px 10px;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%235E6572' stroke-width='1.6'%3E%3Cpath d='M2 4l4 4 4-4'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center}
+  select:focus-visible{outline:2px solid var(--willing);outline-offset:1px}
+  .refine .rc{color:var(--muted);font-size:12.5px;margin-left:auto;font-variant-numeric:tabular-nums}
+  .legend{display:flex;gap:18px;color:var(--muted);font-size:12px;margin:-8px 0 16px;flex-wrap:wrap}
+  .legend b{font-weight:600}
+  .legend i{display:inline-block;width:20px;height:8px;border-radius:3px;vertical-align:middle;margin-right:6px}
 
-    /* Gold / sponsor */
-    --gold:         #8A6000;
-    --gold-bg:      #FDF8E8;
-    --gold-border:  #D4B84A;
-    --gold-card-bg: linear-gradient(135deg, #FFFEF5 0%, #FFFFFF 60%);
+  .list{display:flex;flex-direction:column;gap:12px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:16px 18px;display:grid;grid-template-columns:1fr 320px;gap:22px;align-items:center;cursor:pointer;transition:border-color .12s}
+  .card:hover,.card:focus-visible{border-color:var(--line-2);outline:none}
+  .card:focus-visible{box-shadow:0 0 0 2px var(--willing)}
+  .rank{font-variant-numeric:tabular-nums;color:var(--thin);font-weight:700;font-size:13px;margin-right:2px}
+  .nm{font-family:"Newsreader",serif;font-size:21px;font-weight:500;letter-spacing:-.01em;display:inline}
+  .meta{display:flex;gap:10px;align-items:center;margin-top:6px;color:var(--muted);font-size:12.5px}
+  .party{display:inline-flex;align-items:center;gap:5px;font-weight:600;color:var(--ink)}
+  .pd{width:7px;height:7px;border-radius:50%}
+  .pd.D{background:var(--d)} .pd.R{background:var(--r)} .pd.I{background:var(--i)}
+  .badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+  .bdg{font-size:11px;font-weight:600;padding:3px 8px;border-radius:6px}
+  .bdg.pw{background:#F1E6CB;color:#7A5A16}
+  .bdg.mj{background:#EDEAE2;color:#4A4A4A}
+  .ev{margin-top:10px;font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+  .q{font-weight:700}
+  .q.solid{color:var(--good)} .q.thin{color:var(--warn)} .q.minimal{color:var(--thin)}
 
-    /* Party */
-    --party-d-bg:   #E4EEFF; --party-d-text: #1138A0;
-    --party-r-bg:   #FEE8E8; --party-r-text: #991414;
+  .scores{min-width:0}
+  .srow{display:grid;grid-template-columns:92px 1fr 30px;gap:10px;align-items:center;margin:7px 0}
+  .srow .lbl{font-size:12px;font-weight:600}
+  .srow .track{height:10px;background:#ECE9E2;border-radius:6px;overflow:hidden}
+  .srow .fill{height:100%;border-radius:6px;width:0;transition:width .5s cubic-bezier(.2,.7,.2,1)}
+  .srow .val{font-size:15px;font-weight:800;text-align:right;font-variant-numeric:tabular-nums}
+  .srow.w .lbl,.srow.w .val{color:var(--willing-ink)} .srow.w .fill{background:var(--willing)}
+  .srow.e .lbl,.srow.e .val{color:var(--effect-ink)} .srow.e .fill{background:var(--effect)}
 
-    /* Spacing (4px grid) */
-    --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px;  --sp-4: 16px;
-    --sp-5: 20px; --sp-6: 24px; --sp-8: 32px;
+  .note{background:var(--surface);border:1px dashed var(--line-2);border-radius:12px;padding:40px 24px;text-align:center;color:var(--muted)}
+  .note b{color:var(--ink)}
 
-    /* Radii */
-    --r-sm:   6px;
-    --r-md:   10px;
-    --r-lg:   14px;
-    --r-xl:   20px;
-    --r-full: 9999px;
+  .finder-box{position:relative;max-width:520px;margin-bottom:22px}
+  .finder-box input{width:100%;font:inherit;font-size:15px;padding:12px 14px;border:1px solid var(--line-2);border-radius:10px;background:var(--surface)}
+  .finder-box input:focus-visible{outline:2px solid var(--willing);outline-offset:1px}
+  .rows{display:flex;flex-direction:column;gap:8px}
+  .prow{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:11px 14px;cursor:pointer}
+  .prow:hover{border-color:var(--line-2)}
+  .prow .pn{font-family:"Newsreader",serif;font-size:17px;font-weight:500}
+  .prow .pm{color:var(--muted);font-size:12.5px;margin-left:auto}
 
-    /* Shadows */
-    --shadow-sm: 0 1px 2px rgba(11,42,74,0.06), 0 1px 3px rgba(11,42,74,0.04);
-    --shadow-md: 0 4px 10px rgba(11,42,74,0.09), 0 1px 3px rgba(11,42,74,0.05);
-    --shadow-lg: 0 10px 28px rgba(11,42,74,0.13), 0 2px 6px rgba(11,42,74,0.07);
-    --shadow-xl: 0 20px 50px rgba(11,42,74,0.18), 0 4px 12px rgba(11,42,74,0.10);
+  .scrim{position:fixed;inset:0;background:rgba(26,29,35,.32);opacity:0;pointer-events:none;transition:opacity .18s;z-index:30}
+  .scrim.open{opacity:1;pointer-events:auto}
+  .drawer{position:fixed;top:0;right:0;height:100%;width:min(460px,100%);background:var(--surface);border-left:1px solid var(--line);transform:translateX(100%);transition:transform .22s cubic-bezier(.2,.7,.2,1);z-index:31;overflow-y:auto;padding:26px}
+  .drawer.open{transform:none}
+  .drawer .x{position:absolute;top:16px;right:18px;border:none;background:none;font-size:22px;color:var(--muted);line-height:1}
+  .drawer h2{font-family:"Newsreader",serif;font-weight:500;font-size:25px;padding-right:30px}
+  .drawer .dm{color:var(--muted);font-size:13px;margin-top:5px}
+  .sh{font-size:12.5px;font-weight:700;color:var(--muted);margin:26px 0 12px}
+  .tline{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;padding:9px 0;border-top:1px solid var(--line);font-size:13.5px}
+  .mini{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:800;font-variant-numeric:tabular-nums}
+  .mini .c{width:9px;height:9px;border-radius:2px}
+  .mini .c.w{background:var(--willing)} .mini .c.e{background:var(--effect)}
+  .aly{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-top:1px solid var(--line);font-size:13.5px}
+  .aly .an{display:flex;align-items:center;gap:8px}
+  .aly .as{color:var(--muted);font-size:12.5px;font-variant-numeric:tabular-nums}
 
-    /* Transitions */
-    --ease: cubic-bezier(0.16, 1, 0.3, 1);
-    --t-fast: 120ms var(--ease);
-    --t-mid:  200ms var(--ease);
-
-    /* Font */
-    --font: "Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
-    --sidebar-w: 232px;
-
-    /* Alias for backwards compat */
-    --radius-sm: var(--r-sm);
-    --radius-md: var(--r-md);
-    --radius-lg: var(--r-lg);
-  }
-
-  /* ── DARK MODE ─────────────────────────────────────────────────────── */
-  [data-theme="dark"] {
-    --bg:           #0C1420;
-    --surface:      #141E2C;
-    --surface-2:    #1A2536;
-    --surface-3:    #1F2D40;
-    --border:       rgba(255,255,255,0.07);
-    --border-strong: rgba(255,255,255,0.14);
-    --text:         #E4EBF4;
-    --text-2:       #8FA8C2;
-    --text-3:       #5A7090;
-    --blue-900:     #C8DFFB;
-    --blue-700:     #82BEF5;
-    --blue-600:     #5AA8EE;
-    --blue-500:     #4090D8;
-    --blue-100:     #1C3654;
-    --blue-50:      #162840;
-    --green:   #42C87A; --green-bg:  #0D2C1C; --green-border: #1D5C35;
-    --amber:   #D4A340; --amber-bg:  #2C2008; --amber-border: #5A4010;
-    --red:     #E87070; --red-bg:    #2E1010; --red-border:   #5A2020;
-    --gold:    #E8C840; --gold-bg:   #2A2408; --gold-border:  #5A4A18;
-    --gold-card-bg: linear-gradient(135deg, #1E1A0C 0%, #141E2C 60%);
-    --party-d-bg:   #12254A; --party-d-text: #7AB0F0;
-    --party-r-bg:   #3A1414; --party-r-text: #F0908A;
-    --shadow-sm: 0 1px 2px rgba(0,0,0,0.30), 0 1px 3px rgba(0,0,0,0.20);
-    --shadow-md: 0 4px 10px rgba(0,0,0,0.40), 0 1px 3px rgba(0,0,0,0.25);
-    --shadow-lg: 0 10px 28px rgba(0,0,0,0.50), 0 2px 6px rgba(0,0,0,0.30);
-    --shadow-xl: 0 20px 50px rgba(0,0,0,0.60), 0 4px 12px rgba(0,0,0,0.40);
-  }
-  [data-theme="dark"] body { background: var(--bg); }
-  [data-theme="dark"] .sidebar { background: #0C1828; border-color: rgba(255,255,255,0.05); }
-  [data-theme="dark"] .topnav { background: #0C1828; border-color: rgba(255,255,255,0.06); }
-
-  /* ── RESET & BASE ──────────────────────────────────────────────────── */
-  *{box-sizing:border-box;margin:0;padding:0;}
-  body{
-    font-family:var(--font);
-    background:var(--bg);
-    color:var(--text);
-    line-height:1.5;
-    -webkit-font-smoothing:antialiased;
-    -moz-osx-font-smoothing:grayscale;
-    font-size:14px;
-  }
-
-  /* ── TOP NAV ───────────────────────────────────────────────────────── */
-  .topnav{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:0 var(--sp-5);
-    height:52px;
-    background:var(--surface);
-    border-bottom:1px solid var(--border);
-    position:sticky;top:0;z-index:30;
-    box-shadow:0 1px 0 var(--border), var(--shadow-sm);
-  }
-  .topnav-left{ display:flex; align-items:center; gap:var(--sp-4); }
-  .topnav-right{ display:flex; align-items:center; gap:var(--sp-3); }
-  .brand-mark{ height:32px; width:auto; object-fit:contain; }
-  .brand-mark-fallback{
-    height:28px;width:28px;border-radius:7px;
-    background:linear-gradient(140deg,var(--blue-600),var(--navy));
-    display:inline-block;
-  }
-  .topnav-divider{
-    width:1px;height:20px;
-    background:var(--border-strong);
-    margin:0 var(--sp-1);
-  }
-  .topnav-label{
-    font-size:10px;font-weight:600;letter-spacing:0.07em;
-    text-transform:uppercase;color:var(--text-3);
-  }
-  #user-name{
-    height:28px;width:130px;font-size:12px;font-family:var(--font);
-    border:1px solid var(--border-strong);border-radius:var(--r-full);
-    padding:0 var(--sp-3);background:var(--surface-2);color:var(--text);
-    transition:border-color var(--t-fast), box-shadow var(--t-fast);
-  }
-  #user-name:focus{ outline:none; border-color:var(--blue-500); box-shadow:0 0 0 3px rgba(44,123,203,0.15); }
-  .kbd-hint{
-    font-size:11px;color:var(--text-3);cursor:help;
-    border:1px solid var(--border-strong);border-radius:var(--r-full);
-    padding:2px 8px;transition:background var(--t-fast);
-  }
-  .kbd-hint:hover{ background:var(--surface-2); color:var(--text-2); }
-  #theme-toggle{
-    background:var(--surface-2);border:1px solid var(--border-strong);
-    border-radius:50%;width:28px;height:28px;
-    display:flex;align-items:center;justify-content:center;
-    font-size:13px;cursor:pointer;transition:background var(--t-fast),transform var(--t-fast);
-  }
-  #theme-toggle:hover{ background:var(--blue-50); transform:rotate(12deg); }
-  .built-by{ font-size:11px; color:var(--text-3); font-weight:500; }
-
-  /* ── APP SHELL ─────────────────────────────────────────────────────── */
-  .app-shell{ display:flex; min-height:calc(100vh - 52px); }
-
-  /* ── SIDEBAR ───────────────────────────────────────────────────────── */
-  .sidebar{
-    width:var(--sidebar-w);
-    flex-shrink:0;
-    background:var(--navy);
-    border-right:none;
-    display:flex;
-    flex-direction:column;
-    position:sticky;
-    top:52px;
-    height:calc(100vh - 52px);
-    overflow:hidden;
-  }
-  .sidebar-header{
-    padding:var(--sp-4) var(--sp-4) var(--sp-2);
-    font-size:9.5px;font-weight:700;
-    color:rgba(255,255,255,0.35);
-    text-transform:uppercase;letter-spacing:0.10em;
-    flex-shrink:0;
-  }
-  .sidebar-search{
-    padding:var(--sp-2) var(--sp-3);
-    flex-shrink:0;
-    border-bottom:1px solid rgba(255,255,255,0.07);
-  }
-  .sidebar-search input{
-    width:100%;height:30px;font-size:12px;font-family:var(--font);
-    padding:0 var(--sp-2) 0 28px;
-    border:1px solid rgba(255,255,255,0.10);
-    border-radius:var(--r-sm);
-    background:rgba(255,255,255,0.07);
-    color:rgba(255,255,255,0.85);
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.35)' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
-    background-repeat:no-repeat;background-position:7px center;
-    transition:border-color var(--t-fast),background var(--t-fast);
-  }
-  .sidebar-search input::placeholder{ color:rgba(255,255,255,0.30); }
-  .sidebar-search input:focus{
-    outline:none;
-    border-color:rgba(255,255,255,0.25);
-    background:rgba(255,255,255,0.10);
-  }
-  .sidebar-list{ overflow-y:auto; flex:1; padding:var(--sp-1) 0; }
-  .sidebar-list::-webkit-scrollbar{ width:4px; }
-  .sidebar-list::-webkit-scrollbar-track{ background:transparent; }
-  .sidebar-list::-webkit-scrollbar-thumb{ background:rgba(255,255,255,0.15); border-radius:2px; }
-  .sidebar-leg{
-    padding:6px var(--sp-4);
-    font-size:12.5px;
-    cursor:pointer;
-    display:flex;align-items:center;gap:var(--sp-2);
-    border-left:2px solid transparent;
-    color:rgba(255,255,255,0.65);
-    transition:background var(--t-fast), color var(--t-fast), border-color var(--t-fast);
-  }
-  .sidebar-leg:hover{
-    background:rgba(255,255,255,0.06);
-    color:rgba(255,255,255,0.90);
-  }
-  .sidebar-leg.active{
-    background:rgba(44,123,203,0.20);
-    border-left-color:var(--blue-400);
-    color:#FFFFFF;
-    font-weight:600;
-  }
-  .sidebar-leg .leg-party{
-    font-size:9px;font-weight:700;padding:1px 5px;border-radius:var(--r-full);flex-shrink:0;
-  }
-  .leg-party.D{ background:rgba(26,56,160,0.55); color:#A0C4FF; }
-  .leg-party.R{ background:rgba(153,20,20,0.55); color:#FFAAAA; }
-  .sidebar-count{
-    font-size:10.5px;color:rgba(255,255,255,0.30);
-    padding:var(--sp-2) var(--sp-4) var(--sp-3);
-    flex-shrink:0;border-top:1px solid rgba(255,255,255,0.07);
-  }
-  @media(max-width:700px){.sidebar{display:none;}}
-
-  /* ── MAIN CONTENT ──────────────────────────────────────────────────── */
-  .main{ flex:1; min-width:0; padding:var(--sp-5) var(--sp-6) 6rem; }
-
-  /* ── PAGE HEADER ───────────────────────────────────────────────────── */
-  .page-header{
-    display:flex;justify-content:space-between;align-items:center;
-    gap:var(--sp-3);flex-wrap:wrap;margin-bottom:var(--sp-4);
-  }
-  .page-header h1{
-    font-size:20px;font-weight:700;letter-spacing:-0.025em;
-    color:var(--text);line-height:1.2;
-  }
-  .page-header p{ font-size:13px; color:var(--text-2); margin-top:var(--sp-1); }
-  .header-actions{ display:flex; gap:var(--sp-2); align-items:center; flex-shrink:0; }
-
-  /* ── BUTTONS ───────────────────────────────────────────────────────── */
-  .btn-outline{
-    height:32px;padding:0 var(--sp-3);
-    border-radius:var(--r-md);
-    border:1px solid var(--border-strong);
-    background:var(--surface);
-    color:var(--text-2);
-    font-size:12px;font-weight:600;font-family:var(--font);
-    cursor:pointer;white-space:nowrap;
-    display:inline-flex;align-items:center;gap:5px;
-    transition:background var(--t-fast), border-color var(--t-fast), color var(--t-fast), box-shadow var(--t-fast);
-  }
-  .btn-outline:hover{
-    background:var(--surface-2);
-    border-color:var(--blue-400);
-    color:var(--blue-600);
-    box-shadow:var(--shadow-sm);
-  }
-  .btn{
-    width:100%;height:40px;
-    border-radius:var(--r-md);border:none;
-    background:var(--blue-600);color:#fff;
-    font-size:14px;font-weight:600;font-family:var(--font);
-    cursor:pointer;
-    transition:background var(--t-fast), box-shadow var(--t-fast), transform 80ms;
-  }
-  .btn:hover{ background:var(--blue-700); box-shadow:var(--shadow-md); }
-  .btn:active{ transform:scale(0.98); }
-  .btn:disabled{ background:var(--text-3); cursor:not-allowed; box-shadow:none; }
-  .btn-secondary{
-    background:var(--surface);color:var(--blue-600);
-    border:1px solid var(--border-strong);
-  }
-  .btn-secondary:hover{ background:var(--blue-50); }
-  .btn-danger{ background:var(--red); }
-  .btn-danger:hover{ background:#8A1410; }
-
-  /* ── TABS ──────────────────────────────────────────────────────────── */
-  .main-tabs{
-    display:flex;gap:2px;
-    background:var(--surface-2);
-    border:1px solid var(--border);
-    border-radius:var(--r-lg);
-    padding:3px;
-    margin-bottom:var(--sp-5);
-    overflow-x:auto;
-    -ms-overflow-style:none;scrollbar-width:none;
-  }
-  .main-tabs::-webkit-scrollbar{ display:none; }
-  .main-tab{
-    padding:6px 14px;
-    font-size:12.5px;font-weight:600;font-family:var(--font);
-    cursor:pointer;
-    border:none;border-radius:var(--r-md);
-    background:none;
-    color:var(--text-2);
-    white-space:nowrap;
-    transition:background var(--t-fast), color var(--t-fast);
-  }
-  .main-tab:hover{ background:var(--surface); color:var(--text); }
-  .main-tab.active{
-    background:var(--surface);
-    color:var(--blue-600);
-    box-shadow:var(--shadow-sm);
-  }
-  .tab-pane{ display:none; }
-  .tab-pane.active{ display:block; }
-
-  /* ── FILTER CARD ───────────────────────────────────────────────────── */
-  .filter-card{
-    background:var(--surface);
-    border:1px solid var(--border);
-    border-radius:var(--r-lg);
-    padding:var(--sp-4) var(--sp-5);
-    margin-bottom:var(--sp-4);
-    box-shadow:var(--shadow-sm);
-  }
-  .controls{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
-    gap:var(--sp-3);
-  }
-  .field label{
-    display:block;
-    font-size:9.5px;font-weight:700;
-    color:var(--text-3);
-    margin-bottom:5px;
-    text-transform:uppercase;letter-spacing:0.08em;
-  }
-  .legend{
-    display:flex;gap:var(--sp-4);align-items:center;
-    padding-top:var(--sp-3);margin-top:var(--sp-3);
-    border-top:1px solid var(--border);flex-wrap:wrap;
-  }
-  .legend-label{ font-size:9.5px;color:var(--text-3);text-transform:uppercase;letter-spacing:0.07em; }
-  .legend-item{ display:flex;align-items:center;gap:5px;font-size:12px;font-weight:500;color:var(--text-2); }
-  .legend-dot{ width:8px;height:8px;border-radius:50%;flex-shrink:0; }
-  .legend-dot.low{ background:var(--red); }
-  .legend-dot.mid{ background:var(--amber); }
-  .legend-dot.high{ background:var(--green); }
-
-  /* ── FORM CONTROLS ─────────────────────────────────────────────────── */
-  select,input:not([type="checkbox"]):not([type="radio"]),textarea{
-    width:100%;padding:0 var(--sp-3);
-    border-radius:var(--r-md);
-    border:1px solid var(--border-strong);
-    background:var(--surface-2);
-    color:var(--text);
-    font-size:13px;font-family:var(--font);
-    transition:border-color var(--t-fast),box-shadow var(--t-fast);
-  }
-  select{
-    height:34px;appearance:none;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%237A90A8' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
-    background-repeat:no-repeat;background-position:right 10px center;
-    padding-right:28px;
-  }
-  select option{ background:var(--surface); color:var(--text); }
-  input:not([type="checkbox"]):not([type="radio"]){ height:34px; }
-  input[type="checkbox"],input[type="radio"]{
-    width:15px;height:15px;flex-shrink:0;
-    accent-color:var(--blue-600);cursor:pointer;
-  }
-  textarea{ padding:var(--sp-2) var(--sp-3); resize:vertical; min-height:70px; }
-  select:focus,input:focus,textarea:focus{
-    outline:none;
-    border-color:var(--blue-500);
-    box-shadow:0 0 0 3px rgba(44,123,203,0.15);
-    background:var(--surface);
-  }
-  select[size]{ height:auto;appearance:auto;background-image:none;padding:4px; }
-
-  /* ── CUSTOM SEARCHABLE DROPDOWN ─────────────────────────────────────── */
-  .search-select{ position:relative; }
-  .search-select-trigger{
-    width:100%;height:34px;padding:0 28px 0 var(--sp-3);
-    border-radius:var(--r-md);
-    border:1px solid var(--border-strong);
-    background:var(--surface-2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%237A90A8' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E") no-repeat right 10px center;
-    color:var(--text);font-size:13px;font-family:var(--font);
-    cursor:pointer;text-align:left;white-space:nowrap;
-    overflow:hidden;text-overflow:ellipsis;
-    transition:border-color var(--t-fast),box-shadow var(--t-fast),background var(--t-fast);
-  }
-  .search-select-trigger:focus,.search-select-trigger.open{
-    outline:none;border-color:var(--blue-500);
-    box-shadow:0 0 0 3px rgba(44,123,203,0.15);
-    background:var(--surface);
-  }
-  .search-select-dropdown{
-    position:absolute;top:calc(100% + 5px);left:0;right:0;z-index:200;
-    background:var(--surface);
-    border:1px solid var(--border-strong);
-    border-radius:var(--r-lg);
-    box-shadow:var(--shadow-xl);
-    display:none;flex-direction:column;max-height:280px;overflow:hidden;
-  }
-  .search-select-dropdown.open{ display:flex; animation:dropIn 150ms var(--ease); }
-  @keyframes dropIn{ from{opacity:0;transform:translateY(-6px);} to{opacity:1;transform:none;} }
-  .search-select-search{ padding:var(--sp-2); border-bottom:1px solid var(--border); flex-shrink:0; }
-  .search-select-search input{
-    height:30px;font-size:12.5px;
-    border:1px solid var(--border-strong);border-radius:var(--r-sm);
-    background:var(--surface-2);
-  }
-  .search-select-search input:focus{ outline:none; border-color:var(--blue-500); }
-  .search-select-options{ overflow-y:auto; flex:1; }
-  .search-select-option{
-    padding:8px var(--sp-3);font-size:13px;cursor:pointer;color:var(--text);
-    transition:background var(--t-fast);
-  }
-  .search-select-option:hover,.search-select-option.highlighted{ background:var(--blue-50); }
-  .search-select-option.selected{ color:var(--blue-600);font-weight:600; }
-  .search-select-option.any-opt{ color:var(--text-3);font-style:italic; }
-  .search-select-empty{ padding:var(--sp-3); font-size:13px; color:var(--text-3); }
-
-  /* ── CUSTOM LEGISLATOR PICKER ───────────────────────────────────────── */
-  .leg-pick-row{
-    display:flex;align-items:center;gap:var(--sp-2);
-    padding:7px var(--sp-3);font-size:12.5px;color:var(--text);
-    cursor:pointer;border-bottom:1px solid var(--border);
-    transition:background var(--t-fast);
-  }
-  .leg-pick-row:last-child{ border-bottom:none; }
-  .leg-pick-row:hover{ background:var(--blue-50); }
-  .leg-pick-row.selected{ background:var(--blue-100); font-weight:600; }
-  .leg-pick-row .leg-pick-badge{
-    font-size:9px;font-weight:700;padding:1px 5px;border-radius:var(--r-full);flex-shrink:0;
-  }
-  .leg-pick-row .leg-pick-badge.D{ background:var(--party-d-bg); color:var(--party-d-text); }
-  .leg-pick-row .leg-pick-badge.R{ background:var(--party-r-bg); color:var(--party-r-text); }
-  .leg-pick-empty{ padding:var(--sp-3); font-size:12.5px; color:var(--text-3); text-align:center; }
-
-  /* ── RESULTS ────────────────────────────────────────────────────────── */
-  .results-meta{ font-size:12px; color:var(--text-3); margin-bottom:var(--sp-2); font-weight:500; }
-  .results{ display:flex; flex-direction:column; gap:var(--sp-2); }
-  .empty{
-    font-size:14px;color:var(--text-3);
-    padding:3rem 0;text-align:center;
-    line-height:1.7;
-  }
-
-  /* ── LEGISLATOR CARD ────────────────────────────────────────────────── */
-  .card{
-    background:var(--surface);
-    border:1px solid var(--border);
-    border-radius:var(--r-lg);
-    padding:var(--sp-4) var(--sp-5);
-    box-shadow:var(--shadow-sm);
-    transition:box-shadow var(--t-mid), border-color var(--t-fast), transform var(--t-mid);
-    position:relative;
-    overflow:hidden;
-  }
-  .card::before{
-    content:'';position:absolute;left:0;top:0;bottom:0;
-    width:3px;background:transparent;
-    transition:background var(--t-fast);
-    border-radius:3px 0 0 3px;
-  }
-  .card:hover{
-    box-shadow:var(--shadow-md);
-    border-color:rgba(44,123,203,0.20);
-  }
-  .card:hover::before{ background:var(--blue-400); }
-  .card.is-sponsor{
-    border-color:var(--gold-border);
-    background:var(--gold-card-bg);
-  }
-  .card.is-sponsor::before{ background:var(--gold); }
-
-  .card-top{
-    display:flex;justify-content:space-between;
-    align-items:flex-start;gap:var(--sp-4);margin-bottom:var(--sp-3);
-  }
-  .card-identity{ flex:1;min-width:0; }
-  .card-name{
-    font-weight:700;font-size:16px;
-    color:var(--text);letter-spacing:-0.01em;
-    display:flex;align-items:center;gap:var(--sp-2);flex-wrap:wrap;
-  }
-  .card-meta{
-    font-size:12px;color:var(--text-2);
-    margin-top:3px;
-    display:flex;align-items:center;gap:5px;flex-wrap:wrap;
-  }
-  .card-meta-sep{ color:var(--border-strong); }
-
-  /* Score badge — filled, confident */
-  .score-col{
-    display:flex;flex-direction:column;align-items:center;
-    flex-shrink:0;gap:3px;
-  }
-  .score-ring{
-    width:54px;height:54px;border-radius:50%;
-    display:flex;align-items:center;justify-content:center;
-    font-size:18px;font-weight:800;
-    letter-spacing:-0.02em;
-  }
-  .score-ring.score-low{
-    background:var(--red-bg);
-    color:var(--red);
-    box-shadow:0 0 0 2px var(--red-border);
-  }
-  .score-ring.score-mid{
-    background:var(--amber-bg);
-    color:var(--amber);
-    box-shadow:0 0 0 2px var(--amber-border);
-  }
-  .score-ring.score-high{
-    background:var(--green-bg);
-    color:var(--green);
-    box-shadow:0 0 0 2px var(--green-border);
-  }
-  .score-label{
-    font-size:9px;color:var(--text-3);
-    text-transform:uppercase;letter-spacing:0.06em;font-weight:600;
-  }
-
-  /* Meter bar */
-  .meter{
-    height:3px;background:var(--surface-3);
-    border-radius:2px;overflow:hidden;margin-bottom:var(--sp-3);
-  }
-  .meter-fill{
-    height:100%;border-radius:2px;
-    transition:width 0.5s var(--ease);
-  }
-  .meter-fill.score-low{ background:var(--red); }
-  .meter-fill.score-mid{ background:var(--amber); }
-  .meter-fill.score-high{ background:var(--green); }
-
-  .stats-row{
-    display:flex;gap:var(--sp-4);flex-wrap:wrap;
-    font-size:12px;color:var(--text-2);margin-bottom:var(--sp-3);
-    align-items:center;
-  }
-  .stat{ display:flex;align-items:center;gap:3px; }
-
-  /* Party & star badges */
-  .party-badge{
-    font-size:9.5px;font-weight:700;
-    padding:2px 6px;border-radius:var(--r-full);
-    letter-spacing:0.02em;flex-shrink:0;
-  }
-  .party-badge.D{ background:var(--party-d-bg); color:var(--party-d-text); }
-  .party-badge.R{ background:var(--party-r-bg); color:var(--party-r-text); }
-  .star-badge{
-    display:inline-flex;align-items:center;gap:3px;
-    font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:var(--r-full);
-    background:var(--gold-bg);color:var(--gold);border:1px solid var(--gold-border);
-    flex-shrink:0;
-  }
-
-  /* Data quality */
-  .data-quality{
-    display:inline-flex;align-items:center;gap:3px;
-    font-size:9.5px;padding:2px 7px;border-radius:var(--r-full);font-weight:600;
-  }
-  .dq-strong{ background:var(--green-bg); color:var(--green); }
-  .dq-thin{ background:var(--amber-bg); color:var(--amber); }
-  .dq-minimal{ background:var(--red-bg); color:var(--red); }
-
-  /* Notes */
-  .notes-row{ margin-bottom:var(--sp-2); }
-  .notes-text{ font-size:12px;color:var(--text-2);font-style:italic;margin:0 0 2px; }
-  .notes-edit-btn{
-    background:none;border:none;color:var(--blue-600);
-    font-size:11.5px;cursor:pointer;padding:0;
-    text-decoration:underline;text-underline-offset:2px;
-    font-family:var(--font);
-  }
-  .notes-input-row{ display:flex; gap:var(--sp-2); margin-top:var(--sp-1); }
-  .notes-input-row input{ flex:1; height:30px; font-size:12.5px; }
-  .notes-save-btn{
-    flex-shrink:0;height:30px;padding:0 var(--sp-3);
-    font-size:12px;font-weight:600;
-    background:var(--blue-600);color:white;
-    border:none;border-radius:var(--r-md);
-    cursor:pointer;font-family:var(--font);
-    transition:background var(--t-fast);
-  }
-  .notes-save-btn:hover{ background:var(--blue-700); }
-
-  /* Bill history */
-  details{ border-top:1px solid var(--border); padding-top:var(--sp-2); }
-  details summary{
-    font-size:12px;color:var(--blue-600);cursor:pointer;
-    font-weight:600;user-select:none;
-    display:flex;align-items:center;gap:5px;
-  }
-  details summary:hover{ color:var(--blue-500); }
-  .bill-list{
-    list-style:none;margin:var(--sp-2) 0 0;padding:0;
-    font-size:12px;color:var(--text-2);
-  }
-  .bill-list li{
-    padding:5px 0;
-    display:flex;justify-content:space-between;gap:var(--sp-3);
-    border-bottom:1px solid var(--border);
-    align-items:flex-start;
-  }
-  .bill-list li:last-child{ border-bottom:none; }
-  .bill-list .bill-tags{ display:flex;gap:4px;flex-shrink:0;align-items:center; }
-  .tag{
-    font-size:9px;padding:2px 6px;border-radius:var(--r-full);
-    font-weight:700;white-space:nowrap;letter-spacing:0.03em;
-  }
-  .tag-passed{ background:var(--green-bg); color:var(--green); }
-  .tag-failed{ background:var(--surface-3); color:var(--text-3); }
-  .tag-sub{ background:var(--blue-50); color:var(--blue-600); }
-  .tag-pending{ background:var(--surface-3); color:var(--text-3); }
-
-  /* ── IMPORT REVIEW BILL ROW ─────────────────────────────────────────── */
-  .ibr-card{
-    background:var(--surface);border:1px solid var(--border);
-    border-radius:var(--r-lg);padding:var(--sp-3) var(--sp-4);
-    box-shadow:var(--shadow-sm);overflow:visible;
-    transition:box-shadow var(--t-fast);
-  }
-  .ibr-card:hover{ box-shadow:var(--shadow-md); }
-  .ibr-top{ display:flex;align-items:flex-start;gap:var(--sp-2);margin-bottom:var(--sp-3); }
-  .ibr-title{
-    font-weight:600;font-size:13px;color:var(--text);
-    line-height:1.4;margin-bottom:3px;word-break:break-word;
-  }
-  .ibr-badges{ display:flex;gap:6px;align-items:center;flex-wrap:wrap; }
-  .ibr-fields{ display:flex;gap:var(--sp-2);flex-wrap:wrap;align-items:flex-end; }
-  .ibr-field{ display:flex;flex-direction:column;min-width:0; }
-  .ibr-field.grow{ flex:1 1 140px; }
-  .ibr-field.year{ flex:0 0 76px; }
-  .ibr-field.outcome{ flex:0 0 118px; }
-  .ibr-label{
-    font-size:9px;font-weight:700;color:var(--text-3);
-    text-transform:uppercase;letter-spacing:0.07em;margin-bottom:3px;
-  }
-  .ibr-select,.ibr-input{
-    display:block;box-sizing:border-box;width:100%;height:32px;
-    padding:0 var(--sp-2);font-size:12px;font-family:var(--font);
-    border:1px solid var(--border-strong);border-radius:var(--r-sm);
-    background:var(--surface-2);color:var(--text);
-    transition:border-color var(--t-fast);
-  }
-  .ibr-select:focus,.ibr-input:focus{
-    outline:none;border-color:var(--blue-500);
-    box-shadow:0 0 0 2px rgba(44,123,203,0.15);
-  }
-  .ibr-select{
-    appearance:none;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%237A90A8' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
-    background-repeat:no-repeat;background-position:right 8px center;padding-right:24px;
-  }
-  .ibr-select option{ background:var(--surface); color:var(--text); }
-  .ibr-new-input{ margin-top:4px; }
-
-  /* ── FABs ───────────────────────────────────────────────────────────── */
-  .fab-row{
-    position:fixed;bottom:var(--sp-5);right:var(--sp-5);
-    display:flex;gap:var(--sp-2);align-items:center;z-index:40;
-  }
-  .fab{
-    width:48px;height:48px;border-radius:50%;
-    background:var(--blue-600);color:white;
-    border:none;font-size:20px;cursor:pointer;
-    box-shadow:var(--shadow-lg);
-    display:flex;align-items:center;justify-content:center;
-    transition:background var(--t-fast),transform var(--t-fast),box-shadow var(--t-fast);
-  }
-  .fab:hover{
-    background:var(--blue-700);
-    transform:scale(1.06);
-    box-shadow:var(--shadow-xl);
-  }
-  .fab:active{ transform:scale(0.96); }
-  .fab-ghost{
-    height:38px;padding:0 var(--sp-4);border-radius:var(--r-full);
-    background:var(--surface);color:var(--blue-600);
-    border:1px solid var(--border-strong);
-    font-size:12px;font-weight:600;cursor:pointer;
-    box-shadow:var(--shadow-md);
-    display:flex;align-items:center;gap:5px;white-space:nowrap;
-    font-family:var(--font);
-    transition:background var(--t-fast),box-shadow var(--t-fast),border-color var(--t-fast);
-  }
-  .fab-ghost:hover{
-    background:var(--blue-50);
-    border-color:var(--blue-400);
-    box-shadow:var(--shadow-lg);
-  }
-
-  /* ── PANELS ─────────────────────────────────────────────────────────── */
-  .overlay{
-    position:fixed;inset:0;
-    background:rgba(8,18,32,0.55);
-    backdrop-filter:blur(3px);
-    display:none;align-items:flex-end;justify-content:center;z-index:50;
-  }
-  .overlay.open{ display:flex; animation:fadeIn 180ms var(--ease); }
-  @keyframes fadeIn{ from{opacity:0;} to{opacity:1;} }
-  .panel{
-    background:var(--surface);width:100%;
-    max-width:600px;max-height:92vh;
-    overflow-y:auto;
-    border-radius:var(--r-xl) var(--r-xl) 0 0;
-    padding:var(--sp-6) var(--sp-6) 2.5rem;
-    box-shadow:var(--shadow-xl);
-    animation:slideUp 250ms var(--ease);
-  }
-  @keyframes slideUp{
-    from{ opacity:0; transform:translateY(20px); }
-    to{ opacity:1; transform:none; }
-  }
-  .panel.wide{ max-width:900px; }
-  @media(min-width:640px){
-    .overlay{ align-items:center; }
-    .panel{ border-radius:var(--r-xl); max-height:88vh; }
-  }
-  @media(min-width:960px){ .panel.wide{ max-height:90vh; } }
-  .panel-header{
-    display:flex;justify-content:space-between;align-items:center;
-    margin-bottom:var(--sp-5);
-  }
-  .panel-header h2{
-    font-size:17px;font-weight:700;color:var(--text);
-    letter-spacing:-0.01em;
-  }
-  .panel-close{
-    background:var(--surface-2);border:1px solid var(--border);
-    border-radius:50%;width:30px;height:30px;
-    display:flex;align-items:center;justify-content:center;
-    font-size:14px;color:var(--text-2);cursor:pointer;
-    transition:background var(--t-fast),color var(--t-fast);
-  }
-  .panel-close:hover{ background:var(--red-bg); color:var(--red); border-color:var(--red-border); }
-  .form-group{ margin-bottom:var(--sp-4); }
-  .form-row{ display:grid; grid-template-columns:1fr 1fr; gap:var(--sp-3); }
-  .form-group label,.form-row label{
-    display:block;font-size:9.5px;font-weight:700;
-    color:var(--text-2);margin-bottom:5px;
-    text-transform:uppercase;letter-spacing:0.07em;
-  }
-  .radio-row{
-    display:flex;gap:var(--sp-4);font-size:13px;color:var(--text);margin-top:4px;
-  }
-  .radio-row label{
-    text-transform:none;font-size:13px;font-weight:400;
-    display:flex;align-items:center;gap:5px;margin:0;
-  }
-  .ai-box{
-    background:linear-gradient(135deg,var(--blue-50),var(--surface));
-    border:1px solid var(--blue-100);
-    border-radius:var(--r-md);padding:var(--sp-3);margin-bottom:var(--sp-4);
-  }
-  .ai-box label{
-    font-size:9.5px;color:var(--blue-600);
-    text-transform:uppercase;letter-spacing:0.07em;
-    display:block;margin-bottom:5px;font-weight:700;
-  }
-  .ai-row{ display:flex; gap:var(--sp-2); }
-  .ai-row input{ flex:1; }
-  .ai-row .btn{ width:auto; padding:0 var(--sp-4); flex-shrink:0; }
-  .file-drop{
-    border:1.5px dashed var(--border-strong);
-    border-radius:var(--r-md);padding:var(--sp-3);
-    text-align:center;font-size:12px;color:var(--text-2);
-    margin-top:var(--sp-2);cursor:pointer;background:var(--surface);
-    transition:background var(--t-fast),border-color var(--t-fast);
-  }
-  .file-drop.dragover{ background:var(--blue-50); border-color:var(--blue-500); }
-  .status-msg{ font-size:12px; margin-top:var(--sp-2); min-height:16px; }
-  .status-msg.error{ color:var(--red); }
-  .status-msg.success{ color:var(--green); }
-  .status-msg.loading{ color:var(--text-2); animation:pulse 1.4s ease-in-out infinite; }
-  @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:0.4;} }
-  .delete-list{ display:flex; flex-direction:column; gap:var(--sp-2); }
-  .delete-item{
-    display:flex;justify-content:space-between;align-items:center;
-    gap:var(--sp-3);border:1px solid var(--border);
-    border-radius:var(--r-md);padding:var(--sp-2) var(--sp-3);
-    background:var(--surface);
-  }
-  .delete-item .info{ font-size:12.5px; }
-  .delete-item .info .who{ color:var(--text-2); font-size:11.5px; margin-top:2px; }
-  .delete-item .del-btn{
-    flex-shrink:0;background:none;
-    border:1px solid rgba(166,26,19,0.25);
-    color:var(--red);border-radius:var(--r-sm);
-    font-size:11.5px;padding:4px var(--sp-3);
-    cursor:pointer;font-family:var(--font);
-    transition:background var(--t-fast);
-  }
-  .delete-item .del-btn:hover{ background:var(--red-bg); }
-  .sub-divider{
-    font-size:9.5px;color:var(--text-3);
-    margin:var(--sp-4) 0 var(--sp-2);
-    text-transform:uppercase;letter-spacing:0.07em;
-  }
-
-  /* ── STATS ──────────────────────────────────────────────────────────── */
-  .stats-grid{
-    display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-    gap:var(--sp-3);margin-bottom:var(--sp-5);
-  }
-  .stat-card{
-    background:var(--surface);border:1px solid var(--border);
-    border-radius:var(--r-lg);padding:var(--sp-4);box-shadow:var(--shadow-sm);
-  }
-  .stat-card-label{
-    font-size:9.5px;font-weight:700;color:var(--text-3);
-    text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;
-  }
-  .stat-card-value{
-    font-size:30px;font-weight:700;color:var(--text);
-    line-height:1.1;letter-spacing:-0.02em;
-  }
-  .stat-card-sub{ font-size:11.5px;color:var(--text-2);margin-top:4px; }
-  .stats-section{
-    background:var(--surface);border:1px solid var(--border);
-    border-radius:var(--r-lg);padding:var(--sp-4) var(--sp-5);
-    margin-bottom:var(--sp-3);box-shadow:var(--shadow-sm);
-  }
-  .stats-section h3{
-    font-size:11px;font-weight:700;color:var(--text-3);
-    margin:0 0 var(--sp-3);text-transform:uppercase;letter-spacing:0.08em;
-  }
-  .stats-section .section-sub{
-    font-size:12px;color:var(--text-2);margin:-var(--sp-2) 0 var(--sp-3);
-  }
-  .bar-row{
-    display:flex;align-items:center;gap:var(--sp-3);
-    padding:5px 0;border-bottom:1px solid var(--border);
-  }
-  .bar-row:last-child{ border-bottom:none; }
-  .bar-row-label{
-    font-size:12.5px;color:var(--text);width:150px;
-    flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  }
-  .bar-track{
-    flex:1;height:7px;background:var(--surface-3);
-    border-radius:4px;overflow:hidden;
-  }
-  .bar-fill{
-    height:100%;background:var(--blue-500);
-    border-radius:4px;transition:width 0.5s var(--ease);
-  }
-  .bar-fill.amber{ background:var(--amber); }
-  .bar-fill.green{ background:var(--green); }
-  .bar-fill.red{ background:var(--red); }
-  .bar-fill.gold{ background:#C9A227; }
-  .bar-val{ font-size:12px;font-weight:600;color:var(--text);width:52px;flex-shrink:0;text-align:right; }
-  .bar-rate{ font-size:11.5px;color:var(--text-2);width:90px;flex-shrink:0;text-align:right; }
-  .stats-2col{ display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);margin-bottom:var(--sp-3); }
-  @media(max-width:600px){ .stats-2col{ grid-template-columns:1fr; } }
-  .insight-card{
-    background:linear-gradient(140deg,var(--navy),var(--blue-700));
-    color:white;border-radius:var(--r-lg);
-    padding:var(--sp-4) var(--sp-5);margin-bottom:var(--sp-3);
-  }
-  .insight-card h3{
-    font-size:9.5px;font-weight:700;text-transform:uppercase;
-    letter-spacing:0.09em;margin:0 0 var(--sp-3);opacity:0.55;
-  }
-  .insight-item{
-    display:flex;justify-content:space-between;align-items:center;
-    padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.08);
-  }
-  .insight-item:last-child{ border-bottom:none; }
-  .insight-item .i-label{ font-size:13px;font-weight:500; }
-  .insight-item .i-value{ font-size:13px;font-weight:700; }
-  .insight-tag{
-    font-size:9.5px;padding:2px 7px;border-radius:var(--r-full);
-    font-weight:700;background:rgba(255,255,255,0.12);margin-left:6px;
-  }
-  .leaderboard-row{
-    display:flex;align-items:center;gap:var(--sp-3);
-    padding:7px 0;border-bottom:1px solid var(--border);
-  }
-  .leaderboard-row:last-child{ border-bottom:none; }
-  .lb-rank{ font-size:13px;font-weight:700;color:var(--text-3);width:20px;flex-shrink:0;text-align:center; }
-  .lb-rank.gold{ color:#C9A227; }
-  .lb-rank.silver{ color:#999; }
-  .lb-rank.bronze{ color:#C97432; }
-  .lb-name{ flex:1;font-size:13px;font-weight:500;color:var(--text); }
-  .lb-badge{ font-size:9.5px;padding:1px 6px;border-radius:var(--r-full);font-weight:700;flex-shrink:0; }
-  .lb-val{ font-size:12.5px;font-weight:600;color:var(--text-2);flex-shrink:0; }
-  .lb-score{ font-size:12px;padding:2px 8px;border-radius:var(--r-full);font-weight:700;flex-shrink:0; }
-  .lb-score.high{ background:var(--green-bg);color:var(--green); }
-  .lb-score.mid{ background:var(--amber-bg);color:var(--amber); }
-  .lb-score.low{ background:var(--red-bg);color:var(--red); }
-  .crosstab{ width:100%;border-collapse:collapse;font-size:12.5px;margin-top:6px; }
-  .crosstab th{
-    text-align:left;padding:6px var(--sp-2);
-    font-size:9.5px;font-weight:700;color:var(--text-3);
-    text-transform:uppercase;letter-spacing:0.07em;border-bottom:2px solid var(--border);
-  }
-  .crosstab td{ padding:7px var(--sp-2);border-bottom:1px solid var(--border);color:var(--text); }
-  .crosstab tr:last-child td{ border-bottom:none; }
-  .crosstab .rate-chip{ display:inline-block;padding:2px 8px;border-radius:var(--r-full);font-size:11.5px;font-weight:700; }
-  .crosstab .rate-chip.high{ background:var(--green-bg);color:var(--green); }
-  .crosstab .rate-chip.mid{ background:var(--amber-bg);color:var(--amber); }
-  .crosstab .rate-chip.low{ background:var(--red-bg);color:var(--red); }
-  .crosstab .rate-chip.na{ background:var(--surface-3);color:var(--text-3); }
-
-  /* ── SPONSOR CARD ───────────────────────────────────────────────────── */
-  .sponsor-card{
-    background:var(--gold-card-bg);
-    border:1px solid var(--gold-border);border-radius:var(--r-lg);
-    padding:var(--sp-4) var(--sp-5);box-shadow:var(--shadow-sm);
-    display:flex;gap:var(--sp-4);align-items:flex-start;
-    transition:box-shadow var(--t-mid);
-  }
-  .sponsor-card:hover{ box-shadow:var(--shadow-md); }
-  .sponsor-star{ font-size:22px;flex-shrink:0;margin-top:2px; }
-  .sponsor-body{ flex:1;min-width:0; }
-  .sponsor-name{ font-weight:700;font-size:15px;color:var(--text);margin:0 0 3px; }
-  .sponsor-meta{ font-size:12px;color:var(--text-2);margin:0 0 6px; }
-  .sponsor-note{
-    font-size:12.5px;color:var(--text);background:var(--surface-2);
-    border-left:3px solid var(--gold-border);padding:6px var(--sp-3);
-    border-radius:0 4px 4px 0;margin:6px 0 0;font-style:italic;
-  }
-  .sponsor-actions{ display:flex;gap:6px;margin-top:var(--sp-2); }
-  .sponsor-remove-btn{
-    background:none;border:1px solid rgba(166,26,19,0.25);
-    color:var(--red);border-radius:var(--r-sm);
-    font-size:11.5px;padding:3px var(--sp-2);cursor:pointer;font-family:var(--font);
-    transition:background var(--t-fast);
-  }
-  .sponsor-remove-btn:hover{ background:var(--red-bg); }
-  .sponsors-header{
-    display:flex;justify-content:space-between;align-items:flex-start;
-    gap:var(--sp-3);flex-wrap:wrap;margin-bottom:var(--sp-2);
-  }
-
-  /* ── TEAM FEED ──────────────────────────────────────────────────────── */
-  .feed-entry{
-    display:flex;gap:var(--sp-3);align-items:flex-start;
-    padding:var(--sp-3) 0;border-bottom:1px solid var(--border);
-  }
-  .feed-entry:last-child{ border-bottom:none; }
-  .feed-avatar{
-    width:34px;height:34px;border-radius:50%;
-    background:linear-gradient(140deg,var(--blue-600),var(--navy));
-    display:flex;align-items:center;justify-content:center;
-    font-size:12px;font-weight:700;color:white;flex-shrink:0;
-  }
-  .feed-body{ flex:1;min-width:0; }
-  .feed-who{ font-size:13px;font-weight:600;color:var(--text); }
-  .feed-what{ font-size:12.5px;color:var(--text-2);margin:1px 0; }
-  .feed-when{ font-size:11px;color:var(--text-3); }
-  .feed-icon{ font-size:14px;margin-right:3px; }
-  .feed-card{
-    background:var(--surface);border:1px solid var(--border);
-    border-radius:var(--r-lg);padding:var(--sp-4) var(--sp-5);
-    box-shadow:var(--shadow-sm);
-  }
-
-  /* ── PROPOSE TAB ────────────────────────────────────────────────────── */
-  .propose-hero{
-    background:linear-gradient(140deg,var(--navy) 0%,var(--blue-700) 100%);
-    border-radius:var(--r-lg);padding:var(--sp-6);
-    margin-bottom:var(--sp-4);color:white;
-    box-shadow:var(--shadow-lg);
-  }
-  .propose-hero h2{
-    font-size:22px;font-weight:700;margin:0 0 6px;color:white;
-    letter-spacing:-0.025em;
-  }
-  .propose-hero p{ font-size:14px;margin:0 0 var(--sp-4);opacity:0.80; }
-  .propose-input-row textarea{
-    width:100%;border:none;
-    background:rgba(255,255,255,0.10);
-    color:white;border-radius:var(--r-md);
-    padding:var(--sp-3) var(--sp-4);
-    font-size:14px;font-family:var(--font);resize:none;
-    transition:background var(--t-fast),box-shadow var(--t-fast);
-  }
-  .propose-input-row textarea::placeholder{ color:rgba(255,255,255,0.40); }
-  .propose-input-row textarea:focus{
-    outline:none;
-    background:rgba(255,255,255,0.14);
-    box-shadow:0 0 0 2px rgba(255,255,255,0.30);
-  }
-  .propose-input-row .btn{
-    background:white;color:var(--navy);font-weight:700;
-    margin-top:var(--sp-2);height:42px;
-    box-shadow:0 2px 8px rgba(0,0,0,0.15);
-  }
-  .propose-input-row .btn:hover{ background:#F0F4F8; }
-  .propose-hero .status-msg{ color:rgba(255,255,255,0.80);font-size:12.5px; }
-  .propose-hero .status-msg.error{ color:#FFA8A8; }
-  .propose-context-card{
-    background:var(--surface);border:1px solid var(--border);
-    border-radius:var(--r-md);padding:var(--sp-3) var(--sp-4);
-    margin-bottom:var(--sp-3);box-shadow:var(--shadow-sm);
-  }
-
-  /* ── SEARCH TAB ─────────────────────────────────────────────────────── */
-  .search-result-row{
-    background:var(--surface);border:1px solid var(--border);
-    border-radius:var(--r-md);padding:var(--sp-3) var(--sp-4);
-    margin-bottom:6px;display:flex;gap:var(--sp-3);align-items:flex-start;
-    transition:box-shadow var(--t-fast),border-color var(--t-fast);
-  }
-  .search-result-row:hover{
-    box-shadow:var(--shadow-sm);border-color:rgba(44,123,203,0.2);
-  }
-  .search-result-title{ font-size:13px;font-weight:600;color:var(--text); }
-  .search-result-meta{ font-size:11.5px;color:var(--text-2);margin-top:2px;display:flex;gap:var(--sp-2);flex-wrap:wrap; }
-
-  /* ── ROSTER PROGRESS ────────────────────────────────────────────────── */
-  .progress-grid{
-    display:grid;grid-template-columns:repeat(auto-fill,minmax(156px,1fr));
-    gap:5px;margin-top:var(--sp-3);
-  }
-  .progress-item{
-    display:flex;align-items:center;gap:6px;padding:5px var(--sp-2);
-    border-radius:var(--r-sm);font-size:12px;
-    background:var(--surface);border:1px solid var(--border);
-    transition:box-shadow var(--t-fast);
-  }
-  .progress-item:hover{ box-shadow:var(--shadow-sm); }
-  .progress-item.done{ border-color:var(--green-border);background:var(--green-bg); }
-  .progress-item.partial{ border-color:var(--amber-border);background:var(--amber-bg); }
-  .progress-item.empty-leg{ opacity:0.60; }
-  .progress-dot{ width:7px;height:7px;border-radius:50%;flex-shrink:0; }
-  .progress-dot.done{ background:var(--green); }
-  .progress-dot.partial{ background:var(--amber); }
-  .progress-dot.empty-leg{ background:var(--text-3); }
-
-  /* ── AUDIT TAB ──────────────────────────────────────────────────────── */
-  .audit-row{
-    background:var(--surface);border:1px solid var(--border);
-    border-radius:var(--r-md);padding:var(--sp-3) var(--sp-4);
-    margin-bottom:5px;display:grid;
-    grid-template-columns:1fr auto;gap:var(--sp-3);align-items:start;
-    transition:box-shadow var(--t-fast),border-color var(--t-fast);
-  }
-  .audit-row:hover{ box-shadow:var(--shadow-sm); }
-  .audit-row.unclassified{ border-left:3px solid var(--amber); }
-  .audit-title{ font-size:13px;font-weight:600;color:var(--text);margin:0 0 3px; }
-  .audit-meta{
-    font-size:11.5px;color:var(--text-2);
-    display:flex;gap:var(--sp-2);flex-wrap:wrap;align-items:center;
-  }
-  .audit-edit-btn{
-    background:var(--blue-50);border:1px solid var(--blue-100);color:var(--blue-600);
-    border-radius:var(--r-sm);font-size:11.5px;font-weight:600;
-    padding:4px var(--sp-3);cursor:pointer;white-space:nowrap;font-family:var(--font);
-    transition:background var(--t-fast);
-  }
-  .audit-edit-btn:hover{ background:var(--blue-100); }
-  .audit-inline-form{
-    grid-column:1/-1;background:var(--surface-2);border:1px solid var(--border);
-    border-radius:var(--r-md);padding:var(--sp-3);
-    margin-top:6px;display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-2);
-  }
-  .audit-inline-form .fg{ margin-bottom:0; }
-  .audit-inline-form label{
-    font-size:9.5px;font-weight:700;color:var(--text-3);
-    text-transform:uppercase;letter-spacing:0.07em;display:block;margin-bottom:4px;
-  }
-  .audit-inline-form input,.audit-inline-form select{ height:32px;font-size:12.5px; }
-  .audit-form-actions{
-    grid-column:1/-1;display:flex;gap:var(--sp-2);
-    margin-top:4px;align-items:center;
-  }
-  .audit-save-btn{
-    height:32px;padding:0 var(--sp-4);background:var(--blue-600);color:white;
-    border:none;border-radius:var(--r-sm);font-size:12.5px;font-weight:600;
-    cursor:pointer;font-family:var(--font);transition:background var(--t-fast);
-  }
-  .audit-save-btn:hover{ background:var(--blue-700); }
-  .audit-cancel-btn{
-    height:32px;padding:0 var(--sp-3);background:var(--surface);color:var(--text-2);
-    border:1px solid var(--border-strong);border-radius:var(--r-sm);
-    font-size:12.5px;cursor:pointer;font-family:var(--font);transition:background var(--t-fast);
-  }
-  .audit-cancel-btn:hover{ background:var(--surface-2); }
-  .audit-delete-btn{
-    height:32px;padding:0 var(--sp-3);background:none;color:var(--red);
-    border:1px solid rgba(166,26,19,0.25);border-radius:var(--r-sm);
-    font-size:12.5px;cursor:pointer;font-family:var(--font);
-    margin-left:auto;transition:background var(--t-fast);
-  }
-  .audit-delete-btn:hover{ background:var(--red-bg); }
-  .audit-leg-header{
-    font-size:10px;font-weight:700;color:var(--text-3);
-    text-transform:uppercase;letter-spacing:0.08em;
-    padding:var(--sp-3) 0 6px;
-    border-top:1px solid var(--border);margin-top:6px;
-  }
-  .audit-leg-header:first-child{ border-top:none;margin-top:0; }
-
-  /* ── PENDING BILLS (session end) ────────────────────────────────────── */
-  .pending-row{
-    background:var(--surface);border:1px solid var(--border);
-    border-radius:var(--r-sm);padding:var(--sp-2) var(--sp-3);
-    display:flex;align-items:center;gap:var(--sp-2);font-size:12.5px;
-  }
-  .pending-row-title{
-    flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;
-    white-space:nowrap;color:var(--text);
-  }
-  .pending-row-who{ font-size:11px;color:var(--text-3);flex-shrink:0; }
-  .pending-row select{ height:28px;font-size:11.5px;flex:0 0 120px; }
-
-  /* ── COALITION TAB ──────────────────────────────────────────────────── */
-  .coalition-card{
-    background:var(--surface);border:1px solid var(--border);
-    border-radius:var(--r-lg);padding:var(--sp-4) var(--sp-5);
-    box-shadow:var(--shadow-sm);margin-bottom:var(--sp-2);
-    transition:box-shadow var(--t-mid),border-color var(--t-fast);
-  }
-  .coalition-card:hover{ box-shadow:var(--shadow-md); border-color:rgba(44,123,203,0.2); }
-  .coalition-header{ display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--sp-3); }
-  .coalition-title{ font-size:14px;font-weight:700;color:var(--text); }
-  .coalition-strength{ font-size:12px;font-weight:700;padding:3px var(--sp-3);border-radius:var(--r-full); }
-  .coalition-strength.strong{ background:var(--green-bg);color:var(--green); }
-  .coalition-strength.moderate{ background:var(--amber-bg);color:var(--amber); }
-  .coalition-strength.weak{ background:var(--surface-3);color:var(--text-3); }
-  .coalition-insight{
-    background:linear-gradient(140deg,var(--navy),var(--blue-700));
-    color:white;border-radius:var(--r-lg);
-    padding:var(--sp-4) var(--sp-5);margin-bottom:var(--sp-4);
-    box-shadow:var(--shadow-lg);
-  }
-  .coalition-insight h3{
-    font-size:9.5px;font-weight:700;text-transform:uppercase;
-    letter-spacing:0.09em;margin:0 0 var(--sp-3);opacity:0.55;
-  }
-  .coalition-insight-row{
-    display:flex;justify-content:space-between;align-items:center;
-    padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.08);font-size:13px;
-  }
-  .coalition-insight-row:last-child{ border-bottom:none; }
-  .coalition-bills{ font-size:11.5px;color:var(--text-2); }
-
-  /* ── PRINT / REPORT ─────────────────────────────────────────────────── */
-  @media print{
-    *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
-    .topnav,.fab-row,.overlay,.legend,footer,.header-actions,.sidebar,
-    .main-tabs,.filter-card .legend,.notes-row,details,
-    .btn-outline,.audit-edit-btn{ display:none !important; }
-    .app-shell{ display:block; }
-    .main{ padding:0; }
-    body{ background:white;font-size:11pt; }
-    .filter-card{ box-shadow:none;border:1px solid #ddd;page-break-inside:avoid; }
-    .card{ box-shadow:none;border:1px solid #ddd;page-break-inside:avoid;margin-bottom:8pt; }
-    .card:hover{ box-shadow:none; }
-    .card::before{ display:none; }
-    .print-header{
-      display:flex !important;justify-content:space-between;align-items:center;
-      padding-bottom:12pt;margin-bottom:16pt;border-bottom:2pt solid #0B2A4A;
-    }
-    .print-header img{ height:40pt; }
-    .print-header .print-meta{ text-align:right;font-size:9pt;color:#4A5F7A; }
-    @page{ margin:0.75in; }
-  }
-  .print-header{ display:none; }
-
-  /* ── TOAST & KEYBOARD SHORTCUTS ─────────────────────────────────────── */
-  .shortcut-toast{
-    position:fixed;bottom:76px;left:50%;transform:translateX(-50%);
-    background:rgba(11,42,74,0.92);
-    backdrop-filter:blur(8px);
-    color:white;padding:7px 18px;
-    border-radius:var(--r-full);
-    font-size:12.5px;font-weight:500;z-index:100;opacity:0;
-    transition:opacity 200ms var(--ease),transform 200ms var(--ease);
-    pointer-events:none;white-space:nowrap;
-    box-shadow:var(--shadow-lg);
-  }
-  .shortcut-toast.show{ opacity:1; transform:translateX(-50%) translateY(-2px); }
-
-  /* ── LOADING SCREEN ─────────────────────────────────────────────────────
-     Shown only on the very first load. Pure CSS — zero JS weight.
-     Fades out after 2s, revealing the app beneath.
-  ──────────────────────────────────────────────────────────────────────── */
-  #loading-screen {
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    background: #0B2A4A;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 0;
-    animation: loadingFadeOut 0.6s ease-out 2.2s forwards;
-    pointer-events: none;
-  }
-  @keyframes loadingFadeOut {
-    from { opacity: 1; visibility: visible; }
-    to   { opacity: 0; visibility: hidden; }
-  }
-  .loading-logo {
-    width: 120px;
-    height: auto;
-    object-fit: contain;
-    opacity: 0;
-    transform: translateY(8px);
-    animation: loadingLogoIn 0.7s cubic-bezier(0.16,1,0.3,1) 0.25s forwards;
-    filter: drop-shadow(0 8px 24px rgba(0,0,0,0.35));
-  }
-  @keyframes loadingLogoIn {
-    to { opacity: 1; transform: none; }
-  }
-  .loading-logo-fallback {
-    width: 80px; height: 80px;
-    border-radius: 16px;
-    background: linear-gradient(140deg, #2C7BCB, #0B2A4A);
-    border: 2px solid rgba(255,255,255,0.15);
-    opacity: 0;
-    animation: loadingLogoIn 0.7s cubic-bezier(0.16,1,0.3,1) 0.25s forwards;
-  }
-  .loading-divider {
-    width: 1px;
-    height: 32px;
-    background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.20), transparent);
-    margin: 20px 0 18px;
-    opacity: 0;
-    animation: loadingLogoIn 0.5s ease 0.7s forwards;
-  }
-  .loading-title {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.75);
-    opacity: 0;
-    animation: loadingLogoIn 0.5s ease 0.85s forwards;
-    margin-bottom: 8px;
-  }
-  .loading-subtitle {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-    font-size: 11px;
-    font-weight: 400;
-    color: rgba(255,255,255,0.32);
-    letter-spacing: 0.06em;
-    opacity: 0;
-    animation: loadingLogoIn 0.5s ease 1.1s forwards;
-  }
-  .loading-bar-track {
-    width: 120px;
-    height: 2px;
-    background: rgba(255,255,255,0.08);
-    border-radius: 1px;
-    margin-top: 28px;
-    overflow: hidden;
-    opacity: 0;
-    animation: loadingLogoIn 0.4s ease 1.0s forwards;
-  }
-  .loading-bar-fill {
-    height: 100%;
-    width: 0%;
-    background: linear-gradient(90deg, #2C7BCB, #5DA3E8);
-    border-radius: 1px;
-    animation: loadingBarFill 1.0s cubic-bezier(0.4,0,0.2,1) 1.2s forwards;
-  }
-  @keyframes loadingBarFill {
-    from { width: 0%; }
-    to   { width: 100%; }
-  }
-  footer{
-    margin-top:3rem;font-size:11px;color:var(--text-3);text-align:center;
-  }
-  footer code{
-    background:var(--surface-2);padding:1px 5px;border-radius:4px;font-size:10.5px;
-  }
-
-  /* ── LOADING SCREEN ─────────────────────────────────────────────────────
-     Shown only on the very first load. Pure CSS — zero JS weight.
-     Fades out after 2s, revealing the app beneath.
-  ──────────────────────────────────────────────────────────────────────── */
-  #loading-screen {
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    background: #0B2A4A;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    animation: loadingFadeOut 0.6s ease-out 2.2s forwards;
-    pointer-events: none;
-  }
-  @keyframes loadingFadeOut {
-    from { opacity: 1; visibility: visible; }
-    to   { opacity: 0; visibility: hidden; }
-  }
-  .loading-logo {
-    width: 120px;
-    height: auto;
-    object-fit: contain;
-    opacity: 0;
-    transform: translateY(8px);
-    animation: loadingLogoIn 0.7s cubic-bezier(0.16,1,0.3,1) 0.25s forwards;
-    filter: drop-shadow(0 8px 24px rgba(0,0,0,0.35));
-  }
-  @keyframes loadingLogoIn {
-    to { opacity: 1; transform: none; }
-  }
-  .loading-logo-fallback {
-    width: 80px; height: 80px;
-    border-radius: 16px;
-    background: linear-gradient(140deg, #2C7BCB, #0B2A4A);
-    border: 2px solid rgba(255,255,255,0.15);
-    opacity: 0;
-    animation: loadingLogoIn 0.7s cubic-bezier(0.16,1,0.3,1) 0.25s forwards;
-  }
-  .loading-divider {
-    width: 1px;
-    height: 28px;
-    background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.18), transparent);
-    margin: 18px 0 16px;
-    opacity: 0;
-    animation: loadingLogoIn 0.5s ease 0.7s forwards;
-  }
-  .loading-title {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-    font-size: 11.5px;
-    font-weight: 600;
-    letter-spacing: 0.20em;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.70);
-    opacity: 0;
-    animation: loadingLogoIn 0.5s ease 0.85s forwards;
-    margin-bottom: 7px;
-  }
-  .loading-subtitle {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-    font-size: 10.5px;
-    font-weight: 400;
-    color: rgba(255,255,255,0.28);
-    letter-spacing: 0.05em;
-    opacity: 0;
-    animation: loadingLogoIn 0.5s ease 1.1s forwards;
-  }
-  .loading-bar-track {
-    width: 110px;
-    height: 2px;
-    background: rgba(255,255,255,0.07);
-    border-radius: 1px;
-    margin-top: 26px;
-    overflow: hidden;
-    opacity: 0;
-    animation: loadingLogoIn 0.4s ease 1.0s forwards;
-  }
-  .loading-bar-fill {
-    height: 100%;
-    width: 0%;
-    background: linear-gradient(90deg, #2C7BCB, #5DA3E8);
-    border-radius: 1px;
-    animation: loadingBarFill 1.0s cubic-bezier(0.4,0,0.2,1) 1.2s forwards;
-  }
-  @keyframes loadingBarFill {
-    from { width: 0%; }
-    to   { width: 100%; }
-  }
+  @media (max-width:720px){
+    .card{grid-template-columns:1fr;gap:16px}
+    nav button{padding:8px 10px}
+  }
+  @media (prefers-reduced-motion:reduce){.fill,.drawer,.scrim,.tile{transition:none}}
 </style>
 </head>
 <body>
-
-<!-- ═══════════════════════════════════════════════════════════════════════════
-     LOADING SCREEN — pure CSS, no JS required.
-     Logo fades in at 250ms → title at 850ms → progress bar fills 1.2–2.2s
-     → entire screen fades to transparent at 2.2s, revealing the app.
-═══════════════════════════════════════════════════════════════════════════ -->
-<div id="loading-screen" aria-hidden="true">
-  <img src="logo.png" alt="Pinnacle Strategies LLC" class="loading-logo"
-    onerror="this.classList.add('loading-logo-fallback'); this.removeAttribute('src');" />
-  <div class="loading-divider"></div>
-  <div class="loading-title">Legislator Database</div>
-  <div class="loading-subtitle">Built by Paul Hazlehurst</div>
-  <div class="loading-bar-track">
-    <div class="loading-bar-fill"></div>
+<header>
+  <div class="bar">
+    <div class="brand">Pinnacle <span>Bill Intelligence</span></div>
+    <nav>
+      <button data-tab="finder" class="active">Champion Finder</button>
+      <button data-tab="search">Search</button>
+      <button data-tab="coalitions">Coalitions</button>
+    </nav>
   </div>
-</div>
+</header>
 
-<!-- TOP NAV -->
-<div class="topnav">
-  <div class="topnav-left">
-    <img src="logo.png" alt="Pinnacle Strategies LLC" class="brand-mark"
-      onerror="this.outerHTML='<div class=&quot;brand-mark brand-mark-fallback&quot;></div>'" />
-    <div class="topnav-divider"></div>
-    <span style="font-size:12.5px;font-weight:600;color:var(--text-2);letter-spacing:-0.01em;">Bill Intelligence</span>
-  </div>
-  <div class="topnav-right">
-    <span class="topnav-label">You are</span>
-    <input type="text" id="user-name" placeholder="Your name" autocomplete="name" />
-    <span class="kbd-hint" id="open-help" title="How to use Bill Matcher">⌨ ?</span>
-    <button id="theme-toggle" title="Toggle dark mode">🌙</button>
-    <span class="built-by" style="color:var(--text-3);font-size:11px;">Pinnacle Strategies</span>
-  </div>
-</div>
-
-<div class="app-shell">
-
-  <!-- SIDEBAR -->
-  <div class="sidebar">
-    <div class="sidebar-header">Legislators</div>
-    <div class="sidebar-search">
-      <input type="text" id="sidebar-search" placeholder="Search…" autocomplete="off" />
-    </div>
-    <div class="sidebar-list" id="sidebar-list"></div>
-    <div id="sidebar-seating" style="border-top:1px solid rgba(255,255,255,0.07);padding:10px 14px 6px;flex-shrink:0;"></div>
-    <div class="sidebar-count" id="sidebar-count"></div>
-  </div>
-
-  <!-- MAIN -->
-  <div class="main">
-    <div class="page-header">
-      <div>
-        <h1>Bill Matcher</h1>
-        <p>Find the right champion for your bill — ranked by legislative track record and passage rate.</p>
-      </div>
-      <div class="header-actions">
-        <button class="btn-outline" id="copy-btn">📋 Copy results</button>
-        <button class="btn-outline" id="export-btn">⬇ Export</button>
-        <button class="btn-outline" id="print-btn">🖨 Print report</button>
-      </div>
+<main>
+  <section id="view-finder">
+    <div id="finder-landing">
+      <div class="lead">Find a champion for your bill</div>
+      <p class="sub">Pick a policy area to see which Maryland legislators are most likely to carry a bill on it, and which have the standing to pass it.</p>
+      <div class="tiles" id="tiles"><div class="note">Loading policy areas…</div></div>
     </div>
 
-    <!-- MAIN TABS -->
-    <div class="main-tabs">
-      <button class="main-tab active" data-tab="matcher">Matcher</button>
-      <button class="main-tab" data-tab="propose">Propose a Bill</button>
-      <button class="main-tab" data-tab="search">Search</button>
-      <button class="main-tab" data-tab="stats">Statistics</button>
-      <button class="main-tab" data-tab="coalition">Coalitions</button>
-      <button class="main-tab" data-tab="sponsors">Sponsors</button>
-      <button class="main-tab" data-tab="audit">Audit</button>
-      <button class="main-tab" data-tab="feed">Team Feed</button>
-    </div>
-
-    <!-- MATCHER TAB -->
-    <div class="tab-pane active" id="tab-matcher">
-      <div class="filter-card">
-        <div class="controls">
-          <div class="field">
-            <label>State</label>
-            <select id="state"></select>
-          </div>
-          <div class="field">
-            <label>Issue area</label>
-            <div class="search-select" id="ss-issue">
-              <button type="button" class="search-select-trigger" id="ss-issue-trigger">Select a topic…</button>
-              <div class="search-select-dropdown" id="ss-issue-dropdown">
-                <div class="search-select-search"><input type="text" placeholder="Search topics…" /></div>
-                <div class="search-select-options" id="ss-issue-options"></div>
-              </div>
-            </div>
-          </div>
-          <div class="field">
-            <label>Subtopic</label>
-            <div class="search-select" id="ss-subissue">
-              <button type="button" class="search-select-trigger" id="ss-subissue-trigger">All subtopics</button>
-              <div class="search-select-dropdown" id="ss-subissue-dropdown">
-                <div class="search-select-search"><input type="text" placeholder="Search subtopics…" /></div>
-                <div class="search-select-options" id="ss-subissue-options"></div>
-              </div>
-            </div>
-          </div>
-          <div class="field">
-            <label>Party</label>
-            <select id="party">
-              <option value="any">Any party</option>
-              <option value="D">Democrat</option>
-              <option value="R">Republican</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>Chamber</label>
-            <select id="chamber">
-              <option value="any">Both chambers</option>
-              <option value="senate">Senate</option>
-              <option value="house">House / Delegates</option>
-            </select>
-          </div>
-        </div>
-        <div class="legend">
-          <span class="legend-label">Interest score</span>
-          <span class="legend-item"><span class="legend-dot high"></span>81–100 Strong</span>
-          <span class="legend-item"><span class="legend-dot mid"></span>51–80 Moderate</span>
-          <span class="legend-item"><span class="legend-dot low"></span>0–50 Low</span>
-        </div>
+    <div id="finder-results" class="hide">
+      <div class="rhead">
+        <button class="back" id="back">← All policy areas</button>
+        <h2 class="rtitle" id="rtitle"></h2>
       </div>
-      <div class="results-meta" id="results-meta"></div>
-      <div class="results" id="results"><p class="empty">Loading…</p></div>
-    </div>
-
-    <!-- PROPOSE A BILL TAB -->
-    <div class="tab-pane" id="tab-propose">
-      <div class="propose-hero">
-        <h2>Find champions for your bill</h2>
-        <p>Describe the bill you want to propose. We'll identify the most likely legislative champions based on their track record.</p>
-        <div class="propose-input-row">
-          <textarea id="propose-text" placeholder="Describe your bill in plain English — e.g. 'A bill to expand apprenticeship programs for unemployed veterans in manufacturing'" rows="3"></textarea>
-          <button class="btn" id="propose-btn" style="margin-top:8px;height:42px;">Find Champions</button>
-        </div>
-        <div class="status-msg" id="propose-status"></div>
+      <div class="legend">
+        <span><i style="background:var(--willing)"></i><b>Willingness</b> — carries bills here</span>
+        <span><i style="background:var(--effect)"></i><b>Effectiveness</b> — power &amp; record to pass them</span>
       </div>
-      <div id="propose-context" style="display:none;" class="propose-context-card">
-        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
-          <div>
-            <div id="propose-topic-label" style="font-size:13px;font-weight:700;color:var(--blue-900);"></div>
-            <div id="propose-reasoning" style="font-size:12px;color:var(--text-2);margin-top:2px;font-style:italic;"></div>
-          </div>
-          <div style="display:flex;gap:6px;">
-            <select id="propose-party" style="height:30px;font-size:12.5px;">
-              <option value="any">Any party</option>
-              <option value="D">Democrats only</option>
-              <option value="R">Republicans only</option>
-            </select>
-            <select id="propose-chamber" style="height:30px;font-size:12.5px;">
-              <option value="any">Both chambers</option>
-              <option value="senate">Senate only</option>
-              <option value="house">House only</option>
-            </select>
-          </div>
-        </div>
-      </div>
-      <div id="propose-results"></div>
-    </div>
-
-    <!-- SEARCH BILLS TAB -->
-    <div class="tab-pane" id="tab-search">
-      <div style="margin-bottom:1rem;">
-        <h2 style="font-size:18px;font-weight:700;color:var(--blue-900);margin:0 0 4px;">Search All Bills</h2>
-        <p style="font-size:13px;color:var(--text-2);margin:0 0 12px;">Search across every bill in the system by keyword, legislator, topic, or outcome.</p>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;">
-          <div style="flex:1;min-width:200px;">
-            <input type="text" id="search-query" placeholder="Search bill titles…" style="height:36px;" />
-          </div>
-          <select id="search-topic" style="height:36px;font-size:13px;flex:0 0 160px;">
-            <option value="">All topics</option>
-          </select>
-          <select id="search-outcome" style="height:36px;font-size:13px;flex:0 0 140px;">
-            <option value="">Any outcome</option>
-            <option value="passed">Passed</option>
-            <option value="failed">Did not pass</option>
-          </select>
-          <select id="search-party" style="height:36px;font-size:13px;flex:0 0 130px;">
-            <option value="">Any party</option>
-            <option value="D">Democrat</option>
-            <option value="R">Republican</option>
-          </select>
-        </div>
-      </div>
-      <div class="results-meta" id="search-meta"></div>
-      <div id="search-results"><p class="empty">Type to search…</p></div>
-    </div>
-
-    <!-- STATS TAB -->
-    <div class="tab-pane" id="tab-stats">
-      <div id="stats-content"><p class="empty">Loading stats…</p></div>
-    </div>
-
-    <!-- SPONSORS TAB -->
-    <div class="tab-pane" id="tab-sponsors">
-      <div class="sponsors-header">
-        <div>
-          <h2 style="font-size:18px;font-weight:700;color:var(--blue-900);margin:0 0 4px;">Our Sponsors</h2>
-          <p style="font-size:13px;color:var(--text-2);margin:0;">Legislators we've built relationships with. Starred legislators receive a bonus to their interest score throughout the app.</p>
-        </div>
-        <button class="btn-outline" id="open-add-sponsor">+ Add sponsor</button>
-      </div>
-      <div id="sponsors-list" style="margin-top:1rem;display:flex;flex-direction:column;gap:10px;">
-        <p class="empty">No sponsors added yet.</p>
-      </div>
-    </div>
-
-    <!-- COALITION TAB -->
-    <div class="tab-pane" id="tab-coalition">
-      <div style="margin-bottom:1rem;">
-        <h2 style="font-size:18px;font-weight:700;color:var(--blue-900);margin:0 0 4px;">Coalition Intelligence</h2>
-        <p style="font-size:13px;color:var(--text-2);margin:0 0 12px;">Who moves together in the legislature. Co-sponsorship clusters reveal natural allies — land one and you may get the others.</p>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;">
-          <div style="flex:1;min-width:180px;">
-            <label style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:4px;">View coalitions around</label>
-            <select id="coalition-leg-sel" style="height:36px;font-size:13px;"></select>
-          </div>
-          <div style="flex:0 0 160px;">
-            <label style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:4px;">Topic filter</label>
-            <select id="coalition-topic-sel" style="height:36px;font-size:13px;">
-              <option value="">All topics</option>
-            </select>
-          </div>
-        </div>
-      </div>
-      <div id="coalition-content"><p class="empty">Select a legislator to see their coalition.</p></div>
-    </div>
-
-    <!-- AUDIT TAB -->
-    <div class="tab-pane" id="tab-audit">
-      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:1rem;">
-        <div>
-          <h2 style="font-size:18px;font-weight:700;color:var(--text);margin:0 0 3px;letter-spacing:-0.01em;">Bill Audit</h2>
-          <p style="font-size:13px;color:var(--text-2);margin:0;">Review and correct individual bills, or run a bulk AI re-audit to fix classification errors across the whole database.</p>
-        </div>
-        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-          <select id="audit-filter-leg" style="height:34px;font-size:12.5px;max-width:200px;"></select>
-          <select id="audit-filter-topic" style="height:34px;font-size:12.5px;max-width:160px;">
-            <option value="">All topics</option>
-          </select>
-          <label style="display:flex;align-items:center;gap:5px;font-size:12.5px;color:var(--text-2);white-space:nowrap;">
-            <input type="checkbox" id="audit-filter-unclassified" /> Unclassified
-          </label>
-          <button class="btn-outline" id="open-bulk-audit" style="color:var(--blue-600);border-color:var(--blue-400);">🤖 Bulk Re-Audit</button>
-          <button class="btn-outline" id="open-session-end" style="color:var(--amber);border-color:var(--amber);">🏁 Session End</button>
-        </div>
-      </div>
-      <!-- Topic guidance editor -->
-      <div id="audit-guidance-section" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1rem 1.2rem;margin-bottom:1rem;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-          <h3 style="font-size:13.5px;font-weight:700;color:var(--blue-900);margin:0;">Topic Classification Guidance</h3>
-          <button class="btn-outline" id="close-guidance" style="font-size:11px;height:26px;padding:0 10px;">Close</button>
-        </div>
-        <p style="font-size:12px;color:var(--text-2);margin:0 0 10px;">Edit what each topic includes and excludes to improve AI classification accuracy for future imports.</p>
-        <div class="form-group">
-          <label>Topic</label>
-          <select id="guidance-topic-sel" style="height:34px;"></select>
-        </div>
-        <div class="form-group">
-          <label>This topic includes</label>
-          <textarea id="guidance-includes" style="min-height:60px;font-size:12.5px;" placeholder="e.g. job training, apprenticeships, employer hiring incentives…"></textarea>
-        </div>
-        <div class="form-group">
-          <label>This topic does NOT include</label>
-          <textarea id="guidance-excludes" style="min-height:60px;font-size:12.5px;" placeholder="e.g. veterans benefits, disability accommodations…"></textarea>
-        </div>
-        <div class="status-msg" id="guidance-status"></div>
-        <button class="btn" id="save-guidance-btn" style="height:36px;margin-top:8px;">Save guidance to GitHub</button>
-      </div>
-      <div style="display:flex;justify-content:flex-end;margin-bottom:8px;">
-        <button class="btn-outline" id="open-guidance" style="font-size:11.5px;">⚙ Edit topic guidance</button>
-      </div>
-      <div id="audit-content"><p class="empty">Loading…</p></div>
-    </div>
-
-    <!-- TEAM FEED TAB -->
-    <div class="tab-pane" id="tab-feed">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:10px;">
-        <div>
-          <h2 style="font-size:18px;font-weight:700;color:var(--blue-900);margin:0 0 3px;">Team Activity Feed</h2>
-          <p style="font-size:13px;color:var(--text-2);margin:0;">A log of everything added, edited, or changed by the team.</p>
-        </div>
-        <button class="btn-outline" id="refresh-feed-btn">↻ Refresh</button>
-      </div>
-      <div id="feed-content"><p class="empty">Loading activity…</p></div>
-    </div>
-
-    <footer>
-      Pinnacle Strategies LLC — Bill Intelligence Platform &middot;
-      Data in <code>data.json</code> on GitHub &middot;
-      Press <code>?</code> for help &middot;
-      Built by <strong>Paul Hazlehurst</strong>
-    </footer>
-  </div>
-</div>
-
-<!-- HELP PANEL -->
-<div class="overlay" id="help-overlay">
-  <div class="panel" style="max-width:640px;">
-    <div class="panel-header">
-      <h2>How to use Bill Matcher</h2>
-      <button class="panel-close" id="close-help">✕</button>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:18px;font-size:13.5px;line-height:1.6;color:var(--text-2);">
-      <div>
-        <p style="font-weight:700;color:var(--text);margin:0 0 4px;font-size:14px;">🎯 The Interest Score</p>
-        <p style="margin:0;">Scores run 0–100 and reflect how likely a legislator is to champion your bill, based on their track record. Scores are built from three signals: <strong>volume</strong> (how many bills they've sponsored on this topic), <strong>passage rate</strong> (how often those bills pass into law), and <strong>recency</strong> (recent bills count more than old ones). A <span style="color:var(--green);font-weight:600;">green score</span> (81–100) means strong track record with high passage. <span style="color:var(--amber);font-weight:600;">Amber</span> (51–80) means solid but not dominant. <span style="color:var(--red);font-weight:600;">Red</span> (0–50) means limited history on this topic. Hover over the score ring to see the exact breakdown.</p>
-      </div>
-      <div>
-        <p style="font-weight:700;color:var(--text);margin:0 0 4px;font-size:14px;">⬇ Importing legislators</p>
-        <p style="margin:0;">Click the <strong>Import</strong> button (bottom right) to pull bills directly from LegiScan. Search by name, pick the right legislator, review their 2026 bills in the classification panel, and save. Bills marked "🤝 Both AIs agree" are high-confidence. Bills marked "⚠ Low confidence" should be reviewed before saving. Unclassified bills won't affect scores — assign them a topic or skip them.</p>
-      </div>
-      <div>
-        <p style="font-weight:700;color:var(--text);margin:0 0 4px;font-size:14px;">💡 Propose a Bill</p>
-        <p style="margin:0;">Describe a bill in plain English and hit "Find Champions." The AI classifies your description against the topic taxonomy and shows you ranked legislators based on their track record on that topic. Use the party and chamber filters to narrow results.</p>
-      </div>
-      <div>
-        <p style="font-weight:700;color:var(--text);margin:0 0 4px;font-size:14px;">🔗 Coalitions</p>
-        <p style="margin:0;">Select a legislator to see who consistently works alongside them — useful for understanding who you'd likely bring along if you land your primary target. "Crossfiled bills" shows companion legislation introduced in both chambers simultaneously, a sign of coordinated legislative strategy.</p>
-      </div>
-      <div>
-        <p style="font-weight:700;color:var(--text);margin:0 0 4px;font-size:14px;">✏️ Audit &amp; accuracy</p>
-        <p style="margin:0;">Use the Audit tab to fix any misclassifications. The <strong>Bulk Re-Audit</strong> button reclassifies every bill in the database using the latest Claude + Gemini dual-classifier and your current topic guidance — run it after updating guidance or importing many legislators at once.</p>
-      </div>
-      <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-md);padding:12px 16px;">
-        <p style="font-weight:700;color:var(--text);margin:0 0 6px;font-size:13px;">⌨ Keyboard shortcuts</p>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px 20px;font-size:12.5px;">
-          <span><kbd style="background:var(--surface-3);border:1px solid var(--border-strong);border-radius:4px;padding:1px 6px;font-size:11px;">M</kbd> Matcher</span>
-          <span><kbd style="background:var(--surface-3);border:1px solid var(--border-strong);border-radius:4px;padding:1px 6px;font-size:11px;">B</kbd> Propose a Bill</span>
-          <span><kbd style="background:var(--surface-3);border:1px solid var(--border-strong);border-radius:4px;padding:1px 6px;font-size:11px;">/</kbd> Search Bills</span>
-          <span><kbd style="background:var(--surface-3);border:1px solid var(--border-strong);border-radius:4px;padding:1px 6px;font-size:11px;">S</kbd> Statistics</span>
-          <span><kbd style="background:var(--surface-3);border:1px solid var(--border-strong);border-radius:4px;padding:1px 6px;font-size:11px;">E</kbd> Audit tab</span>
-          <span><kbd style="background:var(--surface-3);border:1px solid var(--border-strong);border-radius:4px;padding:1px 6px;font-size:11px;">F</kbd> Team Feed</span>
-          <span><kbd style="background:var(--surface-3);border:1px solid var(--border-strong);border-radius:4px;padding:1px 6px;font-size:11px;">A</kbd> Add bill</span>
-          <span><kbd style="background:var(--surface-3);border:1px solid var(--border-strong);border-radius:4px;padding:1px 6px;font-size:11px;">I</kbd> Import</span>
-          <span><kbd style="background:var(--surface-3);border:1px solid var(--border-strong);border-radius:4px;padding:1px 6px;font-size:11px;">P</kbd> Print report</span>
-          <span><kbd style="background:var(--surface-3);border:1px solid var(--border-strong);border-radius:4px;padding:1px 6px;font-size:11px;">Esc</kbd> Close panel</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- PRINT HEADER (visible only when printing) -->
-<div class="print-header">
-  <img src="logo.png" alt="Pinnacle Strategies LLC" />
-  <div class="print-meta">
-    <div style="font-weight:700;font-size:11pt;color:#0B2A4A;">Legislator Target Report</div>
-    <div id="print-date"></div>
-    <div id="print-filters"></div>
-  </div>
-</div>
-
-<!-- KEYBOARD SHORTCUT TOAST -->
-<div class="shortcut-toast" id="shortcut-toast"></div>
-
-<!-- FAB ROW -->
-<div class="fab-row">
-  <button class="fab-ghost" id="open-delete">🗑 Delete</button>
-  <button class="fab-ghost" id="open-import">⬇ Import</button>
-  <button class="fab" id="open-add" title="Add bill">+</button>
-</div>
-
-<!-- ADD PANEL -->
-<div class="overlay" id="add-overlay">
-  <div class="panel">
-    <div class="panel-header">
-      <h2>Add a bill</h2>
-      <button class="panel-close" id="close-add">✕</button>
-    </div>
-    <div class="ai-box">
-      <label>AI auto-fill (optional)</label>
-      <div class="ai-row">
-        <input type="text" id="ai-title-input" placeholder="Paste a bill title or number…" />
-        <button class="btn" id="ai-fill-btn">Fill</button>
-      </div>
-      <div class="file-drop" id="file-drop">
-        Drop a bill PDF here, or click to choose a file
-        <input type="file" id="file-input" accept="application/pdf" style="display:none;" />
-      </div>
-      <div class="status-msg" id="ai-status"></div>
-    </div>
-    <form id="add-form">
-      <div class="form-group">
-        <label for="f-state">State</label>
-        <select id="f-state"></select>
-      </div>
-      <div class="form-group">
-        <label>Legislator</label>
-        <div class="radio-row">
-          <label><input type="radio" name="leg-mode" value="existing" checked /> Use existing</label>
-          <label><input type="radio" name="leg-mode" value="new" /> Create new</label>
-        </div>
-      </div>
-      <div class="form-group" id="existing-leg-group">
-        <input type="text" id="f-existing-leg-search" placeholder="Type to filter…" style="margin-bottom:7px;" />
-        <select id="f-existing-leg" style="display:none;"></select>
-        <div id="f-existing-leg-list" style="border:1px solid var(--border-strong);border-radius:var(--r-md);max-height:180px;overflow-y:auto;background:var(--surface-2);"></div>
-      </div>
-      <div id="new-leg-group" style="display:none;">
-        <div class="form-group">
-          <label for="f-leg-name">Name</label>
-          <input type="text" id="f-leg-name" placeholder="e.g. Del. A. Nkongolo" />
-        </div>
-        <div class="form-row">
-          <div><label for="f-leg-party">Party</label>
-            <select id="f-leg-party"><option value="D">Democrat</option><option value="R">Republican</option></select>
-          </div>
-          <div><label for="f-leg-chamber">Chamber</label>
-            <select id="f-leg-chamber"><option value="senate">Senate</option><option value="house">House / Delegates</option></select>
-          </div>
-        </div>
-        <div class="form-group"><label for="f-leg-district">District</label>
-          <input type="text" id="f-leg-district" placeholder="e.g. 13" />
-        </div>
-      </div>
-      <div class="sub-divider">Bill details</div>
-      <div class="form-group">
-        <label for="f-bill-title">Bill title</label>
-        <input type="text" id="f-bill-title" placeholder="e.g. Workforce Apprenticeship Expansion Act" />
-      </div>
-      <div class="form-row">
-        <div><label for="f-topic">Topic</label>
-          <select id="f-topic"></select>
-          <input type="text" id="f-topic-new" placeholder="New topic name" style="display:none;margin-top:6px;" />
-        </div>
-        <div><label for="f-subtopic">Subtopic</label>
-          <select id="f-subtopic"></select>
-          <input type="text" id="f-subtopic-new" placeholder="New subtopic name" style="display:none;margin-top:6px;" />
-        </div>
-      </div>
-      <div class="form-row" style="margin-top:13px;">
-        <div><label for="f-year">Year</label><input type="number" id="f-year" value="2026" /></div>
-        <div><label for="f-role">Role</label>
-          <select id="f-role"><option value="sponsor">Sponsor</option><option value="co-sponsor">Co-sponsor</option></select>
-        </div>
-      </div>
-      <div class="form-group" style="margin-top:13px;">
-        <label for="f-outcome">Outcome</label>
-        <select id="f-outcome">
-          <option value="passed">Passed</option>
-          <option value="failed">Did not pass</option>
+      <div class="refine">
+        <select id="f-sort">
+          <option value="combined">Rank: best overall</option>
+          <option value="willingness">Rank: most willing to carry</option>
+          <option value="effectiveness">Rank: most able to pass</option>
         </select>
+        <select id="f-party"><option value="">Any party</option><option value="D">Democrat</option><option value="R">Republican</option></select>
+        <select id="f-chamber"><option value="">Both chambers</option><option value="house">House</option><option value="senate">Senate</option></select>
+        <span class="rc" id="rcount"></span>
       </div>
-      <div class="status-msg" id="save-status"></div>
-      <button type="submit" class="btn" style="margin-top:10px;">Save to GitHub</button>
-    </form>
-  </div>
-</div>
+      <div id="results"></div>
+    </div>
+  </section>
 
-<!-- DELETE PANEL -->
-<div class="overlay" id="delete-overlay">
-  <div class="panel">
-    <div class="panel-header">
-      <h2>Delete a recent entry</h2>
-      <button class="panel-close" id="close-delete">✕</button>
-    </div>
-    <p style="font-size:13px;color:var(--text-2);margin-top:-4px;">Showing the 15 most recently added bills.</p>
-    <div class="delete-list" id="delete-list"></div>
-    <div class="status-msg" id="delete-status"></div>
-  </div>
-</div>
+  <section id="view-search" class="hide">
+    <div class="lead" style="font-size:26px;margin-bottom:14px">Search legislators</div>
+    <div class="finder-box"><input id="s-input" type="text" placeholder="Type a name — e.g. Kaufman, Clippinger…" autocomplete="off"></div>
+    <div class="rows" id="s-rows"></div>
+  </section>
 
-<!-- LEGISCAN IMPORT PANEL -->
-<div class="overlay" id="import-overlay">
-  <div class="panel wide">
-    <div class="panel-header">
-      <h2>Import from LegiScan</h2>
-      <button class="panel-close" id="close-import">✕</button>
-    </div>
-    <div id="import-roster-progress" style="display:flex;align-items:center;gap:10px;background:var(--blue-50);border:1px solid var(--blue-100);border-radius:var(--r-md);padding:8px 12px;margin-bottom:14px;font-size:12.5px;color:var(--blue-700);">
-      <span id="import-roster-text">0 legislators in system</span>
-      <span id="import-session-count" style="margin-left:auto;font-weight:600;"></span>
-    </div>
-    <div id="import-search-step">
-      <div class="form-group">
-        <label for="import-state">State</label>
-        <select id="import-state"></select>
+  <section id="view-coalitions" class="hide">
+    <div class="lead" style="font-size:26px;margin-bottom:6px">Coalitions</div>
+    <p class="sub">Find who actually works alongside a legislator — their most frequent real co-sponsors.</p>
+    <div class="finder-box"><input id="c-input" type="text" placeholder="Type a name to see their coalition…" autocomplete="off"></div>
+    <div class="rows" id="c-rows"></div>
+    <div id="c-allies"></div>
+  </section>
+</main>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <button class="x" id="x" aria-label="Close">×</button>
+  <div id="dbody"></div>
+</aside>
+
+<script>
+const SB_URL  = "https://pnqbhsckbcrfbksymyxh.supabase.co";
+const SB_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBucWJoc2NrYmNyZmJrc3lteXhoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgyOTM4NDQsImV4cCI6MjEwMzg2OTg0NH0.FDSVZDCwjuRc29Z3Rkcr0M_4gX9KMVK0hzHzC11ckH0";
+const db = window.supabase.createClient(SB_URL, SB_ANON);
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const clamp = n => Math.max(0, Math.min(100, Math.round(n||0)));
+const chamberName = c => c==='senate'?'Senate':'House';
+
+let SCORES = [], LEGIS = [], TOPICS = [], byLeg = {}, currentTopic = null;
+
+async function pageAll(table, sel){
+  const size=1000; let from=0, all=[];
+  for(;;){
+    const {data,error}=await db.from(table).select(sel).order(table==='legislators'?'name':'legislator_id').range(from,from+size-1);
+    if(error) throw new Error(error.message);
+    all.push(...data);
+    if(data.length<size) break;
+    from+=size;
+  }
+  return all;
+}
+
+async function boot(){
+  try{
+    [SCORES, LEGIS] = await Promise.all([
+      pageAll('legislator_topic_scores','*'),
+      pageAll('legislators','id,name,party,chamber,district'),
+    ]);
+  }catch(e){
+    $('tiles').innerHTML = `<div class="note"><b>Couldn't load data.</b><br>${esc(e.message)}</div>`;
+    return;
+  }
+  SCORES.forEach(s => (byLeg[s.legislator_id] ||= []).push(s));
+  const map = {};
+  SCORES.forEach(s => {
+    (map[s.topic_code] ||= {code:s.topic_code, label:s.topic_label, members:new Set()}).members.add(s.legislator_id);
+  });
+  TOPICS = Object.values(map).map(t=>({code:t.code,label:t.label,count:t.members.size}))
+                 .sort((a,b)=>a.label.localeCompare(b.label));
+  renderTiles();
+}
+
+function renderTiles(){
+  $('tiles').innerHTML = TOPICS.map(t=>`
+    <button class="tile" data-code="${esc(t.code)}">
+      <div class="tname">${esc(t.label)}</div>
+      <div class="tcount">${t.count} legislator${t.count===1?'':'s'} active</div>
+    </button>`).join('');
+  document.querySelectorAll('.tile').forEach(el=>el.addEventListener('click',()=>openTopic(el.dataset.code)));
+}
+
+function openTopic(code){
+  currentTopic = code;
+  const t = TOPICS.find(x=>x.code===code);
+  $('rtitle').textContent = t ? t.label : code;
+  $('finder-landing').classList.add('hide');
+  $('finder-results').classList.remove('hide');
+  window.scrollTo({top:0});
+  renderResults();
+}
+
+function powerBadges(x){
+  const b=[];
+  if(x.is_committee_chair) b.push('<span class="bdg pw">Committee chair</span>');
+  else if(x.is_committee_vice) b.push('<span class="bdg pw">Vice chair</span>');
+  if(x.is_leadership) b.push('<span class="bdg pw">Leadership</span>');
+  if(x.in_majority) b.push('<span class="bdg mj">Majority party</span>');
+  return b.join('');
+}
+function evidence(x){
+  const rate = x.decided_bills>=1 ? `passed ${x.passed_bills} of ${x.decided_bills} decided` : 'no decided bills yet';
+  const ql = x.data_quality==='solid'?'solid record':x.data_quality==='thin'?'thin record':'minimal record';
+  return `Led ${x.bills_led} · co-sponsored ${x.substantive_bills} · ${rate} &nbsp;·&nbsp; <span class="q ${x.data_quality}">${ql}</span>`;
+}
+function scoreRow(kind,label,val){
+  const v=clamp(val);
+  return `<div class="srow ${kind}"><span class="lbl">${label}</span>
+    <span class="track"><span class="fill" data-w="${v}"></span></span>
+    <span class="val">${v}</span></div>`;
+}
+function card(x,i){
+  return `<div class="card" tabindex="0" data-id="${x.legislator_id}">
+    <div>
+      <div><span class="rank">${i+1}.</span><h3 class="nm">${esc(x.name)}</h3></div>
+      <div class="meta">
+        <span class="party"><span class="pd ${x.party||'I'}"></span>${x.party||'—'}</span>
+        <span>${chamberName(x.chamber)}</span>${x.district?`<span>District ${esc(x.district)}</span>`:''}
       </div>
-      <div class="form-group">
-        <label for="import-name">Legislator name</label>
-        <input type="text" id="import-name" placeholder="e.g. Nkongolo, or Del. J. Nkongolo" />
-      </div>
-      <div class="status-msg" id="import-search-status"></div>
-      <button class="btn" id="import-search-btn">Search LegiScan</button>
-      <div id="import-matches" style="margin-top:14px;"></div>
-      <div id="import-session-log" style="margin-top:16px;"></div>
+      <div class="badges">${powerBadges(x)}</div>
+      <div class="ev">${evidence(x)}</div>
     </div>
-    <div id="import-review-step" style="display:none;">
-      <p style="font-size:13px;color:var(--text-2);margin-top:-4px;">
-        Matched to <strong id="import-matched-name"></strong> —
-        <span id="import-bill-count"></span> primary-sponsored bill(s) found this session.
-        Review each one's topic/subtopic, then save the ones you want.
-      </p>
-      <div id="import-bill-list" style="display:flex;flex-direction:column;gap:8px;margin-top:12px;max-height:48vh;overflow-y:auto;padding-right:4px;"></div>
-      <div class="status-msg" id="import-save-status"></div>
-      <div style="display:flex;gap:8px;margin-top:14px;">
-        <button class="btn btn-secondary" id="import-back-btn" style="flex:1;">← Back</button>
-        <button class="btn" id="import-save-all-btn" style="flex:2;">Save &amp; search next legislator →</button>
-      </div>
+    <div class="scores">
+      ${scoreRow('w','Willingness',x.willingness)}
+      ${scoreRow('e','Effectiveness',x.effectiveness)}
     </div>
-  </div>
-</div>
+  </div>`;
+}
 
-<!-- BULK RE-AUDIT MODAL -->
-<div class="overlay" id="bulk-audit-overlay">
-  <div class="panel">
-    <div class="panel-header">
-      <h2>🤖 Bulk Re-Audit</h2>
-      <button class="panel-close" id="close-bulk-audit">✕</button>
-    </div>
-    <p style="font-size:13px;color:var(--text-2);margin-top:-6px;margin-bottom:1rem;">Uses Claude + Gemini to reclassify every bill in the database using your current topic guidance. Fixes misclassifications from before the dual-classifier was active.</p>
-    <div style="background:var(--blue-50);border:1px solid var(--blue-100);border-radius:var(--r-md);padding:10px 14px;margin-bottom:14px;font-size:13px;color:var(--blue-700);">
-      💡 Run a <strong>Preview</strong> first to see what would change without saving, then <strong>Apply</strong> to commit.
-    </div>
-    <div class="form-group">
-      <label>State</label>
-      <select id="bulk-audit-state"></select>
-    </div>
-    <div style="display:flex;gap:8px;margin-bottom:14px;">
-      <button class="btn btn-secondary" id="bulk-audit-preview-btn" style="flex:1;height:38px;">Preview changes</button>
-      <button class="btn" id="bulk-audit-apply-btn" style="flex:1;height:38px;" disabled>Apply changes</button>
-    </div>
-    <div class="status-msg" id="bulk-audit-status"></div>
-    <div id="bulk-audit-results" style="margin-top:10px;max-height:360px;overflow-y:auto;"></div>
-  </div>
-</div>
+function renderResults(){
+  const party=$('f-party').value, chamber=$('f-chamber').value, sort=$('f-sort').value;
+  let rows = SCORES.filter(s=>s.topic_code===currentTopic)
+    .filter(s=>(!party||s.party===party)&&(!chamber||s.chamber===chamber));
+  rows.sort((a,b)=>
+    sort==='willingness'?b.willingness-a.willingness:
+    sort==='effectiveness'?b.effectiveness-a.effectiveness:
+    (b.willingness+b.effectiveness)-(a.willingness+a.effectiveness));
+  $('rcount').textContent = rows.length?`${rows.length} legislator${rows.length===1?'':'s'}`:'';
+  if(!rows.length){ $('results').innerHTML=`<div class="note"><b>No one matches.</b><br>Try widening the party or chamber filter.</div>`; return; }
+  $('results').innerHTML = `<div class="list">${rows.map(card).join('')}</div>`;
+  document.querySelectorAll('.card').forEach(el=>el.addEventListener('click',()=>openDetail(el.dataset.id)));
+  requestAnimationFrame(()=>document.querySelectorAll('.fill').forEach(f=>f.style.width=f.dataset.w+'%'));
+}
 
-<!-- SESSION END MODAL -->
-<div class="overlay" id="session-end-overlay">
-  <div class="panel">
-    <div class="panel-header">
-      <h2>🏁 Session End — Update Outcomes</h2>
-      <button class="panel-close" id="close-session-end">✕</button>
-    </div>
-    <p style="font-size:13px;color:var(--text-2);margin-top:-6px;margin-bottom:1rem;">When the legislative session ends, use this to bulk-update bill outcomes rather than editing them one by one.</p>
-    <div style="background:var(--amber-bg);border:1px solid var(--amber);border-radius:var(--r-md);padding:10px 14px;margin-bottom:16px;font-size:13px;color:var(--amber);">
-      ⚠ The Quick Sweep below marks ALL bills in a state at once. Use with care.
-    </div>
+async function openDetail(id){
+  $('scrim').classList.add('open'); $('drawer').classList.add('open'); $('drawer').setAttribute('aria-hidden','false');
+  $('dbody').innerHTML = `<div class="note" style="border:none">Loading…</div>`;
+  const mine = (byLeg[id]||[]).slice().sort((a,b)=>(b.willingness+b.effectiveness)-(a.willingness+a.effectiveness));
+  const head = mine[0] || LEGIS.find(l=>l.id===id) || {};
+  let allies=[];
+  try{ const {data}=await db.from('legislator_allies').select('*').eq('legislator_id',id).order('shared_bills',{ascending:false}).limit(8); allies=data||[]; }catch(_){}
 
-    <div class="form-group">
-      <label>State</label>
-      <select id="session-end-state"></select>
-    </div>
+  const topicRows = mine.map(x=>`<div class="tline">
+    <span>${esc(x.topic_label)}</span>
+    <span class="mini"><span class="c w"></span>${clamp(x.willingness)}</span>
+    <span class="mini"><span class="c e"></span>${clamp(x.effectiveness)}</span></div>`).join('')
+    || '<div class="aly" style="border:none;color:var(--muted)">No classified activity yet.</div>';
 
-    <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-md);padding:12px;margin-bottom:14px;">
-      <p style="font-size:13px;font-weight:700;color:var(--blue-900);margin:0 0 8px;">Option 1: Quick Sweep</p>
-      <p style="font-size:12.5px;color:var(--text-2);margin:0 0 10px;">Mark all pending bills in the selected state as either passed or failed.</p>
-      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-        <select id="sweep-from" style="height:34px;flex:1;">
-          <option value="pending">Pending / Unknown</option>
-          <option value="failed">Did not pass</option>
-        </select>
-        <span style="font-size:13px;color:var(--text-2);">→</span>
-        <select id="sweep-to" style="height:34px;flex:1;">
-          <option value="failed">Did not pass</option>
-          <option value="passed">Passed</option>
-        </select>
-        <button class="btn" id="run-sweep-btn" style="flex:0 0 auto;height:36px;padding:0 16px;">Run sweep</button>
-      </div>
-    </div>
+  const allyRows = allies.filter(a=>a.shared_bills>=2).map(a=>`<div class="aly">
+    <span class="an"><span class="pd ${a.ally_party||'I'}"></span>${esc(a.ally_name)}</span>
+    <span class="as">${a.shared_bills} bills together</span></div>`).join('')
+    || '<div class="aly" style="border:none;color:var(--muted)">No frequent co-sponsors yet.</div>';
 
-    <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-md);padding:12px;">
-      <p style="font-size:13px;font-weight:700;color:var(--blue-900);margin:0 0 8px;">Option 2: Review &amp; Update</p>
-      <p style="font-size:12.5px;color:var(--text-2);margin:0 0 10px;">See only bills marked as pending and update each individually.</p>
-      <button class="btn btn-secondary" id="load-pending-btn" style="height:36px;">Load pending bills</button>
-      <div id="pending-bills-list" style="margin-top:10px;max-height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;"></div>
-    </div>
+  $('dbody').innerHTML = `
+    <h2>${esc(head.name)}</h2>
+    <div class="dm">${head.party||'—'} · ${chamberName(head.chamber)}${head.district?` · District ${esc(head.district)}`:''}${head.is_committee_chair?' · Committee chair':''}${head.is_leadership?' · Leadership':''}</div>
+    <div class="sh">Scores by policy area</div>${topicRows}
+    <div class="sh">Closest co-sponsors — real coalition</div>${allyRows}`;
+}
+function closeDrawer(){ $('scrim').classList.remove('open'); $('drawer').classList.remove('open'); $('drawer').setAttribute('aria-hidden','true'); }
 
-    <div class="status-msg" id="session-end-status"></div>
-  </div>
-</div>
+function tab(name){
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===name));
+  ['finder','search','coalitions'].forEach(v=>$('view-'+v).classList.toggle('hide',v!==name));
+}
+document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>tab(b.dataset.tab)));
+$('back').addEventListener('click',()=>{ $('finder-results').classList.add('hide'); $('finder-landing').classList.remove('hide'); });
+['f-sort','f-party','f-chamber'].forEach(id=>$(id).addEventListener('change',renderResults));
 
-<!-- ADD SPONSOR PANEL -->
-<div class="overlay" id="sponsor-overlay">
-  <div class="panel">
-    <div class="panel-header">
-      <h2>Add a sponsor</h2>
-      <button class="panel-close" id="close-sponsor">✕</button>
-    </div>
-    <p style="font-size:13px;color:var(--text-2);margin-top:-6px;margin-bottom:1rem;">Pick an existing legislator you've worked with. They'll be starred throughout the app and get a small interest score boost.</p>
-    <div class="form-group">
-      <label for="sponsor-state">State</label>
-      <select id="sponsor-state"></select>
-    </div>
-    <div class="form-group">
-      <label>Legislator</label>
-      <input type="text" id="sponsor-search" placeholder="Type to filter…" style="margin-bottom:7px;" />
-      <select id="sponsor-leg" style="display:none;"></select>
-      <div id="sponsor-leg-list" style="border:1px solid var(--border-strong);border-radius:var(--r-md);max-height:200px;overflow-y:auto;background:var(--surface-2);"></div>
-    </div>
-    <div class="form-group">
-      <label for="sponsor-relationship">Relationship note (optional)</label>
-      <textarea id="sponsor-relationship" placeholder="e.g. Met at workforce summit Oct 2024, very receptive to job training angles. Best contact: aide Sarah Johnson." style="min-height:80px;"></textarea>
-    </div>
-    <div class="status-msg" id="sponsor-status"></div>
-    <button class="btn" id="save-sponsor-btn" style="margin-top:10px;">Add to sponsors</button>
-  </div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-data.js"></script>
-<script src="app.js?v=20260620b"></script>
-<script src="scores-ui.js?v=1"></script>
+function nameRows(container, q, onPick){
+  const term=q.trim().toLowerCase();
+  if(term.length<2){ container.innerHTML=''; return; }
+  const hits=LEGIS.filter(l=>l.name.toLowerCase().includes(term)).slice(0,20);
+  container.innerHTML = hits.map(l=>`<div class="prow" data-id="${l.id}">
+    <span class="pn">${esc(l.name)}</span>
+    <span class="pm">${l.party||'—'} · ${chamberName(l.chamber)}${l.district?` · District ${esc(l.district)}`:''}</span></div>`).join('')
+    || '<div class="note">No legislators match.</div>';
+  container.querySelectorAll('.prow').forEach(el=>el.addEventListener('click',()=>onPick(el.dataset.id)));
+}
+$('s-input').addEventListener('input',e=>nameRows($('s-rows'),e.target.value,openDetail));
+
+$('c-input').addEventListener('input',e=>{ $('c-allies').innerHTML=''; nameRows($('c-rows'),e.target.value,showCoalition); });
+async function showCoalition(id){
+  const l = LEGIS.find(x=>x.id===id)||{};
+  $('c-rows').innerHTML=''; $('c-input').value=l.name||'';
+  $('c-allies').innerHTML=`<div class="note" style="border:none">Loading coalition…</div>`;
+  let allies=[];
+  try{ const {data}=await db.from('legislator_allies').select('*').eq('legislator_id',id).order('shared_bills',{ascending:false}).limit(12); allies=data||[]; }catch(_){}
+  const rows = allies.filter(a=>a.shared_bills>=2).map(a=>`<div class="prow" data-id="${a.ally_id}">
+    <span class="pn">${esc(a.ally_name)}</span>
+    <span class="pm">${a.ally_party||'—'} · ${chamberName(a.ally_chamber)} · <b>${a.shared_bills}</b> bills together</span></div>`).join('');
+  $('c-allies').innerHTML = `<div class="sh" style="margin-top:8px">${esc(l.name)}'s closest co-sponsors</div>
+    <div class="rows">${rows || '<div class="note">No frequent co-sponsors found.</div>'}</div>`;
+  $('c-allies').querySelectorAll('.prow').forEach(el=>el.addEventListener('click',()=>showCoalition(el.dataset.id)));
+}
+
+$('x').addEventListener('click',closeDrawer);
+$('scrim').addEventListener('click',closeDrawer);
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeDrawer(); });
+
+boot();
+</script>
 </body>
 </html>
