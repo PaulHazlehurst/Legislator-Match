@@ -11,6 +11,7 @@
 <style>
   :root{
     --paper:#F6F4EF; --surface:#FFFFFF; --ink:#191C22; --muted:#5E6572; --faint:#9AA0AB;
+    --navy:#16263F; --navy-2:#22375A;
     --line:#E6E2DA; --line-2:#D5CFC3;
     --willing:#2E5E8C; --willing-ink:#244F76; --willing-soft:#DEE8F1;
     --effect:#B5852A; --effect-ink:#8A6410; --effect-soft:#F2E7CC;
@@ -26,15 +27,15 @@
   h1,h2,h3{margin:0}
   ::selection{background:var(--willing-soft)}
 
-  header{position:sticky;top:0;z-index:40;background:rgba(246,244,239,.86);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  header{position:sticky;top:0;z-index:40;background:var(--navy);border-bottom:1px solid var(--navy-2)}
   .bar{max-width:1160px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:26px;height:62px}
-  .brand{font-weight:800;letter-spacing:-.01em;font-size:16px;display:flex;align-items:center;gap:9px}
-  .brand .dot{width:9px;height:9px;border-radius:2px;background:var(--effect);box-shadow:3px 0 0 var(--willing)}
-  .brand span{color:var(--effect-ink)}
+  .brand{font-weight:800;letter-spacing:-.01em;font-size:16px;display:flex;align-items:center;gap:9px;color:#fff}
+  .brand .dot{width:9px;height:9px;border-radius:2px;background:var(--effect);box-shadow:3px 0 0 #6f9bc9}
+  .brand span{color:#E4C579}
   nav{display:flex;gap:2px;margin-left:auto}
-  nav button{background:none;border:none;padding:8px 13px;border-radius:8px;font-size:14px;font-weight:600;color:var(--muted);transition:background .12s,color .12s}
-  nav button.active{color:var(--ink);background:#EBE7DE}
-  nav button:hover{color:var(--ink)}
+  nav button{background:none;border:none;padding:8px 13px;border-radius:8px;font-size:14px;font-weight:600;color:rgba(255,255,255,.72);transition:background .12s,color .12s}
+  nav button.active{color:#fff;background:rgba(255,255,255,.14)}
+  nav button:hover{color:#fff}
 
   main{max-width:1160px;margin:0 auto;padding:26px 24px 120px}
   .hide{display:none !important}
@@ -193,8 +194,23 @@
   .detect{background:var(--willing-soft);border:1px solid #C6D7E6;border-radius:12px;padding:14px 16px;margin:16px 0;font-size:14px}
   .detect b{color:var(--willing-ink)}
 
+  .scores{display:flex;gap:12px;justify-content:flex-end}
+  .gauge{text-align:center;width:96px}
+  .gauge svg{width:68px;height:68px}
+  .gauge .gt{fill:none;stroke:#ECE9E2;stroke-width:6}
+  .gauge .gf{fill:none;stroke-width:6;stroke-linecap:round;transition:stroke-dashoffset .85s cubic-bezier(.2,.7,.2,1)}
+  .gauge .gv{font:800 21px "Libre Franklin";fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+  .gauge .gl{font-weight:700;font-size:12.5px;margin-top:5px;line-height:1.1}
+  .gauge .gs{color:var(--muted);font-size:11px;margin-top:1px}
+  .mm{margin-left:auto;background:none;border:1px solid var(--line-2);border-radius:7px;padding:5px 11px;font-size:12px;font-weight:600;color:var(--muted)}
+  .mm:hover{color:var(--ink);border-color:var(--muted)}
+  .method{font-size:14px;line-height:1.62;color:var(--ink)}
+  .method p{margin:0 0 8px;color:#3d434d}
+  .method h4{font-family:"Newsreader",serif;font-weight:500;font-size:17px;margin:16px 0 4px}
+  .method .k{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:6px}
   @media (max-width:760px){
     .card{grid-template-columns:1fr;gap:16px}
+    .scores{justify-content:flex-start}
     .grid2{grid-template-columns:1fr}
     nav button{padding:8px 9px;font-size:13px}
     .barrow{grid-template-columns:100px 1fr 38px}
@@ -234,6 +250,7 @@
       <div class="legend">
         <span><i style="background:var(--willing)"></i><b>Willingness</b> — carries bills here</span>
         <span><i style="background:var(--effect)"></i><b>Effectiveness</b> — power &amp; record to pass them</span>
+        <button class="mm" id="howto">How scores work</button>
       </div>
       <div class="refine">
         <select id="f-sort">
@@ -330,7 +347,7 @@ async function boot(){
     [SCORES, LEGIS, BILLS] = await Promise.all([
       pageAll('legislator_topic_scores','*','legislator_id'),
       pageAll('legislators','id,name,party,chamber,district','name'),
-      pageAll('bills','topic_id,outcome,significance','id'),
+      pageAll('bills','topic_id,outcome,significance,sessions(is_current)','id'),
     ]);
   }catch(e){ $('tiles').innerHTML=`<div class="note"><b>Couldn't load data.</b><br>${esc(e.message)}</div>`; return; }
 
@@ -395,11 +412,28 @@ function powerBadges(x){
   return b.join('');
 }
 function evidence(x){
-  const rate=x.decided_bills>=1?`passed ${x.passed_bills} of ${x.decided_bills} decided`:'no decided bills yet';
+  const pr = x.decided_bills>=1 ? `${Math.round(x.passed_bills/x.decided_bills*100)}% passage rate (${x.passed_bills} of ${x.decided_bills} passed)` : 'no completed bills yet';
   const ql=x.data_quality==='solid'?'solid record':x.data_quality==='thin'?'thin record':'minimal record';
-  return `Led ${x.bills_led} · co-sponsored ${x.substantive_bills} · ${rate} &nbsp;·&nbsp; <span class="q ${x.data_quality}">${ql}</span>`;
+  return `Leads ${x.bills_led} bill${x.bills_led===1?'':'s'} here &nbsp;·&nbsp; ${pr} &nbsp;·&nbsp; <span class="q ${x.data_quality}">${ql}</span>`;
 }
 const srow=(k,l,v)=>`<div class="srow ${k}"><span class="lbl">${l}</span><span class="track"><span class="fill" data-w="${clamp(v)}"></span></span><span class="val">${clamp(v)}</span></div>`;
+const RING_C = (2*Math.PI*26);
+function band(v){ return v>=67?'var(--good)':v>=40?'var(--warn)':'var(--r)'; }
+function gauge(val,label,sub){
+  const v=clamp(val); const off=(RING_C*(1-v/100)).toFixed(1);
+  return `<div class="gauge"><svg viewBox="0 0 68 68">
+    <circle class="gt" cx="34" cy="34" r="26"/>
+    <circle class="gf" cx="34" cy="34" r="26" stroke="${band(v)}" stroke-dasharray="${RING_C.toFixed(1)}" stroke-dashoffset="${RING_C.toFixed(1)}" data-off="${off}" transform="rotate(-90 34 34)"/>
+    <text class="gv" x="34" y="34">${v}</text></svg>
+    <div class="gl">${label}</div><div class="gs">${sub}</div></div>`;
+}
+function animateScores(scope){
+  const s=scope||document;
+  requestAnimationFrame(()=>{
+    s.querySelectorAll('.fill').forEach(f=>f.style.width=f.dataset.w+'%');
+    s.querySelectorAll('.gf').forEach(g=>g.style.strokeDashoffset=g.dataset.off);
+  });
+}
 function card(x,i){
   const on=picks.has(x.legislator_id)?'on':'';
   return `<div class="card" data-id="${x.legislator_id}">
@@ -410,7 +444,7 @@ function card(x,i){
       <div class="badges">${powerBadges(x)}</div>
       <div class="ev">${evidence(x)}</div>
     </div>
-    <div class="scores">${srow('w','Willingness',x.willingness)}${srow('e','Effectiveness',x.effectiveness)}</div>
+    <div class="scores">${gauge(x.willingness,'Willingness','will they carry it')}${gauge(x.effectiveness,'Effectiveness','can they pass it')}</div>
   </div>`;
 }
 function renderResults(){
@@ -420,7 +454,7 @@ function renderResults(){
   if(!rows.length){ $('results').innerHTML=`<div class="note"><b>No one matches.</b><br>Try widening the filters.</div>`; return; }
   $('results').innerHTML=`<div class="list">${rows.map(card).join('')}</div>`;
   bindCards();
-  requestAnimationFrame(()=>document.querySelectorAll('#results .fill').forEach(f=>f.style.width=f.dataset.w+'%'));
+  animateScores($('results'));
 }
 function bindCards(scope){
   (scope||document).querySelectorAll('.who[data-open]').forEach(el=>el.addEventListener('click',()=>openDetail(el.dataset.open)));
@@ -485,7 +519,7 @@ function openCompare(){
   $('modal-body').innerHTML=`<h2>Compare champions${currentTopic?` — ${esc((TOPICS.find(t=>t.code===currentTopic)||{}).label||'')}`:''}</h2>
     <div class="cmp" style="grid-template-columns:repeat(${ids.length},1fr)">${cols}</div>`;
   openModal();
-  requestAnimationFrame(()=>document.querySelectorAll('#modal .fill').forEach(f=>f.style.width=f.dataset.w+'%'));
+  animateScores($('modal'));
 }
 function copyPicks(){
   const lines=[...picks].map(([id,p])=>`${p.name} — Willingness ${clamp(p.w)}, Effectiveness ${clamp(p.e)}`);
@@ -526,7 +560,7 @@ async function openDetail(id){
     <div class="sh">Scores by policy area</div>${topicRows}
     ${billsSection}
     <div class="sh">Closest co-sponsors — real coalition</div>${allyRows}`;
-  requestAnimationFrame(()=>document.querySelectorAll('#dbody .fill').forEach(f=>f.style.width=f.dataset.w+'%'));
+  animateScores($('dbody'));
   $('dbody').querySelectorAll('[data-ally]').forEach(el=>el.addEventListener('click',()=>openDetail(el.dataset.ally)));
 }
 function closeDrawer(){ $('scrim').classList.remove('open'); $('drawer').classList.remove('open'); $('drawer').setAttribute('aria-hidden','true'); }
@@ -540,7 +574,7 @@ function renderStats(){
   const bt=Object.entries(byTopic).map(([id,n])=>[T(id),n]).sort((a,b)=>b[1]-a[1]).slice(0,12);
   const btMax=Math.max(...bt.map(x=>x[1]),1);
   $('c-bills').innerHTML=bt.map(([l,n])=>`<div class="barrow"><span class="bl">${esc(l)}</span><span class="bt"><span class="bf" style="background:var(--willing)" data-w="${Math.round(n/btMax*100)}"></span></span><span class="bv">${n}</span></div>`).join('');
-  const pass={},dec={}; BILLS.forEach(b=>{ if(b.topic_id&&b.significance==='substantive'&&(b.outcome==='passed'||b.outcome==='failed')){ dec[b.topic_id]=(dec[b.topic_id]||0)+1; if(b.outcome==='passed')pass[b.topic_id]=(pass[b.topic_id]||0)+1; } });
+  const pass={},dec={}; BILLS.forEach(b=>{ const concluded=b.sessions&&b.sessions.is_current===false; if(b.topic_id&&b.significance==='substantive'&&concluded){ dec[b.topic_id]=(dec[b.topic_id]||0)+1; if(b.outcome==='passed')pass[b.topic_id]=(pass[b.topic_id]||0)+1; } });
   const pr=Object.keys(dec).filter(id=>dec[id]>=5).map(id=>[T(id),Math.round((pass[id]||0)/dec[id]*100)]).sort((a,b)=>b[1]-a[1]).slice(0,12);
   $('c-pass').innerHTML=pr.map(([l,n])=>`<div class="barrow"><span class="bl">${esc(l)}</span><span class="bt"><span class="bf" style="background:var(--effect)" data-w="${n}"></span></span><span class="bv">${n}%</span></div>`).join('')||'<span style="color:var(--muted);font-size:13px">Not enough decided bills yet.</span>';
   const best={}; SCORES.forEach(s=>{ const cur=best[s.legislator_id]; if(!cur||s.effectiveness>cur.e) best[s.legislator_id]={name:s.name,e:s.effectiveness}; });
@@ -585,7 +619,7 @@ $('p-go').addEventListener('click',()=>{
   $('p-out').innerHTML=`<div class="detect">Detected policy area: <b>${esc((t||{}).label||code)}</b>. Here are the legislators best positioned to carry and pass it.</div>
     <div class="list">${rows.map((x,i)=>card(x,i)).join('')}</div>`;
   bindCards($('p-out'));
-  requestAnimationFrame(()=>document.querySelectorAll('#p-out .fill').forEach(f=>f.style.width=f.dataset.w+'%'));
+  animateScores($('p-out'));
 });
 
 function tab(name){
@@ -623,6 +657,23 @@ async function showCoalition(id){
 $('x').addEventListener('click',closeDrawer);
 $('scrim').addEventListener('click',()=>{closeDrawer();closeModal();});
 document.addEventListener('keydown',e=>{ if(e.key==='Escape'){closeDrawer();closeModal();} });
+
+function openMethodology(){
+  $('modal-body').innerHTML = `<h2>How these scores work</h2>
+  <div class="method">
+    <p>Every legislator gets two scores for each policy area, each from 0 to 100. Click any legislator to see the bills and record behind them.</p>
+    <h4><span class="k" style="background:var(--willing)"></span>Willingness — will they carry it?</h4>
+    <p>How active this legislator is on the topic: how many substantive bills they've led or co-sponsored here across recent sessions, weighted toward the most recent. A prolific lead sponsor scores high; someone who has never touched the issue scores low.</p>
+    <h4><span class="k" style="background:var(--effect)"></span>Effectiveness — can they pass it?</h4>
+    <p>How well-positioned they are to move a bill: their institutional power — committee chair, leadership post, being in the majority party — plus their real record of getting substantive bills enacted in completed sessions. A rank-and-file member with no passed bills scores low even when willing.</p>
+    <h4>Passage rate</h4>
+    <p>Of the substantive bills a legislator sponsored in <em>completed</em> sessions (2024–2025), the share that became law. Bills that died in committee count as not passed, so realistic rates sit well under 100%. Current-session bills are still in flight and don't count against anyone.</p>
+    <h4>Data quality &amp; colors</h4>
+    <p>“Solid / thin / minimal” shows how much history backs the numbers — treat thin and minimal with caution. Ring colors: <b style="color:var(--good)">green</b> 67+, <b style="color:var(--warn)">amber</b> 40–66, <b style="color:var(--r)">red</b> under 40.</p>
+  </div>`;
+  openModal();
+}
+$('howto').addEventListener('click',openMethodology);
 
 boot();
 </script>
