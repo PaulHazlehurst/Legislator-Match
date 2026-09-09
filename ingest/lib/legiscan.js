@@ -29,16 +29,26 @@ export async function getSessionData(dataset) {
   const zip = new AdmZip(zipBuf);
 
   const out = { bills: [], people: [], votes: [] };
+  const keyCounts = {};
+  let jsonCount = 0;
   for (const entry of zip.getEntries()) {
     if (entry.isDirectory || !entry.entryName.endsWith('.json')) continue;
     let parsed;
     try { parsed = JSON.parse(entry.getData().toString('utf8')); }
     catch { continue; }
-    // Each file is wrapped, e.g. { "bill": {...} } / { "person": {...} } / { "roll_call": {...} }
+    jsonCount++;
+    const k = Object.keys(parsed)[0] || '?';
+    keyCounts[k] = (keyCounts[k] || 0) + 1;
+    // Each file is wrapped, e.g. { "bill": {...} } / { "person": {...} } / { "vote"|"roll_call": {...} }
     if (parsed.bill) out.bills.push(parsed.bill);
     else if (parsed.person) out.people.push(parsed.person);
     else if (parsed.roll_call) out.votes.push(parsed.roll_call);
+    else if (parsed.vote) out.votes.push(parsed.vote);
   }
+  const hb = out.bills.filter(b => String(b.bill_number || '').startsWith('HB')).length;
+  const sb = out.bills.filter(b => String(b.bill_number || '').startsWith('SB')).length;
+  console.log(`  ZIP: ${zip.getEntries().length} entries, ${jsonCount} json, wrappers=${JSON.stringify(keyCounts)}`);
+  console.log(`  parsed bills: ${out.bills.length} (HB=${hb}, SB=${sb}), people=${out.people.length}, votes=${out.votes.length}`);
   return out;
 }
 

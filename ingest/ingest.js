@@ -90,10 +90,13 @@ async function ingestSession(dataset, tax) {
     };
   });
   for (const c of chunk(billRows, CHUNK)) {
-    await db.from('bills').upsert(c, { onConflict: 'legiscan_bill_id' });
+    // insert-only-new: backfills missing bills without overwriting the topic
+    // classification already stored on existing bills (preserves reclassify).
+    const { error } = await db.from('bills').upsert(c, { onConflict: 'legiscan_bill_id', ignoreDuplicates: true });
+    if (error) console.log('  bill insert error:', error.message);
   }
   const unclassified = billRows.filter(r => !r.topic_id).length;
-  console.log(`  loaded ${billRows.length} bills (${unclassified} unclassified → run reclassify.js next)`);
+  console.log(`  processed ${billRows.length} bills this session (${unclassified} had no subject topic)`);
 
   const { data: billsBack } = await db.from('bills')
     .select('id, legiscan_bill_id').eq('session_id', sessionId);
@@ -112,7 +115,8 @@ async function ingestSession(dataset, tax) {
     }
   }
   for (const c of chunk(sponRows, CHUNK)) {
-    await db.from('sponsorships').upsert(c, { onConflict: 'bill_id,legislator_id' });
+    const { error } = await db.from('sponsorships').upsert(c, { onConflict: 'bill_id,legislator_id' });
+    if (error) console.log('  sponsorship error:', error.message);
   }
   console.log(`  loaded ${sponRows.length} sponsorships`);
 
