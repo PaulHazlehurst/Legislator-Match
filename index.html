@@ -208,14 +208,37 @@
   .method p{margin:0 0 8px;color:#3d434d}
   .method h4{font-family:"Newsreader",serif;font-weight:500;font-size:17px;margin:16px 0 4px}
   .method .k{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:6px}
+  .quad .axis{stroke:var(--line-2);stroke-width:.5}
+  .quad .qd{cursor:pointer}
+  .quad .qlab{font:700 3.5px "Libre Franklin";fill:var(--ink);paint-order:stroke;stroke:#fff;stroke-width:.7px}
+  .quad .qt{font:500 3px "Libre Franklin";fill:var(--faint)}
+  .maphint{color:var(--muted);font-size:12.5px;margin:12px 2px 0}
+  .picks{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+  .pk{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--navy);border-radius:11px;padding:13px 15px;cursor:pointer;box-shadow:var(--shadow);transition:border-color .12s,transform .12s,box-shadow .12s;opacity:0;animation:tilein .45s cubic-bezier(.2,.7,.2,1) forwards}
+  .pk:nth-child(2){border-left-color:var(--willing)}
+  .pk:nth-child(3){border-left-color:var(--effect)}
+  .pk:hover{border-color:var(--line-2);transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+  .pkl{font-size:11px;font-weight:700;color:var(--muted)}
+  .pkn{font-family:"Newsreader",serif;font-size:18px;font-weight:500;margin:3px 0;line-height:1.15}
+  .pkv{font-size:12.5px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+  .graphwrap{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:16px;margin-bottom:18px}
+  .cograph{width:100%;max-width:460px;display:block;margin:0 auto}
+  .cograph .gl2{stroke:var(--line-2)}
+  .gnode{cursor:pointer;opacity:0;animation:dotin .5s ease forwards}
+  .gnode circle{transition:r .15s}
+  .gnode:hover circle{r:10}
+  .gtext{font:600 6px "Libre Franklin";fill:var(--ink)}
+  .gcenter{font:700 6px "Libre Franklin";fill:#fff}
+  .card{opacity:0;animation:tilein .4s cubic-bezier(.2,.7,.2,1) forwards}
   @media (max-width:760px){
     .card{grid-template-columns:1fr;gap:16px}
     .scores{justify-content:flex-start}
+    .picks{grid-template-columns:1fr}
     .grid2{grid-template-columns:1fr}
     nav button{padding:8px 9px;font-size:13px}
     .barrow{grid-template-columns:100px 1fr 38px}
   }
-  @media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}.tile,.quad circle{opacity:1 !important;transform:none !important}}
+  @media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}.tile,.quad circle,.card,.pk,.gnode{opacity:1 !important;transform:none !important}}
 </style>
 </head>
 <body>
@@ -326,6 +349,26 @@ const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const clamp = n => Math.max(0, Math.min(100, Math.round(n||0)));
 const chamberName = c => c==='senate'?'Senate':'House';
+const partyColor = p => p==='R'?'var(--r)':p==='D'?'var(--d)':'var(--i)';
+const lastName = n => String(n||'').trim().split(/\s+/).slice(-1)[0];
+function renderPicks(rows){
+  if(rows.length<2) return '';
+  const byC=rows.slice().sort((a,b)=>(b.willingness+b.effectiveness)-(a.willingness+a.effectiveness));
+  const byW=rows.slice().sort((a,b)=>b.willingness-a.willingness);
+  const byE=rows.slice().sort((a,b)=>b.effectiveness-a.effectiveness);
+  const pk=(label,r,val)=>`<div class="pk" data-open="${r.legislator_id}"><div class="pkl">${label}</div><div class="pkn">${esc(r.name)}</div><div class="pkv">${val}</div></div>`;
+  return `<div class="picks">${pk('Best overall',byC[0],`Willingness ${clamp(byC[0].willingness)} · Effectiveness ${clamp(byC[0].effectiveness)}`)}${pk('Most willing to carry',byW[0],`Willingness ${clamp(byW[0].willingness)}`)}${pk('Most able to pass',byE[0],`Effectiveness ${clamp(byE[0].effectiveness)}`)}</div>`;
+}
+function coalitionGraph(center, allies){
+  const top=(allies||[]).filter(a=>a.shared_bills>=2).slice(0,10);
+  if(!top.length) return '';
+  const W=280,H=220,cx=W/2,cy=H/2,R=78;
+  const mx=Math.max(...top.map(a=>a.shared_bills),1);
+  const nodes=top.map((a,i)=>{const ang=(i/top.length)*2*Math.PI-Math.PI/2;return{a,x:cx+R*Math.cos(ang),y:cy+R*Math.sin(ang)};});
+  const lines=nodes.map(nd=>`<line x1="${cx}" y1="${cy}" x2="${nd.x.toFixed(1)}" y2="${nd.y.toFixed(1)}" class="gl2" stroke-width="${(0.5+nd.a.shared_bills/mx*2).toFixed(2)}"/>`).join('');
+  const anodes=nodes.map((nd,i)=>`<g class="gnode" data-id="${nd.a.ally_id}" style="animation-delay:${i*45}ms"><circle cx="${nd.x.toFixed(1)}" cy="${nd.y.toFixed(1)}" r="${(4.5+nd.a.shared_bills/mx*4).toFixed(1)}" fill="${partyColor(nd.a.ally_party)}"/><text x="${nd.x.toFixed(1)}" y="${(nd.y+(nd.y<cy?-7:12)).toFixed(1)}" text-anchor="middle" class="gtext">${esc(lastName(nd.a.ally_name))}</text></g>`).join('');
+  return `<div class="graphwrap"><svg viewBox="0 0 ${W} ${H}" class="cograph">${lines}${anodes}<circle cx="${cx}" cy="${cy}" r="13" fill="var(--navy)"/><text x="${cx}" y="${cy+2}" text-anchor="middle" class="gcenter">${esc(lastName(center.name||''))}</text></svg><p class="maphint">Thicker lines and bigger dots mean more bills shared. Click any name to jump to their coalition.</p></div>`;
+}
 
 let SCORES=[], LEGIS=[], BILLS=[], TOPICS=[], byLeg={}, topicById={}, legById={}, currentTopic=null, currentView='list';
 const picks = new Map();
@@ -360,11 +403,19 @@ async function boot(){
   renderStrip(); renderTiles(); renderStats();
 }
 
-function renderStrip(){
-  const sessions=3, classified=BILLS.filter(b=>b.topic_id).length;
-  const strip=[['Legislators',LEGIS.length],['Bills tracked',BILLS.length.toLocaleString()],['Classified',classified.toLocaleString()],['Sessions',sessions],['Policy areas',TOPICS.length]];
-  $('strip').innerHTML=strip.map(([l,n])=>`<div class="stat"><div class="n">${n}</div><div class="l">${l}</div></div>`).join('');
+function stripHTML(){
+  const classified=BILLS.filter(b=>b.topic_id).length;
+  const strip=[['Legislators',LEGIS.length],['Bills tracked',BILLS.length],['Classified',classified],['Sessions',3],['Policy areas',TOPICS.length]];
+  return strip.map(([l,n])=>`<div class="stat"><div class="n" data-target="${n}">0</div><div class="l">${l}</div></div>`).join('');
 }
+function countUp(scope){
+  (scope||document).querySelectorAll('.n[data-target]').forEach(el=>{
+    const target=+el.dataset.target, dur=850, t0=performance.now();
+    function step(t){ const p=Math.min(1,(t-t0)/dur); el.textContent=Math.round(target*(1-Math.pow(1-p,3))).toLocaleString(); if(p<1)requestAnimationFrame(step); }
+    requestAnimationFrame(step);
+  });
+}
+function renderStrip(){ $('strip').innerHTML=stripHTML(); countUp($('strip')); }
 
 function spark(topicId){
   const es=SCORES.filter(s=>s.topic_id===topicId).map(s=>s.effectiveness);
@@ -436,7 +487,7 @@ function animateScores(scope){
 }
 function card(x,i){
   const on=picks.has(x.legislator_id)?'on':'';
-  return `<div class="card" data-id="${x.legislator_id}">
+  return `<div class="card" data-id="${x.legislator_id}" style="animation-delay:${(i||0)*26}ms">
     <div class="pick ${on}" data-pick="${x.legislator_id}"><svg viewBox="0 0 14 14"><path d="M2 7l3 3 7-7"/></svg></div>
     <div class="who" data-open="${x.legislator_id}">
       <div><span class="rank">${i+1}.</span><h3 class="nm">${esc(x.name)}</h3></div>
@@ -452,8 +503,9 @@ function renderResults(){
   $('rcount').textContent=rows.length?`${rows.length} legislator${rows.length===1?'':'s'}`:'';
   if(currentView==='map'){ renderMap(rows); return; }
   if(!rows.length){ $('results').innerHTML=`<div class="note"><b>No one matches.</b><br>Try widening the filters.</div>`; return; }
-  $('results').innerHTML=`<div class="list">${rows.map(card).join('')}</div>`;
+  $('results').innerHTML=renderPicks(rows)+`<div class="list">${rows.map(card).join('')}</div>`;
   bindCards();
+  $('results').querySelectorAll('.pk[data-open]').forEach(el=>el.addEventListener('click',()=>openDetail(el.dataset.open)));
   animateScores($('results'));
 }
 function bindCards(scope){
@@ -463,22 +515,35 @@ function bindCards(scope){
 
 function renderMap(rows){
   if(!rows.length){ $('mapview').innerHTML=`<div class="note">No one matches.</div>`; return; }
-  const W=200,H=150,P=14;
-  const X=v=>P+(v/100)*(W-2*P), Y=v=>H-P-(v/100)*(H-2*P);
+  const W=240,H=200,PL=24,PR=16,PT=16,PB=24;
+  const ws=rows.map(r=>clamp(r.willingness)), es=rows.map(r=>clamp(r.effectiveness));
+  let wmin=Math.min(...ws),wmax=Math.max(...ws),emin=Math.min(...es),emax=Math.max(...es);
+  const spanW=Math.max(10,wmax-wmin), spanE=Math.max(10,emax-emin);
+  wmin=Math.max(0,Math.floor(wmin-spanW*0.15)); wmax=Math.min(100,Math.ceil(wmax+spanW*0.15));
+  emin=Math.max(0,Math.floor(emin-spanE*0.15)); emax=Math.min(100,Math.ceil(emax+spanE*0.15));
+  const X=v=>PL+((v-wmin)/(wmax-wmin||1))*(W-PL-PR);
+  const Y=v=>H-PB-((v-emin)/(emax-emin||1))*(H-PT-PB);
+  const ranked=rows.slice().sort((a,b)=>(b.willingness+b.effectiveness)-(a.willingness+a.effectiveness));
+  const topSet=new Set(ranked.slice(0,3).map(r=>r.legislator_id));
   const dots=rows.map((r,i)=>{
-    const col=r.party==='R'?'var(--r)':r.party==='D'?'var(--d)':'var(--i)';
-    return `<circle cx="${X(r.willingness).toFixed(1)}" cy="${Y(r.effectiveness).toFixed(1)}" r="2.6" fill="${col}" data-id="${r.legislator_id}" style="animation-delay:${i*12}ms"/>`;
+    const isTop=topSet.has(r.legislator_id);
+    return `<circle class="qd" cx="${X(clamp(r.willingness)).toFixed(1)}" cy="${Y(clamp(r.effectiveness)).toFixed(1)}" r="${isTop?3.6:2.7}" fill="${partyColor(r.party)}" stroke="#fff" stroke-width=".6" data-id="${r.legislator_id}" style="animation-delay:${i*9}ms"/>`;
   }).join('');
+  const labels=ranked.slice(0,3).map(r=>`<text class="qlab" x="${(X(clamp(r.willingness))+4).toFixed(1)}" y="${(Y(clamp(r.effectiveness))+1.4).toFixed(1)}">${esc(lastName(r.name))}</text>`).join('');
   $('mapview').innerHTML=`<div class="mapwrap"><svg class="quad" viewBox="0 0 ${W} ${H}">
-    <line class="grid" x1="${P}" y1="${H-P}" x2="${W-P}" y2="${H-P}"/><line class="grid" x1="${P}" y1="${P}" x2="${P}" y2="${H-P}"/>
-    <line class="mid" x1="${X(50)}" y1="${P}" x2="${X(50)}" y2="${H-P}"/><line class="mid" x1="${P}" y1="${Y(50)}" x2="${W-P}" y2="${Y(50)}"/>
-    <text class="zone" x="${W-P-2}" y="${P+4}" text-anchor="end">Ideal champions</text>
-    <text class="axt" x="${W/2}" y="${H-2}" text-anchor="middle">Willingness →</text>
-    <text class="axt" x="4.5" y="${H/2}" text-anchor="middle" transform="rotate(-90 4.5 ${H/2})">Effectiveness →</text>
-    ${dots}
-  </svg><p style="color:var(--muted);font-size:12.5px;margin:12px 2px 0">Each dot is a legislator. Top-right means willing to carry <em>and</em> able to pass — your strongest bets. Hover for names, click to open.</p></div>`;
+    <line class="axis" x1="${PL}" y1="${H-PB}" x2="${W-PR}" y2="${H-PB}"/>
+    <line class="axis" x1="${PL}" y1="${PT}" x2="${PL}" y2="${H-PB}"/>
+    <text class="qt" x="${PL}" y="${H-4}">${wmin}</text>
+    <text class="qt" x="${W-PR}" y="${H-4}" text-anchor="end">${wmax}</text>
+    <text class="qt" x="4" y="${H-PB}">${emin}</text>
+    <text class="qt" x="4" y="${PT+3}">${emax}</text>
+    <text class="zone" x="${W-PR-1}" y="${PT+5}" text-anchor="end">strongest ◤</text>
+    <text class="axt" x="${(PL+W-PR)/2}" y="${H-0.5}" text-anchor="middle">Willingness →</text>
+    <text class="axt" x="9.5" y="${(PT+H-PB)/2}" text-anchor="middle" transform="rotate(-90 9.5 ${(PT+H-PB)/2})">Effectiveness →</text>
+    ${dots}${labels}
+  </svg><p class="maphint">Zoomed to this group\'s range so real differences stand out. Top-right is willing <em>and</em> able to pass — your strongest bets. Hover any dot for the numbers, click to open.</p></div>`;
   const tip=$('maptip');
-  $('mapview').querySelectorAll('circle').forEach(c=>{
+  $('mapview').querySelectorAll('.qd').forEach(c=>{
     const r=rows.find(x=>x.legislator_id===c.getAttribute('data-id'));
     c.addEventListener('mousemove',e=>{tip.style.opacity=1;tip.textContent=`${r.name} — W ${clamp(r.willingness)} / E ${clamp(r.effectiveness)}`;tip.style.left=(e.clientX+12)+'px';tip.style.top=(e.clientY-8)+'px';});
     c.addEventListener('mouseleave',()=>tip.style.opacity=0);
@@ -568,7 +633,7 @@ function openModal(){ $('scrim').classList.add('open'); $('modal').classList.add
 function closeModal(){ $('modal').classList.remove('open'); if(!$('drawer').classList.contains('open'))$('scrim').classList.remove('open'); }
 
 function renderStats(){
-  $('s-strip').innerHTML=$('strip').innerHTML;
+  $('s-strip').innerHTML=stripHTML();
   const T=id=>(topicById[id]||{}).label||'—';
   const byTopic={}; BILLS.forEach(b=>{ if(b.topic_id) byTopic[b.topic_id]=(byTopic[b.topic_id]||0)+1; });
   const bt=Object.entries(byTopic).map(([id,n])=>[T(id),n]).sort((a,b)=>b[1]-a[1]).slice(0,12);
@@ -625,7 +690,7 @@ $('p-go').addEventListener('click',()=>{
 function tab(name){
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===name));
   ['finder','stats','proposer','search','coalitions'].forEach(v=>$('view-'+v).classList.toggle('hide',v!==name));
-  if(name==='stats') animateBars();
+  if(name==='stats'){ animateBars(); countUp($('s-strip')); }
 }
 document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>tab(b.dataset.tab)));
 $('back').addEventListener('click',()=>{ $('finder-results').classList.add('hide'); $('finder-landing').classList.remove('hide'); });
@@ -650,8 +715,9 @@ async function showCoalition(id){
   $('c-allies').innerHTML=`<div class="note" style="border:none">Loading coalition…</div>`;
   let allies=[]; try{ const {data}=await db.from('legislator_allies').select('*').eq('legislator_id',id).order('shared_bills',{ascending:false}).limit(14); allies=data||[]; }catch(_){}
   const rows=allies.filter(a=>a.shared_bills>=2).map(a=>`<div class="prow" data-id="${a.ally_id}"><span class="pn">${esc(a.ally_name)}</span><span class="pm">${a.ally_party||'—'} · ${chamberName(a.ally_chamber)} · <b>${a.shared_bills}</b> bills together</span></div>`).join('');
-  $('c-allies').innerHTML=`<div class="sh" style="margin-top:8px">${esc(l.name)}'s closest co-sponsors</div><div class="rows">${rows||'<div class="note">No frequent co-sponsors found.</div>'}</div>`;
+  $('c-allies').innerHTML=coalitionGraph(l,allies)+`<div class="sh" style="margin-top:8px">${esc(l.name)}'s closest co-sponsors</div><div class="rows">${rows||'<div class="note">No frequent co-sponsors found.</div>'}</div>`;
   $('c-allies').querySelectorAll('.prow').forEach(el=>el.addEventListener('click',()=>showCoalition(el.dataset.id)));
+  $('c-allies').querySelectorAll('.gnode[data-id]').forEach(el=>el.addEventListener('click',()=>showCoalition(el.dataset.id)));
 }
 
 $('x').addEventListener('click',closeDrawer);
