@@ -5,11 +5,23 @@ const KEY = process.env.LEGISCAN_API_KEY;
 
 async function call(op, params = {}) {
   const qs = new URLSearchParams({ key: KEY, op, ...params });
-  const res = await fetch(`${BASE}?${qs}`);
-  if (!res.ok) throw new Error(`LegiScan ${op} HTTP ${res.status}`);
-  const json = await res.json();
-  if (json.status !== 'OK') throw new Error(`LegiScan ${op} error: ${json.alert?.message || 'unknown'}`);
-  return json;
+  const url = `${BASE}?${qs}`;
+  let lastErr;
+  for (let attempt = 0; attempt < 5; attempt++) {
+    try {
+      const res = await fetch(url, { signal: AbortSignal.timeout(60000) });
+      if (!res.ok) throw new Error(`LegiScan ${op} HTTP ${res.status}`);
+      const json = await res.json();
+      if (json.status !== 'OK') throw new Error(`LegiScan ${op} error: ${json.alert?.message || 'unknown'}`);
+      return json;
+    } catch (e) {
+      lastErr = e;
+      const wait = 2000 * Math.pow(2, attempt); // 2s,4s,8s,16s,32s
+      console.log(`  LegiScan ${op} attempt ${attempt + 1} failed (${e.message}); retrying in ${wait / 1000}s…`);
+      await new Promise(r => setTimeout(r, wait));
+    }
+  }
+  throw lastErr;
 }
 
 // List available session datasets for a state, optionally a single year.
