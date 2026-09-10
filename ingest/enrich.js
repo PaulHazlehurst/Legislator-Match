@@ -80,7 +80,7 @@ async function main() {
   // ── 1. people: pull OpenStates roster, reconcile ──
   let people = [], page = 1, pages = 1;
   do {
-    const r = await os('/people', { jurisdiction: JURISDICTION, org_classification: 'legislature', page, per_page: 50 });
+    const r = await os('/people', { jurisdiction: JURISDICTION, org_classification: 'legislature', page, per_page: 20 });
     people.push(...(r.results || []));
     pages = r.pagination?.max_page || 1; page++;
   } while (page <= pages);
@@ -104,7 +104,7 @@ async function main() {
   // ── 2. committees + memberships ──
   let committees = [];
   try {
-    const r = await os('/committees', { jurisdiction: JURISDICTION, classification: 'committee', per_page: 50 });
+    const r = await os('/committees', { jurisdiction: JURISDICTION, classification: 'committee', per_page: 20 });
     committees = r.results || [];
   } catch (e) {
     console.log(`  committees list failed (${e.message}). MD coverage may be unavailable.`);
