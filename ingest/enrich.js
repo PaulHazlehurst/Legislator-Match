@@ -14,6 +14,7 @@ import { db } from './lib/db.js';
 
 const KEY = process.env.OPENSTATES_API_KEY;
 const JURISDICTION = process.env.OPENSTATES_JURISDICTION || 'Maryland';
+const JURIS_OCD = process.env.OPENSTATES_JURISDICTION_OCD || 'ocd-jurisdiction/country:us/state:md/government';
 const BASE = 'https://v3.openstates.org';
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
@@ -80,7 +81,7 @@ async function main() {
   // ── 1. people: pull OpenStates roster, reconcile ──
   let people = [], page = 1, pages = 1;
   do {
-    const r = await os('/people', { jurisdiction: JURISDICTION, org_classification: 'legislature', page, per_page: 20 });
+    const r = await os('/people', { jurisdiction: JURIS_OCD, org_classification: 'legislature', page, per_page: 20 });
     people.push(...(r.results || []));
     pages = r.pagination?.max_page || 1; page++;
   } while (page <= pages);
