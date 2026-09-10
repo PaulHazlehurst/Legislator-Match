@@ -268,6 +268,27 @@
   .donut-legend .dl{display:flex;align-items:center;gap:9px}
   .donut-legend .dl b{font-variant-numeric:tabular-nums}
   .donut-legend .sw{width:12px;height:12px;border-radius:3px}
+  .star{background:none;border:none;font-size:16px;color:var(--line-2);cursor:pointer;padding:0 3px;line-height:1;vertical-align:middle}
+  .star.on{color:var(--navy)}
+  .star:hover{color:var(--navy)}
+  .path{display:flex;flex-direction:column}
+  .pstep{display:grid;grid-template-columns:40px 1fr;gap:15px;padding-bottom:20px;position:relative}
+  .pstep:last-child{padding-bottom:0}
+  .pstep:not(:last-child)::before{content:"";position:absolute;left:19px;top:38px;bottom:2px;width:2px;background:var(--line)}
+  .pnum{width:38px;height:38px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;font-weight:800;font-size:15px;z-index:1}
+  .pbody h4{font-family:"Newsreader",serif;font-weight:500;font-size:17px;margin-bottom:3px}
+  .pbody p{margin:0;color:var(--muted);font-size:13.5px;line-height:1.5}
+  .pbody .move{margin-top:5px;font-size:13px;color:var(--willing-ink)}
+  .comm{display:flex;flex-direction:column;gap:11px}
+  .comm .ci{border-left:3px solid var(--willing);padding:1px 0 1px 12px}
+  .comm .ci b{font-size:14px}
+  .comm .ci span{display:block;color:var(--muted);font-size:12.5px;margin-top:1px}
+  .talk{display:flex;flex-direction:column;gap:13px}
+  .talk .ti{display:grid;grid-template-columns:28px 1fr;gap:12px;align-items:start;font-size:14px;line-height:1.5}
+  .talk .tn{width:26px;height:26px;border-radius:50%;background:var(--effect-soft);color:var(--effect-ink);display:grid;place-items:center;font-weight:800;font-size:13px}
+  .tips{display:grid;gap:11px}
+  .tip{display:flex;gap:11px;align-items:baseline;font-size:14px;line-height:1.5}
+  .tip::before{content:"\2192";color:var(--effect-ink);font-weight:800;flex-shrink:0}
   @media (max-width:760px){
     .card{grid-template-columns:1fr;gap:16px}
     .scores{justify-content:flex-start}
@@ -290,6 +311,8 @@
       <button data-tab="search">Search</button>
       <button data-tab="coalitions">Coalitions</button>
       <button data-tab="bills">Bill Search</button>
+      <button data-tab="guide">Playbook</button>
+      <button data-tab="watchlist">Watchlist</button>
     </nav>
   </div>
 </header>
@@ -339,6 +362,8 @@
       <div class="panel"><h3>Passage rate by area <span style="font-weight:400;color:var(--muted);font-size:12px">(substantive bills)</span></h3><div class="bara" id="c-pass"></div></div>
       <div class="panel"><h3>Most effective legislators</h3><div id="c-eff"></div></div>
       <div class="panel"><h3>Committee chairs in your data</h3><div id="c-chairs"></div></div>
+      <div class="panel"><h3>Bill outcomes</h3><div id="c-out"></div></div>
+      <div class="panel"><h3>Most active sponsors</h3><div id="c-active"></div></div>
     </div>
   </section>
 
@@ -373,6 +398,65 @@
       <select id="b-outcome"><option value="">Any outcome</option><option value="passed">Passed</option><option value="failed">Failed</option><option value="pending">Pending</option></select>
     </div>
     <div class="rows" id="b-rows"><div class="note">Type at least 3 characters, or pick a topic.</div></div>
+  </section>
+
+  <section id="view-guide" class="view hide">
+    <div class="lead" style="font-size:27px;margin-bottom:6px">Playbook</div>
+    <p class="sub">How a bill becomes law in Maryland, who controls each step, and where a lobbyist makes the difference. The Assembly meets ~90 days (January to early April), so timing is everything.</p>
+
+    <div class="panel" style="margin-bottom:16px"><h3>The path of a bill</h3>
+      <div class="path">
+        <div class="pstep"><div class="pnum">1</div><div class="pbody"><h4>Introduction &amp; First Reading</h4><p>The bill is filed and referred to a standing committee by subject.</p><div class="move">Your move: lock in a sponsor with real standing, and know which committee it lands in.</div></div></div>
+        <div class="pstep"><div class="pnum">2</div><div class="pbody"><h4>Committee Hearing</h4><p>Public testimony for and against. Written and oral testimony are both weighed.</p><div class="move">Your move: testify with a clean one-pager and real constituents; pre-brief friendly members.</div></div></div>
+        <div class="pstep"><div class="pnum">3</div><div class="pbody"><h4>Committee Vote</h4><p>Favorable, unfavorable, or favorable-with-amendments. Most bills die here, quietly.</p><div class="move">Your move: the chair decides if it even gets a vote — they are your single biggest gatekeeper.</div></div></div>
+        <div class="pstep"><div class="pnum">4</div><div class="pbody"><h4>Floor — Second &amp; Third Reading</h4><p>Second Reading is the amendment stage; Third Reading is the final chamber vote.</p><div class="move">Your move: count votes early and watch for hostile amendments on Second Reading.</div></div></div>
+        <div class="pstep"><div class="pnum">5</div><div class="pbody"><h4>Crossover to the Other Chamber</h4><p>The whole process repeats. Bills that miss "crossover" deadlines often stall.</p><div class="move">Your move: line up a cross-filed companion bill in the other chamber from day one.</div></div></div>
+        <div class="pstep"><div class="pnum">6</div><div class="pbody"><h4>Governor</h4><p>Sign, veto, or allow it to become law without signature.</p><div class="move">Your move: engage the relevant agency and the Governor\'s office on anything contested.</div></div></div>
+        <div class="pstep"><div class="pnum">7</div><div class="pbody"><h4>Effective</h4><p>Most Maryland laws take effect October 1 following passage.</p><div class="move">Your move: plan client rollout around the effective date.</div></div></div>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="panel"><h3>House standing committees</h3><div class="comm">
+        <div class="ci"><b>Ways &amp; Means</b><span>Taxes, education, elections</span></div>
+        <div class="ci"><b>Appropriations</b><span>State budget &amp; spending</span></div>
+        <div class="ci"><b>Economic Matters</b><span>Business, labor, insurance, utilities</span></div>
+        <div class="ci"><b>Environment &amp; Transportation</b><span>Environment, land use, vehicles, local gov</span></div>
+        <div class="ci"><b>Health &amp; Government Operations</b><span>Health, state government</span></div>
+        <div class="ci"><b>Judiciary</b><span>Criminal &amp; civil law, courts</span></div>
+      </div></div>
+      <div class="panel"><h3>Senate standing committees</h3><div class="comm">
+        <div class="ci"><b>Budget &amp; Taxation</b><span>Budget, taxes</span></div>
+        <div class="ci"><b>Finance</b><span>Health, insurance, business, labor</span></div>
+        <div class="ci"><b>Education, Energy &amp; the Environment</b><span>Schools, energy, environment</span></div>
+        <div class="ci"><b>Judicial Proceedings</b><span>Criminal &amp; civil law, courts</span></div>
+        <div class="ci"><b>Rules</b><span>Procedure, late bills</span></div>
+      </div></div>
+    </div>
+
+    <div class="panel" style="margin-top:16px"><h3>Who to talk to — in priority order</h3><div class="talk">
+      <div class="ti"><div class="tn">1</div><div><b>Your lead sponsor.</b> They carry the bill. Pick for willingness <em>and</em> standing — use the Champion Finder\'s two-axis scores.</div></div>
+      <div class="ti"><div class="tn">2</div><div><b>The committee chair.</b> The biggest gatekeeper in Annapolis — controls whether your bill gets a hearing and a vote. Win them or route around them.</div></div>
+      <div class="ti"><div class="tn">3</div><div><b>Committee members.</b> The first real vote. Target persuadable members — check their voting alignment to find who crosses party lines.</div></div>
+      <div class="ti"><div class="tn">4</div><div><b>A cross-file sponsor.</b> A companion bill in the other chamber doubles your momentum and beats the clock.</div></div>
+      <div class="ti"><div class="tn">5</div><div><b>Leadership.</b> The Speaker and Senate President control floor time and priority on contested bills.</div></div>
+      <div class="ti"><div class="tn">6</div><div><b>The agency &amp; Governor\'s office.</b> They shape the fiscal note and hold the signature.</div></div>
+    </div></div>
+
+    <div class="panel" style="margin-top:16px"><h3>Lobbying tips</h3><div class="tips">
+      <div class="tip">Register with the Maryland State Ethics Commission if you cross the compensation or expense threshold.</div>
+      <div class="tip">Move early — in a ~90-day session, a bill that misses crossover usually dies.</div>
+      <div class="tip">Read the fiscal note. Cost is the quiet killer of good bills.</div>
+      <div class="tip">Bring bipartisan cover — a single-party bill is fragile the moment it\'s contested.</div>
+      <div class="tip">Target the committee of referral, not just the floor. That is where bills live or die.</div>
+      <div class="tip">Keep testimony tight: a one-page ask, a clear fiscal story, and a real constituent voice.</div>
+    </div></div>
+  </section>
+
+  <section id="view-watchlist" class="view hide">
+    <div class="lead" style="font-size:27px;margin-bottom:6px">Watchlist</div>
+    <p class="sub">Bills you are tracking this session. Star any bill (★) in Bill Search to add it here. Your list is saved in this browser.</p>
+    <div class="rows" id="w-rows"></div>
   </section>
 </main>
 
@@ -423,6 +507,7 @@ function coalitionGraph(center, allies){
 }
 
 let SCORES=[], LEGIS=[], BILLS=[], TOPICS=[], byLeg={}, topicById={}, legById={}, currentTopic=null, currentView='list', COMP={};
+let WATCH=new Set(); try{ WATCH=new Set(JSON.parse(localStorage.getItem('pinnacle_watch')||'[]')); }catch(_){}
 const picks = new Map();
 
 async function pageAll(table, sel, orderCol){
@@ -720,6 +805,11 @@ function renderStats(){
       <div class="dl"><span class="sw" style="background:var(--r)"></span><b>${rC}</b> Republicans</div>
       <div class="dl" style="margin-top:6px;color:var(--muted)"><span class="sw" style="background:var(--navy)"></span>${hC} House &nbsp;·&nbsp; ${sC} Senate</div>
     </div></div>`;
+  const ocC={passed:0,failed:0,pending:0}; BILLS.forEach(b=>{ const k=b.outcome||'pending'; ocC[k]=(ocC[k]||0)+1; });
+  $('c-out').innerHTML=`<div class="donut-wrap">${donut([{value:ocC.passed,color:'var(--good)'},{value:ocC.failed,color:'var(--r)'},{value:ocC.pending,color:'#9AA0AB'}])}<div class="donut-legend"><div class="dl"><span class="sw" style="background:var(--good)"></span><b>${ocC.passed}</b> became law</div><div class="dl"><span class="sw" style="background:var(--r)"></span><b>${ocC.failed}</b> failed / died</div><div class="dl"><span class="sw" style="background:#9AA0AB"></span><b>${ocC.pending}</b> pending</div></div></div>`;
+  const ledMap={}; SCORES.forEach(s=>{ const m=ledMap[s.legislator_id]||(ledMap[s.legislator_id]={name:s.name,n:0}); m.n+=s.bills_led||0; });
+  const active=Object.values(ledMap).sort((a,b)=>b.n-a.n).slice(0,8);
+  $('c-active').innerHTML=active.map((r,i)=>`<div class="rankrow"><span class="rank">${i+1}.</span><span class="rn">${esc(r.name)}</span><span class="rv">${r.n}</span></div>`).join('');
   const chairs={}; SCORES.forEach(s=>{ if(s.is_committee_chair) chairs[s.legislator_id]={name:s.name,party:s.party,chamber:s.chamber}; });
   const cl=Object.values(chairs).sort((a,b)=>a.name.localeCompare(b.name));
   $('c-chairs').innerHTML=cl.length?cl.map(c=>`<div class="rankrow"><span class="pd ${c.party||'I'}"></span><span class="rn" style="font-size:15px">${esc(c.name)}</span><span class="rv" style="font-weight:600;color:var(--muted)">${chamberName(c.chamber)}</span></div>`).join(''):'<span style="color:var(--muted);font-size:13px">Run the OpenStates enrich step to populate committee chairs.</span>';
@@ -775,7 +865,8 @@ $('p-go').addEventListener('click', async ()=>{
     a=await r.json();
     if(!r.ok) throw new Error(a.error||('HTTP '+r.status));
   }catch(e){
-    $('p-out').innerHTML=`<div class="detect">AI analyzer unavailable (${esc(e.message)}). Using keyword detection instead.</div>`;
+    const hint = /404/.test(e.message) ? 'The /api/analyze function is not deployed — add api/analyze.js to your repo and host on Vercel.' : /GEMINI|key/i.test(e.message) ? 'Set GEMINI_API_KEY in your Vercel project Environment Variables, then redeploy.' : 'Open your-site/api/analyze in a browser to check the function.';
+    $('p-out').innerHTML=`<div class="detect"><b>AI analyzer unavailable</b> — ${esc(e.message)}. ${hint}<br>Falling back to keyword detection below.</div>`;
     $('p-go').disabled=false; runKeywordProposer(text); return;
   }
   $('p-go').disabled=false;
@@ -799,8 +890,9 @@ $('p-go').addEventListener('click', async ()=>{
 
 function tab(name){
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===name));
-  ['finder','stats','proposer','search','coalitions','bills'].forEach(v=>$('view-'+v).classList.toggle('hide',v!==name));
+  ['finder','stats','proposer','search','coalitions','bills','guide','watchlist'].forEach(v=>$('view-'+v).classList.toggle('hide',v!==name));
   if(name==='stats'){ animateBars(); countUp($('s-strip')); }
+  if(name==='watchlist') renderWatch();
 }
 document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>tab(b.dataset.tab)));
 $('back').addEventListener('click',()=>{ $('finder-results').classList.add('hide'); $('finder-landing').classList.remove('hide'); });
@@ -854,7 +946,7 @@ $('howto').addEventListener('click',openMethodology);
 function billRow(b){
   const oc=b.outcome||'pending';
   const tl=(topicById[b.topic_id]||{}).label;
-  return `<div class="bill-row" data-bill="${b.id}"><span class="bn2">${esc(b.bill_number||'')}</span><span class="bti">${esc(b.title||'')}</span><span class="oc ${oc}">${oc}</span>${tl?`<span class="btop">${esc(tl)}</span>`:''}</div>`;
+  return `<div class="bill-row" data-bill="${b.id}"><span class="bn2">${esc(b.bill_number||'')}</span><span class="bti">${esc(b.title||'')}</span><span class="oc ${oc}">${oc}</span>${tl?`<span class="btop">${esc(tl)}</span>`:''}<button class="star ${WATCH.has(b.id)?'on':''}" data-star="${b.id}" title="Track this bill">★</button></div>`;
 }
 function renderBills(){
   const term=$('b-input').value.trim().toLowerCase();
@@ -867,7 +959,8 @@ function renderBills(){
     return true;
   }).slice(0,80);
   $('b-rows').innerHTML=r.length?r.map(billRow).join(''):'<div class="note">No bills match.</div>';
-  $('b-rows').querySelectorAll('[data-bill]').forEach(el=>el.addEventListener('click',()=>openBill(el.dataset.bill)));
+  $('b-rows').querySelectorAll('.bill-row[data-bill]').forEach(el=>el.addEventListener('click',()=>openBill(el.dataset.bill)));
+  bindStars($('b-rows'));
 }
 ['b-input','b-topic','b-outcome'].forEach(id=>$(id).addEventListener('input',renderBills));
 $('b-topic').addEventListener('change',renderBills);
@@ -885,7 +978,7 @@ async function openBill(billId){
   const sRow=s=>`<div class="spon" data-open="${(s.legislators||{}).id||''}"><span class="pd ${(s.legislators||{}).party||'I'}"></span><span class="sn">${esc((s.legislators||{}).name||'')}</span><span class="lead">${s.role==='cosponsor'?'Co-sponsor':'Lead'}</span></div>`;
   const primaries=spons.filter(s=>s.role!=='cosponsor'), cosp=spons.filter(s=>s.role==='cosponsor');
   $('dbody').innerHTML=`
-    <div class="dm" style="font-weight:700;color:var(--willing-ink);font-size:15px">${esc(b.bill_number||'')}</div>
+    <div class="dm" style="font-weight:700;color:var(--willing-ink);font-size:15px">${esc(b.bill_number||'')} <button class="star ${WATCH.has(b.id)?'on':''}" data-star="${b.id}">★</button></div>
     <h2 style="font-size:20px;margin-top:2px">${esc(b.title||'')}</h2>
     <div class="dm" style="margin-top:8px"><span class="oc ${oc}">${oc}</span>${tl?` · ${esc(tl)}`:''}${(b.sessions&&b.sessions.year_end)?` · ${b.sessions.year_end}`:''}</div>
     ${comp?`<div class="comp" data-bill="${comp.id}">Companion bill: <b>${esc(comp.bill_number)}</b> — same title in the ${comp.chamber==='senate'?'Senate':'House'}. Click to open.</div>`:''}
@@ -893,8 +986,29 @@ async function openBill(billId){
     <div class="sh">Co-sponsors (${cosp.length})</div>${cosp.map(sRow).join('')||'<div style="color:var(--muted);font-size:13px">None.</div>'}`;
   $('dbody').querySelectorAll('.spon[data-open]').forEach(el=>{ if(el.dataset.open) el.addEventListener('click',()=>openDetail(el.dataset.open)); });
   const cc=$('dbody').querySelector('.comp[data-bill]'); if(cc)cc.addEventListener('click',()=>openBill(cc.dataset.bill));
+  bindStars($('dbody'));
 }
 $('printbtn').addEventListener('click',()=>window.print());
+
+function saveWatch(){
+  try{ localStorage.setItem('pinnacle_watch',JSON.stringify([...WATCH])); }catch(_){}
+  document.querySelectorAll('nav [data-tab="watchlist"]').forEach(b=>b.textContent='Watchlist'+(WATCH.size?` (${WATCH.size})`:''));
+}
+function toggleWatch(id){
+  if(WATCH.has(id))WATCH.delete(id); else WATCH.add(id);
+  saveWatch();
+  document.querySelectorAll(`.star[data-star="${id}"]`).forEach(el=>el.classList.toggle('on',WATCH.has(id)));
+  if(!$('view-watchlist').classList.contains('hide')) renderWatch();
+}
+function bindStars(scope){ (scope||document).querySelectorAll('.star[data-star]').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();toggleWatch(el.dataset.star);})); }
+function renderWatch(){
+  const bills=[...WATCH].map(id=>BILLS.find(b=>b.id===id)).filter(Boolean).sort((a,b)=>(a.bill_number||'').localeCompare(b.bill_number||''));
+  if(!bills.length){ $('w-rows').innerHTML='<div class="note"><b>No bills tracked yet.</b><br>Star any bill (★) in Bill Search to watch it here. Your list is saved in this browser.</div>'; return; }
+  $('w-rows').innerHTML=`<div class="rc" style="margin:0 2px 12px">${bills.length} bill${bills.length===1?'':'s'} tracked</div>`+bills.map(billRow).join('');
+  $('w-rows').querySelectorAll('.bill-row[data-bill]').forEach(el=>el.addEventListener('click',()=>openBill(el.dataset.bill)));
+  bindStars($('w-rows'));
+}
+saveWatch();
 
 boot();
 </script>
