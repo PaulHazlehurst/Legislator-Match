@@ -25,6 +25,10 @@ const TOPICS = [
 ];
 
 export default async function handler(req, res) {
+  if (req.method === 'GET') {
+    res.status(200).json({ ok: true, hasKey: !!process.env.GEMINI_API_KEY, model: process.env.GEMINI_MODEL || 'gemini-3.6-flash' });
+    return;
+  }
   if (req.method !== 'POST') { res.status(405).json({ error: 'POST only' }); return; }
 
   let body = req.body;
