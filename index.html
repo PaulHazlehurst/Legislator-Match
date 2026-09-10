@@ -14,9 +14,9 @@
     --navy:#16263F; --navy-2:#22375A;
     --line:#E6E2DA; --line-2:#D5CFC3;
     --willing:#2E5E8C; --willing-ink:#244F76; --willing-soft:#DEE8F1;
-    --effect:#B5852A; --effect-ink:#8A6410; --effect-soft:#F2E7CC;
+    --effect:#2E8C78; --effect-ink:#1F6D5C; --effect-soft:#D8ECE6;
     --d:#3B67A8; --r:#B0473C; --i:#6B7280;
-    --good:#3E7A54; --warn:#B5852A; --thin:#9AA0AB; --pass:#3E7A54; --fail:#B0473C; --pend:#9AA0AB;
+    --good:#3E7A54; --warn:#C67B39; --thin:#9AA0AB; --pass:#3E7A54; --fail:#B0473C; --pend:#9AA0AB;
     --shadow:0 1px 2px rgba(25,28,34,.04), 0 8px 24px rgba(25,28,34,.06);
     --shadow-lg:0 12px 40px rgba(25,28,34,.16);
   }
@@ -31,7 +31,7 @@
   .bar{max-width:1160px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:26px;height:62px}
   .brand{font-weight:800;letter-spacing:-.01em;font-size:16px;display:flex;align-items:center;gap:9px;color:#fff}
   .brand .dot{width:9px;height:9px;border-radius:2px;background:var(--effect);box-shadow:3px 0 0 #6f9bc9}
-  .brand span{color:#E4C579}
+  .brand span{color:#8FCFC0}
   nav{display:flex;gap:2px;margin-left:auto}
   nav button{background:none;border:none;padding:8px 13px;border-radius:8px;font-size:14px;font-weight:600;color:rgba(255,255,255,.72);transition:background .12s,color .12s}
   nav button.active{color:#fff;background:rgba(255,255,255,.14)}
@@ -95,7 +95,7 @@
   .sep{width:3px;height:3px;border-radius:50%;background:var(--line-2)}
   .badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
   .bdg{font-size:11px;font-weight:600;padding:3px 8px;border-radius:6px}
-  .bdg.pw{background:var(--effect-soft);color:#7A5A16}
+  .bdg.pw{background:var(--effect-soft);color:#1F6D5C}
   .bdg.mj{background:#EDEAE2;color:#4A4A4A}
   .ev{margin-top:10px;font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
   .q{font-weight:700}
@@ -230,6 +230,29 @@
   .gtext{font:600 6px "Libre Franklin";fill:var(--ink)}
   .gcenter{font:700 6px "Libre Franklin";fill:#fff}
   .card{opacity:0;animation:tilein .4s cubic-bezier(.2,.7,.2,1) forwards}
+  .bill-row{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:11px 15px;cursor:pointer;transition:border-color .12s,transform .12s}
+  .bill-row:hover{border-color:var(--line-2);transform:translateY(-1px)}
+  .bill-row .bn2{font-weight:800;font-variant-numeric:tabular-nums;color:var(--willing-ink);white-space:nowrap;min-width:66px}
+  .bill-row .bti{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .bill-row .btop{color:var(--muted);font-size:12px;white-space:nowrap}
+  .spon{display:flex;align-items:center;gap:8px;padding:7px 0;border-top:1px solid var(--line);font-size:13.5px;cursor:pointer}
+  .spon:hover .sn{color:var(--willing-ink)}
+  .spon .lead{margin-left:auto;font-size:11px;font-weight:700;color:var(--muted)}
+  .comp{background:var(--willing-soft);border:1px solid #C6D7E6;border-radius:10px;padding:11px 14px;margin:12px 0;font-size:13.5px;cursor:pointer;transition:.12s}
+  .comp:hover{border-color:var(--willing)}
+  .comp b{color:var(--willing-ink)}
+  .va{display:flex;align-items:center;gap:8px;padding:7px 0;border-top:1px solid var(--line);font-size:13.5px}
+  .va .vbar{width:64px;height:6px;border-radius:4px;background:#ECE9E2;overflow:hidden;margin-left:auto}
+  .va .vbar i{display:block;height:100%;border-radius:4px}
+  .va .vp{font-weight:800;font-variant-numeric:tabular-nums;width:34px;text-align:right}
+  .pbtn{position:absolute;top:16px;right:50px;border:1px solid var(--line-2);background:none;border-radius:7px;padding:5px 10px;font-size:12px;font-weight:600;color:var(--muted)}
+  .pbtn:hover{color:var(--ink);border-color:var(--muted)}
+  @media print{
+    header,nav,.tray,.scrim,main,.modal,.pbtn,.drawer .x,.maptip{display:none !important}
+    .drawer{position:static !important;width:100% !important;transform:none !important;border:none !important;box-shadow:none !important;height:auto !important;overflow:visible !important;padding:0 !important}
+    body{background:#fff}
+    .sh::after{background:#ddd}
+  }
   @media (max-width:760px){
     .card{grid-template-columns:1fr;gap:16px}
     .scores{justify-content:flex-start}
@@ -251,6 +274,7 @@
       <button data-tab="proposer">Bill Proposer</button>
       <button data-tab="search">Search</button>
       <button data-tab="coalitions">Coalitions</button>
+      <button data-tab="bills">Bill Search</button>
     </nav>
   </div>
 </header>
@@ -323,6 +347,17 @@
     <div class="rows" id="c-rows"></div>
     <div id="c-allies"></div>
   </section>
+
+  <section id="view-bills" class="view hide">
+    <div class="lead" style="font-size:27px;margin-bottom:6px">Bill search</div>
+    <p class="sub">Search every bill across three sessions. Open any bill to see its full sponsor coalition, outcome, and its Senate/House companion.</p>
+    <div class="refine" style="margin-bottom:14px">
+      <div class="finder-box" style="margin:0;flex:1;max-width:420px"><input id="b-input" type="text" placeholder="Search titles or numbers — e.g. workforce, HB1358…" autocomplete="off"></div>
+      <select id="b-topic"><option value="">All topics</option></select>
+      <select id="b-outcome"><option value="">Any outcome</option><option value="passed">Passed</option><option value="failed">Failed</option><option value="pending">Pending</option></select>
+    </div>
+    <div class="rows" id="b-rows"><div class="note">Type at least 3 characters, or pick a topic.</div></div>
+  </section>
 </main>
 
 <div class="tray" id="tray">
@@ -337,6 +372,7 @@
 <div class="modal" id="modal"><div id="modal-body"></div></div>
 <aside class="drawer" id="drawer" aria-hidden="true">
   <button class="x" id="x" aria-label="Close">×</button>
+  <button class="pbtn" id="printbtn">Print brief</button>
   <div id="dbody"></div>
 </aside>
 
@@ -370,7 +406,7 @@ function coalitionGraph(center, allies){
   return `<div class="graphwrap"><svg viewBox="0 0 ${W} ${H}" class="cograph">${lines}${anodes}<circle cx="${cx}" cy="${cy}" r="13" fill="var(--navy)"/><text x="${cx}" y="${cy+2}" text-anchor="middle" class="gcenter">${esc(lastName(center.name||''))}</text></svg><p class="maphint">Thicker lines and bigger dots mean more bills shared. Click any name to jump to their coalition.</p></div>`;
 }
 
-let SCORES=[], LEGIS=[], BILLS=[], TOPICS=[], byLeg={}, topicById={}, legById={}, currentTopic=null, currentView='list';
+let SCORES=[], LEGIS=[], BILLS=[], TOPICS=[], byLeg={}, topicById={}, legById={}, currentTopic=null, currentView='list', COMP={};
 const picks = new Map();
 
 async function pageAll(table, sel, orderCol){
@@ -390,7 +426,7 @@ async function boot(){
     [SCORES, LEGIS, BILLS] = await Promise.all([
       pageAll('legislator_topic_scores','*','legislator_id'),
       pageAll('legislators','id,name,party,chamber,district','name'),
-      pageAll('bills','topic_id,outcome,significance,sessions(is_current)','id'),
+      pageAll('bills','id,bill_number,title,outcome,significance,topic_id,session_id,sessions(is_current,year_end)','id'),
     ]);
   }catch(e){ $('tiles').innerHTML=`<div class="note"><b>Couldn't load data.</b><br>${esc(e.message)}</div>`; return; }
 
@@ -400,6 +436,9 @@ async function boot(){
   SCORES.forEach(s=>{ (map[s.topic_code] ||= {code:s.topic_code,label:s.topic_label,id:s.topic_id,members:new Set()}).members.add(s.legislator_id); });
   TOPICS=Object.values(map).map(t=>({...t,count:t.members.size})).sort((a,b)=>a.label.localeCompare(b.label));
 
+  BILLS.forEach(b=>{ b.chamber=String(b.bill_number||'').startsWith('SB')?'senate':'house'; b.ntitle=String(b.title||'').toLowerCase().trim(); });
+  COMP={}; BILLS.forEach(b=>{ const k=b.session_id+'|'+b.ntitle; (COMP[k]||(COMP[k]=[])).push(b); });
+  $('b-topic').innerHTML='<option value="">All topics</option>'+TOPICS.map(t=>`<option value="${esc(t.code)}">${esc(t.label)}</option>`).join('');
   renderStrip(); renderTiles(); renderStats();
 }
 
@@ -600,6 +639,8 @@ async function openDetail(id){
 
   let allies=[], bills=[];
   try{ const a=await db.from('legislator_allies').select('*').eq('legislator_id',id).order('shared_bills',{ascending:false}).limit(8); allies=a.data||[]; }catch(_){}
+  let va=[];
+  try{ const r=await db.rpc('voting_alignment',{leg:id}); va=r.data||[]; }catch(_){}
   if(topicId){
     try{
       const b=await db.from('bills').select('bill_number,title,outcome,sessions(year_end),sponsorships!inner(role,legislator_id)').eq('topic_id',topicId).eq('sponsorships.legislator_id',id).order('bill_number');
@@ -618,13 +659,17 @@ async function openDetail(id){
 
   const curLabel=(TOPICS.find(t=>t.code===currentTopic)||{}).label;
   const billsSection = topicId ? `<div class="sh">Their bills on ${esc(curLabel||'this topic')}</div>${billRows||'<div style="color:var(--muted);font-size:13px">None found on this topic.</div>'}` : '';
+  const vaRow=x=>`<div class="va"><span class="pd ${x.party||'I'}"></span><span>${esc(x.name)}</span><span class="vbar"><i style="width:${x.pct}%;background:${x.pct>=60?'var(--good)':x.pct>=40?'var(--warn)':'var(--r)'}"></i></span><span class="vp">${x.pct}%</span></div>`;
+  const vaTop=va.slice(0,6), vaBottom=va.filter(x=>x.shared>=25).slice(-3).reverse();
+  const vaSection = va.length ? `<div class="sh">Votes most alike</div>${vaTop.map(vaRow).join('')}<div class="sh">Votes least alike — crosses lines</div>${vaBottom.map(vaRow).join('')}` : '';
 
   $('dbody').innerHTML=`
     <h2>${esc(l.name||head.name||'')}</h2>
     <div class="dm">${l.party||'—'} · ${chamberName(l.chamber)}${l.district?` · District ${esc(l.district)}`:''}${head.is_committee_chair?' · Committee chair':''}${head.is_leadership?' · Leadership':''}</div>
     <div class="sh">Scores by policy area</div>${topicRows}
     ${billsSection}
-    <div class="sh">Closest co-sponsors — real coalition</div>${allyRows}`;
+    <div class="sh">Closest co-sponsors — real coalition</div>${allyRows}
+    ${vaSection}`;
   animateScores($('dbody'));
   $('dbody').querySelectorAll('[data-ally]').forEach(el=>el.addEventListener('click',()=>openDetail(el.dataset.ally)));
 }
@@ -689,7 +734,7 @@ $('p-go').addEventListener('click',()=>{
 
 function tab(name){
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===name));
-  ['finder','stats','proposer','search','coalitions'].forEach(v=>$('view-'+v).classList.toggle('hide',v!==name));
+  ['finder','stats','proposer','search','coalitions','bills'].forEach(v=>$('view-'+v).classList.toggle('hide',v!==name));
   if(name==='stats'){ animateBars(); countUp($('s-strip')); }
 }
 document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>tab(b.dataset.tab)));
@@ -740,6 +785,51 @@ function openMethodology(){
   openModal();
 }
 $('howto').addEventListener('click',openMethodology);
+
+function billRow(b){
+  const oc=b.outcome||'pending';
+  const tl=(topicById[b.topic_id]||{}).label;
+  return `<div class="bill-row" data-bill="${b.id}"><span class="bn2">${esc(b.bill_number||'')}</span><span class="bti">${esc(b.title||'')}</span><span class="oc ${oc}">${oc}</span>${tl?`<span class="btop">${esc(tl)}</span>`:''}</div>`;
+}
+function renderBills(){
+  const term=$('b-input').value.trim().toLowerCase();
+  const tp=$('b-topic').value, oc=$('b-outcome').value;
+  if(term.length<3 && !tp && !oc){ $('b-rows').innerHTML='<div class="note">Type at least 3 characters, or pick a topic.</div>'; return; }
+  const r=BILLS.filter(b=>{
+    if(tp){ if(((topicById[b.topic_id]||{}).code)!==tp) return false; }
+    if(oc && (b.outcome||'pending')!==oc) return false;
+    if(term){ if(!((b.bill_number||'')+' '+(b.title||'')).toLowerCase().includes(term)) return false; }
+    return true;
+  }).slice(0,80);
+  $('b-rows').innerHTML=r.length?r.map(billRow).join(''):'<div class="note">No bills match.</div>';
+  $('b-rows').querySelectorAll('[data-bill]').forEach(el=>el.addEventListener('click',()=>openBill(el.dataset.bill)));
+}
+['b-input','b-topic','b-outcome'].forEach(id=>$(id).addEventListener('input',renderBills));
+$('b-topic').addEventListener('change',renderBills);
+$('b-outcome').addEventListener('change',renderBills);
+
+async function openBill(billId){
+  $('scrim').classList.add('open'); $('drawer').classList.add('open'); $('drawer').setAttribute('aria-hidden','false');
+  $('dbody').innerHTML=`<div class="note" style="border:none">Loading…</div>`;
+  const b=BILLS.find(x=>x.id===billId)||{};
+  let spons=[];
+  try{ const r=await db.from('sponsorships').select('role,sponsor_order,legislators(id,name,party,chamber)').eq('bill_id',billId).order('sponsor_order',{nullsFirst:false}); spons=r.data||[]; }catch(_){}
+  const comp=(COMP[b.session_id+'|'+b.ntitle]||[]).find(x=>x.id!==b.id && x.chamber!==b.chamber);
+  const oc=b.outcome||'pending';
+  const tl=(topicById[b.topic_id]||{}).label;
+  const sRow=s=>`<div class="spon" data-open="${(s.legislators||{}).id||''}"><span class="pd ${(s.legislators||{}).party||'I'}"></span><span class="sn">${esc((s.legislators||{}).name||'')}</span><span class="lead">${s.role==='cosponsor'?'Co-sponsor':'Lead'}</span></div>`;
+  const primaries=spons.filter(s=>s.role!=='cosponsor'), cosp=spons.filter(s=>s.role==='cosponsor');
+  $('dbody').innerHTML=`
+    <div class="dm" style="font-weight:700;color:var(--willing-ink);font-size:15px">${esc(b.bill_number||'')}</div>
+    <h2 style="font-size:20px;margin-top:2px">${esc(b.title||'')}</h2>
+    <div class="dm" style="margin-top:8px"><span class="oc ${oc}">${oc}</span>${tl?` · ${esc(tl)}`:''}${(b.sessions&&b.sessions.year_end)?` · ${b.sessions.year_end}`:''}</div>
+    ${comp?`<div class="comp" data-bill="${comp.id}">Companion bill: <b>${esc(comp.bill_number)}</b> — same title in the ${comp.chamber==='senate'?'Senate':'House'}. Click to open.</div>`:''}
+    <div class="sh">Lead sponsor${primaries.length>1?'s':''}</div>${primaries.map(sRow).join('')||'<div style="color:var(--muted);font-size:13px">None listed.</div>'}
+    <div class="sh">Co-sponsors (${cosp.length})</div>${cosp.map(sRow).join('')||'<div style="color:var(--muted);font-size:13px">None.</div>'}`;
+  $('dbody').querySelectorAll('.spon[data-open]').forEach(el=>{ if(el.dataset.open) el.addEventListener('click',()=>openDetail(el.dataset.open)); });
+  const cc=$('dbody').querySelector('.comp[data-bill]'); if(cc)cc.addEventListener('click',()=>openBill(cc.dataset.bill));
+}
+$('printbtn').addEventListener('click',()=>window.print());
 
 boot();
 </script>
