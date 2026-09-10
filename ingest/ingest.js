@@ -98,9 +98,18 @@ async function ingestSession(dataset, tax) {
   const unclassified = billRows.filter(r => !r.topic_id).length;
   console.log(`  processed ${billRows.length} bills this session (${unclassified} had no subject topic)`);
 
-  const { data: billsBack } = await db.from('bills')
-    .select('id, legiscan_bill_id').eq('session_id', sessionId);
-  const billByLegiscan = Object.fromEntries(billsBack.map(b => [b.legiscan_bill_id, b.id]));
+  // Page through ALL bills in the session (Supabase caps a query at 1000 rows,
+  // so without this the sponsorship/vote maps only saw the first 1000 bills and
+  // silently dropped links for the rest).
+  const billByLegiscan = {};
+  for (let from = 0; ; from += 1000) {
+    const { data: page } = await db.from('bills')
+      .select('id, legiscan_bill_id').eq('session_id', sessionId)
+      .order('id').range(from, from + 999);
+    if (!page || !page.length) break;
+    for (const b of page) billByLegiscan[b.legiscan_bill_id] = b.id;
+    if (page.length < 1000) break;
+  }
 
   // ── sponsorships (primary + co-sponsors) ──
   const sponRows = [];

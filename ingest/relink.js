@@ -50,9 +50,15 @@ async function relinkSession(dataset) {
   const legByPeople = Object.fromEntries(legs.map(l => [l.legiscan_people_id, l.id]));
 
   // 2. map existing bills by legiscan id (we do NOT write bills)
-  const { data: bills } = await db.from('bills')
-    .select('id, legiscan_bill_id').eq('session_id', sess.id);
-  const billByLegiscan = Object.fromEntries(bills.map(b => [b.legiscan_bill_id, b.id]));
+  const bills = [];
+  const billByLegiscan = {};
+  for (let from = 0; ; from += 1000) {
+    const { data: page } = await db.from('bills')
+      .select('id, legiscan_bill_id').eq('session_id', sess.id).order('id').range(from, from + 999);
+    if (!page || !page.length) break;
+    for (const b of page) { bills.push(b); billByLegiscan[b.legiscan_bill_id] = b.id; }
+    if (page.length < 1000) break;
+  }
 
   // 3. rebuild sponsorships from the dataset, linking to existing bills only
   const sponRows = [];
@@ -72,11 +78,14 @@ async function relinkSession(dataset) {
 
   // 4. restore individual votes for existing roll calls
   let voteCount = 0;
-  const { data: rolls } = await db.from('roll_calls')
-    .select('id, legiscan_roll_call_id')
-    .in('bill_id', bills.map(b => b.id).slice(0, 1)); // warm the type; real map below
-  const { data: allRolls } = await db.from('roll_calls').select('id, legiscan_roll_call_id');
-  const rollByLegiscan = Object.fromEntries((allRolls || []).map(r => [r.legiscan_roll_call_id, r.id]));
+  const rollByLegiscan = {};
+  for (let from = 0; ; from += 1000) {
+    const { data: page } = await db.from('roll_calls')
+      .select('id, legiscan_roll_call_id').order('id').range(from, from + 999);
+    if (!page || !page.length) break;
+    for (const r of page) rollByLegiscan[r.legiscan_roll_call_id] = r.id;
+    if (page.length < 1000) break;
+  }
 
   for (const rc of data.votes) {
     const rcId = rollByLegiscan[rc.roll_call_id];
