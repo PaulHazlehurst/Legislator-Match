@@ -36,9 +36,15 @@ async function os(path, params = {}) {
 function norm(name = '') {
   return name.toLowerCase().normalize('NFKD')
     .replace(/[^a-z\s]/g, ' ')
-    .replace(/\b(jr|sr|ii|iii|iv|dr|hon)\b/g, '')
+    .replace(/\b(jr|sr|ii|iii|iv|dr|hon|del|sen|delegate|senator|rep|representative|mr|mrs|ms|mx)\b/g, '')
     .replace(/\s+/g, ' ').trim();
 }
+function reformat(name = '') {
+  // OpenStates sometimes gives "Last, First" — flip it to "First Last".
+  if (name.includes(',')) { const [a, b] = name.split(',', 2); return `${b.trim()} ${a.trim()}`; }
+  return name;
+}
+const lastKey = (name='') => { const p = norm(name).split(' ').filter(Boolean); return p.length ? p[p.length-1] : null; };
 function lastFirst(name = '') {
   const p = norm(name).split(' ').filter(Boolean);
   if (p.length < 2) return null;
@@ -61,15 +67,22 @@ async function currentSession() {
 
 async function loadOurRoster() {
   const { data } = await db.from('legislators').select('id, name, party, district, chamber');
-  const byFull = new Map(), byLF = new Map();
+  const byFull = new Map(), byLF = new Map(), lastCount = {}, byLast = new Map();
   for (const l of data) {
     byFull.set(norm(l.name), l);
     const k = lastFirst(l.name); if (k) byLF.set(k, l);
+    const lk = lastKey(l.name); if (lk) { lastCount[lk] = (lastCount[lk]||0)+1; byLast.set(lk, l); }
   }
-  return { list: data, byFull, byLF };
+  // keep byLast only for UNIQUE last names (avoid ambiguous matches)
+  for (const [lk, n] of Object.entries(lastCount)) if (n > 1) byLast.delete(lk);
+  return { list: data, byFull, byLF, byLast };
 }
-function match(roster, name) {
-  return roster.byFull.get(norm(name)) || (lastFirst(name) && roster.byLF.get(lastFirst(name))) || null;
+function match(roster, rawName) {
+  const name = reformat(rawName);
+  return roster.byFull.get(norm(name))
+      || (lastFirst(name) && roster.byLF.get(lastFirst(name)))
+      || (lastKey(name) && roster.byLast.get(lastKey(name)))
+      || null;
 }
 
 async function main() {
@@ -111,6 +124,7 @@ async function main() {
     console.log(`  committees list failed (${e.message}). MD coverage may be unavailable.`);
   }
   console.log(`\nCommittees found: ${committees.length}`);
+  if (committees[0]) console.log('  sample committee:', JSON.stringify(committees[0]).slice(0, 700));
   if (!committees.length) {
     console.log('  No committee data from OpenStates for this jurisdiction.');
     console.log('  Institutional-power scoring will use majority status only until this is filled.');
@@ -137,7 +151,7 @@ async function main() {
       catch { memberships = []; }
     }
     for (const m of memberships) {
-      const nm = m.person_name || m.person?.name;
+      const nm = m.person_name || m.person?.name || m.name || m.member_name || m.member?.name;
       const me = nm && match(roster, nm);
       if (!me) { memUnmatched++; continue; }
       const role = roleOf(m.role);
