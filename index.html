@@ -253,6 +253,21 @@
     body{background:#fff}
     .sh::after{background:#ddd}
   }
+  .ai-card{background:linear-gradient(135deg,#EAF1F8,#F4F1EA);border:1px solid #CFDCE8;border-radius:14px;padding:18px 20px;margin-bottom:16px;box-shadow:var(--shadow)}
+  .ai-head{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+  .ai-badge{background:var(--navy);color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:6px;letter-spacing:.02em}
+  .ai-topic{font-family:"Newsreader",serif;font-size:18px;font-weight:500}
+  .ai-sum{margin:0 0 10px;font-size:14.5px;line-height:1.55}
+  .themes{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:11px}
+  .theme{background:#fff;border:1px solid var(--line-2);border-radius:20px;padding:3px 12px;font-size:12px;font-weight:600;color:var(--willing-ink)}
+  .ai-strat{font-size:13.5px;line-height:1.55;background:#fff;border-radius:9px;padding:12px 14px;border:1px solid var(--line)}
+  .ai-strat b{color:var(--navy)}
+  .donut-wrap{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+  .donut{width:124px;height:124px;flex-shrink:0}
+  .donut-legend{display:flex;flex-direction:column;gap:7px;font-size:13.5px}
+  .donut-legend .dl{display:flex;align-items:center;gap:9px}
+  .donut-legend .dl b{font-variant-numeric:tabular-nums}
+  .donut-legend .sw{width:12px;height:12px;border-radius:3px}
   @media (max-width:760px){
     .card{grid-template-columns:1fr;gap:16px}
     .scores{justify-content:flex-start}
@@ -318,7 +333,8 @@
     <div class="lead" style="font-size:27px;margin-bottom:6px">Statistics</div>
     <p class="sub">The shape of three sessions of Maryland legislation, drawn from every bill, sponsor, and vote.</p>
     <div class="strip" id="s-strip"></div>
-    <div class="grid2" style="margin-top:4px">
+    <div class="panel" style="margin:4px 0 16px"><h3>Chamber &amp; party composition</h3><div id="c-comp"></div></div>
+    <div class="grid2">
       <div class="panel"><h3>Bills by policy area</h3><div class="bara" id="c-bills"></div></div>
       <div class="panel"><h3>Passage rate by area <span style="font-weight:400;color:var(--muted);font-size:12px">(substantive bills)</span></h3><div class="bara" id="c-pass"></div></div>
       <div class="panel"><h3>Most effective legislators</h3><div id="c-eff"></div></div>
@@ -455,6 +471,11 @@ function countUp(scope){
   });
 }
 function renderStrip(){ $('strip').innerHTML=stripHTML(); countUp($('strip')); }
+function donut(segs){
+  const total=segs.reduce((s,x)=>s+x.value,0)||1, R=45, C=2*Math.PI*45; let off=0;
+  const arcs=segs.map(sg=>{ const frac=sg.value/total; const el=`<circle cx="60" cy="60" r="${R}" fill="none" stroke="${sg.color}" stroke-width="15" stroke-dasharray="${(frac*C).toFixed(1)} ${(C-frac*C).toFixed(1)}" stroke-dashoffset="${(-off*C).toFixed(1)}" transform="rotate(-90 60 60)" style="transition:stroke-dasharray .8s"/>`; off+=frac; return el; }).join('');
+  return `<svg class="donut" viewBox="0 0 120 120">${arcs}<text x="60" y="60" text-anchor="middle" dominant-baseline="central" style="font:800 22px Libre Franklin;fill:var(--ink)">${total}</text></svg>`;
+}
 
 function spark(topicId){
   const es=SCORES.filter(s=>s.topic_id===topicId).map(s=>s.effectiveness);
@@ -690,6 +711,15 @@ function renderStats(){
   const best={}; SCORES.forEach(s=>{ const cur=best[s.legislator_id]; if(!cur||s.effectiveness>cur.e) best[s.legislator_id]={name:s.name,e:s.effectiveness}; });
   const eff=Object.values(best).sort((a,b)=>b.e-a.e).slice(0,8);
   $('c-eff').innerHTML=eff.map((r,i)=>`<div class="rankrow"><span class="rank">${i+1}.</span><span class="rn">${esc(r.name)}</span><span class="rv" style="color:var(--effect-ink)">${clamp(r.e)}</span></div>`).join('');
+  // composition donut
+  const dC=LEGIS.filter(l=>l.party==='D').length, rC=LEGIS.filter(l=>l.party==='R').length, oC=LEGIS.length-dC-rC;
+  const hC=LEGIS.filter(l=>l.chamber==='house').length, sC=LEGIS.filter(l=>l.chamber==='senate').length;
+  $('c-comp').innerHTML=`<div class="donut-wrap">${donut([{value:dC,color:'var(--d)'},{value:rC,color:'var(--r)'}].concat(oC?[{value:oC,color:'#9AA0AB'}]:[]))}
+    <div class="donut-legend">
+      <div class="dl"><span class="sw" style="background:var(--d)"></span><b>${dC}</b> Democrats</div>
+      <div class="dl"><span class="sw" style="background:var(--r)"></span><b>${rC}</b> Republicans</div>
+      <div class="dl" style="margin-top:6px;color:var(--muted)"><span class="sw" style="background:var(--navy)"></span>${hC} House &nbsp;·&nbsp; ${sC} Senate</div>
+    </div></div>`;
   const chairs={}; SCORES.forEach(s=>{ if(s.is_committee_chair) chairs[s.legislator_id]={name:s.name,party:s.party,chamber:s.chamber}; });
   const cl=Object.values(chairs).sort((a,b)=>a.name.localeCompare(b.name));
   $('c-chairs').innerHTML=cl.length?cl.map(c=>`<div class="rankrow"><span class="pd ${c.party||'I'}"></span><span class="rn" style="font-size:15px">${esc(c.name)}</span><span class="rv" style="font-weight:600;color:var(--muted)">${chamberName(c.chamber)}</span></div>`).join(''):'<span style="color:var(--muted);font-size:13px">Run the OpenStates enrich step to populate committee chairs.</span>';
@@ -718,18 +748,53 @@ function detectTopic(text){
   for(const [code,pats] of PROPOSER_RULES){ if(pats.some(p=>t.includes(p))) return code; }
   return null;
 }
-$('p-go').addEventListener('click',()=>{
-  const text=$('p-text').value.trim();
-  if(text.length<6){ $('p-out').innerHTML=`<div class="detect">Type a bit more of your bill's title or summary.</div>`; return; }
-  const code=detectTopic(text);
-  if(!code){ $('p-out').innerHTML=`<div class="detect">Couldn't confidently detect a policy area. Try the Champion Finder and pick one directly.</div>`; return; }
-  const t=TOPICS.find(x=>x.code===code);
-  currentTopic=code;
+function proposerChampions(code){
+  const t=TOPICS.find(x=>x.code===code); currentTopic=code;
   const rows=SCORES.filter(s=>s.topic_code===code).sort((a,b)=>(b.willingness+b.effectiveness)-(a.willingness+a.effectiveness)).slice(0,6);
-  $('p-out').innerHTML=`<div class="detect">Detected policy area: <b>${esc((t||{}).label||code)}</b>. Here are the legislators best positioned to carry and pass it.</div>
-    <div class="list">${rows.map((x,i)=>card(x,i)).join('')}</div>`;
-  bindCards($('p-out'));
-  animateScores($('p-out'));
+  return `<div class="sh">Best-positioned champions${t?` — ${esc(t.label)}`:''}</div><div class="list">${rows.map((x,i)=>card(x,i)).join('')}</div>`;
+}
+function findSimilarBills(terms){
+  if(!terms||!terms.length) return [];
+  const t=terms.map(x=>String(x).toLowerCase()).filter(x=>x.length>2);
+  return BILLS.filter(b=>{ const h=(b.title||'').toLowerCase(); return t.some(term=>h.includes(term)); }).slice(0,5);
+}
+function runKeywordProposer(text){
+  const code=detectTopic(text);
+  if(!code){ $('p-out').innerHTML=`<div class="detect">Couldn't detect a policy area. Try the Champion Finder and pick one directly.</div>`; return; }
+  const t=TOPICS.find(x=>x.code===code);
+  $('p-out').innerHTML=`<div class="detect">Detected policy area: <b>${esc((t||{}).label||code)}</b> (keyword match).</div>${proposerChampions(code)}`;
+  bindCards($('p-out')); animateScores($('p-out'));
+}
+$('p-go').addEventListener('click', async ()=>{
+  const text=$('p-text').value.trim();
+  if(text.length<6){ $('p-out').innerHTML=`<div class="detect">Paste a bit more — a title, a summary, or the idea in a sentence or two.</div>`; return; }
+  $('p-go').disabled=true; $('p-out').innerHTML=`<div class="detect">Analyzing your bill with AI…</div>`;
+  let a=null;
+  try{
+    const r=await fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text})});
+    a=await r.json();
+    if(!r.ok) throw new Error(a.error||('HTTP '+r.status));
+  }catch(e){
+    $('p-out').innerHTML=`<div class="detect">AI analyzer unavailable (${esc(e.message)}). Using keyword detection instead.</div>`;
+    $('p-go').disabled=false; runKeywordProposer(text); return;
+  }
+  $('p-go').disabled=false;
+  const code=(a.topicCode&&TOPICS.find(x=>x.code===a.topicCode))?a.topicCode:detectTopic(text);
+  const t=TOPICS.find(x=>x.code===code);
+  const themes=(a.keyThemes||[]).map(k=>`<span class="theme">${esc(k)}</span>`).join('');
+  const similar=findSimilarBills(a.searchTerms||[]);
+  const simHtml=similar.length?`<div class="sh">Similar bills already filed</div>${similar.map(b=>`<div class="bill-row" data-bill="${b.id}"><span class="bn2">${esc(b.bill_number||'')}</span><span class="bti">${esc(b.title||'')}</span><span class="oc ${b.outcome||'pending'}">${b.outcome||'pending'}</span></div>`).join('')}`:'';
+  $('p-out').innerHTML=`
+    <div class="ai-card">
+      <div class="ai-head"><span class="ai-badge">AI analysis</span>${t?`<span class="ai-topic">${esc(t.label)}</span>`:''}</div>
+      ${a.summary?`<p class="ai-sum">${esc(a.summary)}</p>`:''}
+      ${themes?`<div class="themes">${themes}</div>`:''}
+      ${a.strategy?`<div class="ai-strat"><b>Strategy — </b>${esc(a.strategy)}</div>`:''}
+    </div>
+    ${simHtml}
+    ${code?proposerChampions(code):'<div class="detect">No clear policy area — see the strategy above and try the Champion Finder.</div>'}`;
+  bindCards($('p-out')); animateScores($('p-out'));
+  $('p-out').querySelectorAll('.bill-row[data-bill]').forEach(el=>el.addEventListener('click',()=>openBill(el.dataset.bill)));
 });
 
 function tab(name){
