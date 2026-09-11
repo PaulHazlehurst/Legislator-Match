@@ -289,6 +289,44 @@
   .tips{display:grid;gap:11px}
   .tip{display:flex;gap:11px;align-items:baseline;font-size:14px;line-height:1.5}
   .tip::before{content:"\2192";color:var(--effect-ink);font-weight:800;flex-shrink:0}
+  html[data-theme="dark"]{
+    --paper:#14171C; --surface:#1C2029; --ink:#E8EAED; --muted:#9BA3AF; --faint:#6B7280;
+    --line:#2A2F3A; --line-2:#3A4150; --navy:#0E1620; --navy-2:#1B2534;
+    --willing:#5C93C4; --willing-ink:#8FB8DC; --willing-soft:#1E2B3A;
+    --effect:#4FB39C; --effect-ink:#7FD0BC; --effect-soft:#1B2E2A;
+    --d:#6B96D6; --r:#D4756A; --good:#5EA87A; --warn:#D9925A;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25);
+    --shadow-lg:0 12px 40px rgba(0,0,0,.45);
+  }
+  html[data-theme="dark"] .srow .track,html[data-theme="dark"] .barrow .bt,html[data-theme="dark"] .gauge .gt,html[data-theme="dark"] .va .vbar{background:#2A2F3A;stroke:#2A2F3A}
+  html[data-theme="dark"] .ai-card{background:linear-gradient(135deg,#1B2734,#1E2A28);border-color:#2E3A47}
+  html[data-theme="dark"] .ai-strat,html[data-theme="dark"] .theme{background:#1C2029}
+  html[data-theme="dark"] .oc.passed{background:#1D2F24} html[data-theme="dark"] .oc.failed{background:#33211F} html[data-theme="dark"] .oc.pending{background:#262B33}
+  .icobtn{background:none;border:1px solid rgba(255,255,255,.25);color:#fff;border-radius:8px;width:32px;height:32px;font-size:14px;margin-left:12px;flex-shrink:0}
+  .icobtn:hover{background:rgba(255,255,255,.12)}
+  .trend{font-size:11px;font-weight:800;padding:2px 7px;border-radius:20px;white-space:nowrap}
+  .trend.up{background:var(--effect-soft);color:var(--effect-ink)}
+  .trend.down{background:#F5E4E1;color:var(--r)}
+  .trend.flat{background:#EDEAE2;color:var(--muted)}
+  html[data-theme="dark"] .trend.down{background:#33211F} html[data-theme="dark"] .trend.flat{background:#262B33}
+  .bdwrap{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .bd{display:flex;justify-content:space-between;padding:8px 13px;font-size:13px;border-bottom:1px solid var(--line)}
+  .bd:last-child{border-bottom:none}
+  .bd.tot{background:var(--effect-soft);font-weight:800;color:var(--effect-ink)}
+  .bv2{font-variant-numeric:tabular-nums;font-weight:700}
+  .bv2.pos{color:var(--good)} .bv2.neg{color:var(--r)}
+  .flag{display:flex;gap:9px;align-items:baseline;font-size:13.5px;line-height:1.5;padding:7px 0;border-top:1px solid var(--line)}
+  .flag .fi{width:7px;height:7px;border-radius:50%;flex-shrink:0;transform:translateY(-1px)}
+  .flag.good .fi{background:var(--good)} .flag.warn .fi{background:var(--warn)} .flag.thin .fi{background:var(--thin)}
+  .skel{height:104px;border-radius:13px;background:linear-gradient(100deg,var(--surface) 30%,var(--line) 50%,var(--surface) 70%);background-size:220% 100%;animation:shine 1.3s ease-in-out infinite;border:1px solid var(--line)}
+  @keyframes shine{0%{background-position:180% 0}100%{background-position:-60% 0}}
+  .who:focus-visible{outline:2px solid var(--willing);outline-offset:3px;border-radius:8px}
+  .star:focus-visible,.mm:focus-visible,.icobtn:focus-visible,.back:focus-visible{outline:2px solid var(--willing);outline-offset:2px}
+  ::-webkit-scrollbar{width:11px;height:11px}
+  ::-webkit-scrollbar-track{background:transparent}
+  ::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:8px;border:3px solid var(--paper)}
+  ::-webkit-scrollbar-thumb:hover{background:var(--muted)}
+  a{color:var(--willing-ink)}
   @media (max-width:760px){
     .card{grid-template-columns:1fr;gap:16px}
     .scores{justify-content:flex-start}
@@ -314,6 +352,7 @@
       <button data-tab="guide">Playbook</button>
       <button data-tab="watchlist">Watchlist</button>
     </nav>
+    <button class="icobtn" id="themebtn" title="Toggle dark mode" aria-label="Toggle dark mode">◑</button>
   </div>
 </header>
 
@@ -323,7 +362,7 @@
       <div class="strip" id="strip"></div>
       <div class="lead">Find a champion for your bill</div>
       <p class="sub">Pick a policy area to see which Maryland legislators are most likely to carry a bill on it — and which have the standing to pass it.</p>
-      <div class="tiles" id="tiles"><div class="note">Loading policy areas…</div></div>
+      <div class="tiles" id="tiles"><div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
     </div>
 
     <div id="finder-results" class="hide">
@@ -345,7 +384,8 @@
         </select>
         <select id="f-party"><option value="">Any party</option><option value="D">Democrat</option><option value="R">Republican</option></select>
         <select id="f-chamber"><option value="">Both chambers</option><option value="house">House</option><option value="senate">Senate</option></select>
-        <span class="rc" id="rcount"></span>
+        <button class="mm" id="exportbtn" style="margin-left:auto" title="Download these champions as CSV">Export CSV</button>
+        <span class="rc" id="rcount" style="margin-left:14px"></span>
       </div>
       <div id="results"></div>
       <div id="mapview" class="hide"></div>
@@ -529,7 +569,7 @@ async function boot(){
       pageAll('legislators','id,name,party,chamber,district','name'),
       pageAll('bills','id,bill_number,title,outcome,significance,topic_id,session_id,sessions(is_current,year_end)','id'),
     ]);
-  }catch(e){ $('tiles').innerHTML=`<div class="note"><b>Couldn't load data.</b><br>${esc(e.message)}</div>`; return; }
+  }catch(e){ $('tiles').innerHTML=`<div class="note" style="grid-column:1/-1"><b>Couldn't load data.</b><br>${esc(e.message)}<br><button class="btn" style="margin-top:14px" onclick="location.reload()">Try again</button></div>`; return; }
 
   LEGIS.forEach(l=>legById[l.id]=l);
   SCORES.forEach(s=>{ (byLeg[s.legislator_id] ||= []).push(s); topicById[s.topic_id]={code:s.topic_code,label:s.topic_label}; });
@@ -540,7 +580,7 @@ async function boot(){
   BILLS.forEach(b=>{ b.chamber=String(b.bill_number||'').startsWith('SB')?'senate':'house'; b.ntitle=String(b.title||'').toLowerCase().trim(); });
   COMP={}; BILLS.forEach(b=>{ const k=b.session_id+'|'+b.ntitle; (COMP[k]||(COMP[k]=[])).push(b); });
   $('b-topic').innerHTML='<option value="">All topics</option>'+TOPICS.map(t=>`<option value="${esc(t.code)}">${esc(t.label)}</option>`).join('');
-  renderStrip(); renderTiles(); renderStats();
+  renderStrip(); renderTiles(); renderStats(); routeFromHash();
 }
 
 function stripHTML(){
@@ -569,11 +609,28 @@ function spark(topicId){
   const mx=Math.max(1,...buckets);
   return `<span class="spark">${buckets.map(b=>`<i style="height:${Math.max(2,Math.round(b/mx*16))}px"></i>`).join('')}</span>`;
 }
+function topicYears(topicId){
+  const y={}; BILLS.forEach(b=>{ if(b.topic_id===topicId){ const yr=b.sessions&&b.sessions.year_end; if(yr) y[yr]=(y[yr]||0)+1; } });
+  return [2024,2025,2026].map(yr=>y[yr]||0);
+}
+function momentum(topicId){
+  const [a,b,c]=topicYears(topicId);
+  if(!a&&!b&&!c) return null;
+  const pct = a? Math.round(((c-a)/a)*100) : null;
+  return {series:[a,b,c], pct};
+}
+function trendBadge(topicId){
+  const m=momentum(topicId); if(!m||m.pct===null) return '';
+  const up=m.pct>8, down=m.pct<-8;
+  const cls=up?'up':down?'down':'flat';
+  const arrow=up?'\u2191':down?'\u2193':'\u2192';
+  return `<span class="trend ${cls}" title="Bills filed here: ${m.series.join(' → ')} (2024→2026)">${arrow} ${m.pct>0?'+':''}${m.pct}%</span>`;
+}
 function renderTiles(){
   $('tiles').innerHTML=TOPICS.map((t,i)=>`
     <button class="tile" data-code="${esc(t.code)}" style="animation-delay:${i*32}ms">
       <div class="tname">${esc(t.label)}</div>
-      <div class="tmeta"><span>${t.count} active</span>${spark(t.id)}</div>
+      <div class="tmeta"><span>${t.count} active</span>${trendBadge(t.id)}</div>
     </button>`).join('');
   document.querySelectorAll('.tile').forEach(el=>el.addEventListener('click',()=>openTopic(el.dataset.code)));
 }
@@ -584,7 +641,7 @@ function openTopic(code){
   $('rtitle').textContent=t?t.label:code;
   $('finder-landing').classList.add('hide'); $('finder-results').classList.remove('hide');
   window.scrollTo({top:0});
-  setView('list'); renderResults();
+  setView('list'); renderResults(); setHash('#/topic/'+code);
 }
 function setView(v){
   currentView=v;
@@ -606,6 +663,39 @@ function powerBadges(x){
   if(x.is_leadership)b.push('<span class="bdg pw">Leadership</span>');
   if(x.in_majority)b.push('<span class="bdg mj">Majority party</span>');
   return b.join('');
+}
+function scoreBreakdown(x){
+  const parts=[['Base', 40, true]];
+  if(x.is_committee_chair) parts.push(['Committee chair', 25, true]);
+  else if(x.is_committee_vice) parts.push(['Vice chair', 10, true]);
+  if(x.is_leadership) parts.push(['Leadership post', 18, true]);
+  if(x.in_majority) parts.push(['Majority party', 18, true]);
+  if((x.decided_bills||0)>=3){
+    const rate=x.passed_bills/x.decided_bills;
+    const adj=Math.round(((rate-0.5)*2*20)*Math.min(1,x.decided_bills/4));
+    if(adj!==0) parts.push([`Passage record (${Math.round(rate*100)}%)`, adj, adj>0]);
+  }
+  const rows=parts.map(([l,v,pos])=>`<div class="bd"><span>${esc(l)}</span><span class="bv2 ${pos?'pos':'neg'}">${v>0?'+':''}${v}</span></div>`).join('');
+  return `<div class="bdwrap">${rows}<div class="bd tot"><span>Effectiveness</span><span class="bv2">${clamp(x.effectiveness)}</span></div></div>`;
+}
+function riskFlags(x, va){
+  const f=[];
+  if((x.substantive_bills||0)<3) f.push(['thin','Thin record — few bills on this topic, so treat these scores as directional.']);
+  if((x.decided_bills||0)>=4 && x.passed_bills/x.decided_bills<0.25) f.push(['warn','Low passage rate — files often, converts rarely.']);
+  if((x.bills_led||0)===0 && (x.substantive_bills||0)>0) f.push(['warn','Has never led a bill here — only co-sponsored.']);
+  if(!x.in_majority) f.push(['warn','Minority party — needs a majority co-sponsor to move.']);
+  if(x.is_committee_chair) f.push(['good','Committee chair — controls whether bills get a hearing.']);
+  if(x.is_leadership) f.push(['good','Leadership post — real influence over floor time.']);
+  if(va&&va.length){
+    const own=va.filter(v=>v.party===x.party), cross=va.filter(v=>v.party&&x.party&&v.party!==x.party);
+    if(cross.length>=5){
+      const avg=Math.round(cross.reduce((a,b)=>a+b.pct,0)/cross.length);
+      if(avg>=55) f.push(['good',`Bipartisan voter — agrees with the other party ${avg}% of the time.`]);
+      else if(avg<=35) f.push(['warn',`Strongly partisan — agrees across the aisle only ${avg}% of the time.`]);
+    }
+  }
+  if(!f.length) return '';
+  return `<div class="sh">Read on this pick</div>${f.map(([k,t])=>`<div class="flag ${k}"><span class="fi"></span>${esc(t)}</div>`).join('')}`;
 }
 function evidence(x){
   const pr = x.decided_bills>=1 ? `${Math.round(x.passed_bills/x.decided_bills*100)}% passage rate (${x.passed_bills} of ${x.decided_bills} passed)` : 'no completed bills yet';
@@ -645,7 +735,9 @@ function card(x,i){
 }
 function renderResults(){
   const rows=rowsForTopic();
-  $('rcount').textContent=rows.length?`${rows.length} legislator${rows.length===1?'':'s'}`:'';
+  const tObj=TOPICS.find(t=>t.code===currentTopic);
+  const m=tObj?momentum(tObj.id):null;
+  $('rcount').innerHTML=(rows.length?`${rows.length} legislator${rows.length===1?'':'s'}`:'')+(m?` &nbsp;·&nbsp; bills filed ${m.series.join(' → ')} ${trendBadge(tObj.id)}`:'');
   if(currentView==='map'){ renderMap(rows); return; }
   if(!rows.length){ $('results').innerHTML=`<div class="note"><b>No one matches.</b><br>Try widening the filters.</div>`; return; }
   $('results').innerHTML=renderPicks(rows)+`<div class="list">${rows.map(card).join('')}</div>`;
@@ -654,7 +746,11 @@ function renderResults(){
   animateScores($('results'));
 }
 function bindCards(scope){
-  (scope||document).querySelectorAll('.who[data-open]').forEach(el=>el.addEventListener('click',()=>openDetail(el.dataset.open)));
+  (scope||document).querySelectorAll('.who[data-open]').forEach(el=>{
+    el.setAttribute('tabindex','0'); el.setAttribute('role','button');
+    el.addEventListener('click',()=>openDetail(el.dataset.open));
+    el.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); openDetail(el.dataset.open); } });
+  });
   (scope||document).querySelectorAll('.pick[data-pick]').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();togglePick(el.dataset.pick);}));
 }
 
@@ -737,6 +833,7 @@ function copyPicks(){
 }
 
 async function openDetail(id){
+  lastFocus=document.activeElement;
   $('scrim').classList.add('open'); $('drawer').classList.add('open'); $('drawer').setAttribute('aria-hidden','false');
   $('dbody').innerHTML=`<div class="note" style="border:none">Loading…</div>`;
   const mine=(byLeg[id]||[]).slice().sort((a,b)=>(b.willingness+b.effectiveness)-(a.willingness+a.effectiveness));
@@ -769,17 +866,23 @@ async function openDetail(id){
   const vaTop=va.slice(0,6), vaBottom=va.filter(x=>x.shared>=25).slice(-3).reverse();
   const vaSection = va.length ? `<div class="sh">Votes most alike</div>${vaTop.map(vaRow).join('')}<div class="sh">Votes least alike — crosses lines</div>${vaBottom.map(vaRow).join('')}` : '';
 
+  const here=mine.find(m=>m.topic_code===currentTopic)||head;
+  const flags=here?riskFlags(here,va):'';
+  const bd=here?`<div class="sh">Why this Effectiveness score</div>${scoreBreakdown(here)}`:'';
   $('dbody').innerHTML=`
     <h2>${esc(l.name||head.name||'')}</h2>
     <div class="dm">${l.party||'—'} · ${chamberName(l.chamber)}${l.district?` · District ${esc(l.district)}`:''}${head.is_committee_chair?' · Committee chair':''}${head.is_leadership?' · Leadership':''}</div>
+    ${flags}
     <div class="sh">Scores by policy area</div>${topicRows}
+    ${bd}
     ${billsSection}
     <div class="sh">Closest co-sponsors — real coalition</div>${allyRows}
     ${vaSection}`;
   animateScores($('dbody'));
   $('dbody').querySelectorAll('[data-ally]').forEach(el=>el.addEventListener('click',()=>openDetail(el.dataset.ally)));
 }
-function closeDrawer(){ $('scrim').classList.remove('open'); $('drawer').classList.remove('open'); $('drawer').setAttribute('aria-hidden','true'); }
+let lastFocus=null;
+function closeDrawer(){ $('scrim').classList.remove('open'); $('drawer').classList.remove('open'); $('drawer').setAttribute('aria-hidden','true'); if(lastFocus&&lastFocus.focus){try{lastFocus.focus();}catch(_){} lastFocus=null;} }
 function openModal(){ $('scrim').classList.add('open'); $('modal').classList.add('open'); }
 function closeModal(){ $('modal').classList.remove('open'); if(!$('drawer').classList.contains('open'))$('scrim').classList.remove('open'); }
 
@@ -893,6 +996,7 @@ function tab(name){
   ['finder','stats','proposer','search','coalitions','bills','guide','watchlist'].forEach(v=>$('view-'+v).classList.toggle('hide',v!==name));
   if(name==='stats'){ animateBars(); countUp($('s-strip')); }
   if(name==='watchlist') renderWatch();
+  if(name!=='finder') setHash('#/tab/'+name);
 }
 document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>tab(b.dataset.tab)));
 $('back').addEventListener('click',()=>{ $('finder-results').classList.add('hide'); $('finder-landing').classList.remove('hide'); });
@@ -1009,6 +1113,53 @@ function renderWatch(){
   bindStars($('w-rows'));
 }
 saveWatch();
+
+/* ---- dark mode ---- */
+function applyTheme(t){
+  document.documentElement.setAttribute('data-theme', t==='dark'?'dark':'light');
+  try{ localStorage.setItem('pinnacle_theme', t); }catch(_){}
+}
+(function(){ let t='light'; try{ t=localStorage.getItem('pinnacle_theme')||'light'; }catch(_){} applyTheme(t); })();
+$('themebtn').addEventListener('click',()=>{
+  const cur=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
+  applyTheme(cur);
+});
+
+/* ---- CSV export of current champion list ---- */
+$('exportbtn').addEventListener('click',()=>{
+  const rows=rowsForTopic();
+  if(!rows.length) return;
+  const t=TOPICS.find(x=>x.code===currentTopic);
+  const head=['Name','Party','Chamber','District','Willingness','Effectiveness','BillsLed','Passed','Decided','DataQuality'];
+  const body=rows.map(r=>[r.name,r.party||'',r.chamber||'',r.district||'',clamp(r.willingness),clamp(r.effectiveness),r.bills_led||0,r.passed_bills||0,r.decided_bills||0,r.data_quality||'']
+    .map(v=>`"${String(v).replace(/"/g,'""')}"`).join(','));
+  const csv=[head.join(','),...body].join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download=`champions-${(t&&t.code)||'topic'}.csv`;
+  document.body.appendChild(a); a.click(); a.remove();
+});
+
+/* ---- shareable URLs: #/topic/<code> and #/tab/<name> ---- */
+let suppressHash=false;
+function setHash(h){ if(location.hash!==h){ suppressHash=true; location.hash=h; setTimeout(()=>suppressHash=false,40);} }
+function routeFromHash(){
+  if(suppressHash) return;
+  const h=(location.hash||'').replace(/^#\/?/,'');
+  if(h.startsWith('topic/')){
+    const code=h.slice(6);
+    if(TOPICS.some(t=>t.code===code)){ tab('finder'); openTopic(code); return; }
+  }
+  if(h.startsWith('tab/')){ const n=h.slice(4); if(['finder','stats','proposer','search','coalitions','bills','guide','watchlist'].includes(n)) tab(n); return; }
+}
+window.addEventListener('hashchange',routeFromHash);
+
+/* ---- keyboard: / focuses search, Esc closes ---- */
+document.addEventListener('keydown',e=>{
+  if(e.key==='/' && !/input|textarea/i.test((e.target.tagName||''))){
+    e.preventDefault(); tab('search'); setTimeout(()=>$('s-input').focus(),60);
+  }
+});
 
 boot();
 </script>
