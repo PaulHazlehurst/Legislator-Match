@@ -372,32 +372,108 @@
   .searchcue:hover{background:rgba(255,255,255,.18);color:#fff}
   .searchcue kbd{background:rgba(255,255,255,.16);border-radius:4px;padding:1px 5px;font-family:inherit;font-size:11px}
   @media (max-width:900px){.searchcue span,.searchcue kbd{display:none}}
+  .brand{text-decoration:none}
+  .logo{height:30px;width:auto;display:block;flex-shrink:0}
+  html[data-theme="dark"] .logo{filter:brightness(1.6) contrast(1.05)}
+  .wordmark{font-weight:800;color:#fff}
+  .bsub{color:#8FCFC0;font-weight:600;font-size:13.5px;border-left:1px solid rgba(255,255,255,.28);padding-left:11px;margin-left:2px;white-space:nowrap}
+  @media (max-width:620px){.bsub{display:none}}
+  .navmore{position:relative}
+  .navmore>button{background:none;border:none;padding:8px 13px;border-radius:8px;font-size:14px;font-weight:600;color:rgba(255,255,255,.72);display:flex;align-items:center;gap:5px}
+  .navmore>button:hover,.navmore>button.active{color:#fff;background:rgba(255,255,255,.14)}
+  .navmore .chev{font-size:10px;opacity:.8}
+  .navmore>button.dot-badge::after{content:"";width:6px;height:6px;border-radius:50%;background:var(--effect);display:inline-block}
+  .menu{position:absolute;right:0;top:calc(100% + 8px);background:var(--surface);border:1px solid var(--line-2);border-radius:11px;box-shadow:var(--shadow-lg);min-width:196px;padding:6px;display:none;z-index:60}
+  .menu.open{display:block;animation:menuin .14s ease}
+  @keyframes menuin{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+  .menu button{display:block;width:100%;text-align:left;background:none;border:none;padding:9px 12px;border-radius:8px;font-size:13.5px;font-weight:600;color:var(--ink)}
+  .menu button:hover,.menu button.active{background:var(--willing-soft);color:var(--willing-ink)}
+  .panel h3 .ph{font-family:"Libre Franklin";font-weight:400;font-size:11.5px;color:var(--muted);margin-left:9px}
+  .bubble{width:100%;height:auto;display:block;overflow:visible}
+  .bubble .bgl{stroke:var(--line);stroke-width:1;stroke-dasharray:3 3}
+  .bubble .bubax{font:600 11px "Libre Franklin";fill:var(--faint)}
+  .bubble .bubv{font:800 12px "Libre Franklin";fill:var(--willing-ink)}
+  .bubble .bubl{font:600 11px "Libre Franklin";fill:var(--muted)}
+  .bub{opacity:0;animation:dotin .55s ease forwards}
+  .panel{transition:box-shadow .15s,border-color .15s}
+  .panel:hover{box-shadow:var(--shadow-lg)}
+  .rosgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:12px}
+  .rcard{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 15px;cursor:pointer;box-shadow:var(--shadow);transition:border-color .12s,transform .12s,box-shadow .12s;opacity:0;animation:tilein .4s cubic-bezier(.2,.7,.2,1) forwards}
+  .rcard:hover,.rcard:focus-visible{border-color:var(--line-2);transform:translateY(-2px);box-shadow:var(--shadow-lg);outline:none}
+  .rc-top{display:flex;align-items:center;gap:8px}
+  .rc-name{font-family:"Newsreader",serif;font-size:17px;font-weight:500;line-height:1.2}
+  .rc-meta{color:var(--muted);font-size:12px;margin-top:3px}
+  .rc-topic{font-size:12.5px;color:var(--willing-ink);font-weight:600;margin-top:9px}
+  .rc-scores{display:flex;gap:7px;margin-top:7px}
+  .rcs{font-size:11.5px;font-weight:800;padding:2px 8px;border-radius:6px;font-variant-numeric:tabular-nums}
+  .rcs.w{background:var(--willing-soft);color:var(--willing-ink)}
+  .rcs.e{background:var(--effect-soft);color:var(--effect-ink)}
+  .rc2{border:1px solid var(--line);border-radius:11px;padding:13px 15px;margin-bottom:10px}
+  .rc2h{display:flex;align-items:center;gap:10px}
+  .rc2t{font-weight:600;font-size:13.5px;flex:1}
+  .rc2r{font-size:11px;font-weight:800;padding:2px 9px;border-radius:20px}
+  .rc2r.y{background:#E4F0E8;color:var(--good)} .rc2r.n{background:#F5E4E1;color:var(--r)}
+  html[data-theme="dark"] .rc2r.y{background:#1D2F24} html[data-theme="dark"] .rc2r.n{background:#33211F}
+  .rc2m{color:var(--muted);font-size:11.5px;margin:3px 0 9px}
+  .tallybar{display:flex;height:10px;border-radius:6px;overflow:hidden;background:var(--line)}
+  .tallyleg{display:flex;align-items:center;gap:6px;margin-top:7px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+  .tallyleg b{color:var(--ink);font-variant-numeric:tabular-nums}
+  .seewho{margin-left:auto;background:none;border:none;color:var(--willing-ink);font-weight:700;font-size:12px;padding:0}
+  .seewho:hover{text-decoration:underline}
+  .whobox{max-height:0;overflow:hidden;transition:max-height .3s ease}
+  .whobox.open{max-height:620px;overflow-y:auto;margin-top:11px}
+  .whogrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px}
+  .wch{font-size:11px;font-weight:800;padding:3px 0;margin-bottom:5px;border-bottom:2px solid}
+  .wch.y{color:var(--good);border-color:var(--good)} .wch.n{color:var(--r);border-color:var(--r)} .wch.o{color:var(--muted);border-color:var(--line-2)}
+  .wname{display:flex;align-items:center;gap:6px;font-size:12.5px;padding:3px 0;cursor:pointer}
+  .wname:hover{color:var(--willing-ink)}
+  .welcome{text-align:center;padding:6px 4px}
+  .welcome h2{font-family:"Newsreader",serif;font-weight:500;font-size:28px;margin-bottom:6px}
+  .wlead{color:var(--muted);max-width:52ch;margin:0 auto 22px;font-size:14.5px;line-height:1.6}
+  .wgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;text-align:left;margin-bottom:18px}
+  .wcard{border:1px solid var(--line);border-radius:12px;padding:16px 17px}
+  .wcard.w{border-top:3px solid var(--willing)} .wcard.e{border-top:3px solid var(--effect)}
+  .wcard .wk{font-weight:800;font-size:13px;margin-bottom:6px}
+  .wcard.w .wk{color:var(--willing-ink)} .wcard.e .wk{color:var(--effect-ink)}
+  .wcard p{margin:0;font-size:13.5px;line-height:1.55;color:var(--muted)}
+  .wnote{font-size:13.5px;color:var(--muted);max-width:56ch;margin:0 auto 20px;line-height:1.6}
+  .wnote kbd{background:var(--paper);border:1px solid var(--line-2);border-radius:4px;padding:1px 6px;font-family:inherit;font-size:12px}
+  @media (max-width:620px){.wgrid{grid-template-columns:1fr}}
   @media (max-width:760px){
     .card{grid-template-columns:1fr;gap:16px}
     .scores{justify-content:flex-start}
     .picks{grid-template-columns:1fr}
     .grid2{grid-template-columns:1fr}
+    .bar{gap:12px}
+    nav button,.navmore>button{padding:8px 9px;font-size:13px}
     nav button{padding:8px 9px;font-size:13px}
     .barrow{grid-template-columns:100px 1fr 38px}
   }
-  @media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}.tile,.quad circle,.card,.pk,.gnode{opacity:1 !important;transform:none !important}}
+  @media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}.tile,.quad circle,.card,.pk,.gnode,.bub{opacity:1 !important;transform:none !important}}
 </style>
 </head>
 <body>
 <header>
   <div class="bar">
-    <div class="brand"><span class="dot"></span>Pinnacle <span>Bill Intelligence</span></div>
+    <a class="brand" href="#/tab/finder"><img src="logo.png" alt="Pinnacle Strategies" class="logo" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'"><span class="wordmark" style="display:none">Pinnacle</span><span class="bsub">Bill Intelligence</span></a>
     <nav>
-      <button data-tab="finder" class="active">Champion Finder</button>
-      <button data-tab="stats">Statistics</button>
-      <button data-tab="proposer">Bill Proposer</button>
-      <button data-tab="search">Search</button>
-      <button data-tab="coalitions">Coalitions</button>
-      <button data-tab="bills">Bill Search</button>
-      <button data-tab="guide">Playbook</button>
-      <button data-tab="watchlist">Watchlist</button>
+      <button data-tab="finder" class="active">Champions</button>
+      <button data-tab="bills">Bills</button>
+      <button data-tab="proposer">Proposer</button>
+      <button data-tab="stats">Insights</button>
+      <div class="navmore">
+        <button id="morebtn" aria-haspopup="true" aria-expanded="false">More <span class="chev">\u25BE</span></button>
+        <div class="menu" id="moremenu">
+          <button data-tab="roster">Legislator directory</button>
+          <button data-tab="search">Search legislators</button>
+          <button data-tab="coalitions">Coalitions</button>
+          <button data-tab="watchlist">Watchlist</button>
+          <button data-tab="guide">Playbook</button>
+        </div>
+      </div>
     </nav>
     <button class="searchcue" id="cmdbtn" title="Quick search (Ctrl/Cmd + K)">Search <kbd>⌘K</kbd></button>
+    <button class="icobtn" id="helpbtn" title="How the scores work" aria-label="Help">?</button>
     <button class="icobtn" id="themebtn" title="Toggle dark mode" aria-label="Toggle dark mode">◑</button>
   </div>
 </header>
@@ -442,16 +518,18 @@
     <div class="lead" style="font-size:27px;margin-bottom:6px">Statistics</div>
     <p class="sub">The shape of three sessions of Maryland legislation, drawn from every bill, sponsor, and vote.</p>
     <div class="strip" id="s-strip"></div>
-    <div class="panel" style="margin:4px 0 16px"><h3>Bills filed by session</h3><div id="c-trend"></div></div>
-    <div class="panel" style="margin:4px 0 16px"><h3>Chamber &amp; party composition</h3><div id="c-comp"></div></div>
+    <div class="grid2" style="margin-bottom:16px">
+      <div class="panel"><h3>Bills filed by session</h3><div id="c-trend"></div></div>
+      <div class="panel"><h3>Bill outcomes</h3><div id="c-out"></div></div>
+    </div>
+    <div class="panel" style="margin-bottom:16px"><h3>Chamber &amp; party composition</h3><div id="c-comp"></div></div>
     <div class="grid2">
       <div class="panel"><h3>Bills by policy area</h3><div class="bara" id="c-bills"></div></div>
       <div class="panel"><h3>Passage rate by area <span style="font-weight:400;color:var(--muted);font-size:12px">(substantive bills)</span></h3><div class="bara" id="c-pass"></div></div>
       <div class="panel"><h3>Most effective legislators</h3><div id="c-eff"></div></div>
-      <div class="panel"><h3>Committee chairs in your data</h3><div id="c-chairs"></div></div>
-      <div class="panel"><h3>Bill outcomes</h3><div id="c-out"></div></div>
       <div class="panel"><h3>Most active sponsors</h3><div id="c-active"></div></div>
     </div>
+    <div class="panel" style="margin-top:16px"><h3>Where the action is <span class="ph">bubble size = bills filed · height = passage rate</span></h3><div id="c-bubble"></div></div>
   </section>
 
   <section id="view-proposer" class="view hide">
@@ -460,6 +538,18 @@
     <textarea id="p-text" placeholder="e.g. Establishing a tax credit for employers who hire apprentices in registered workforce programs…"></textarea>
     <div style="margin-top:12px"><button class="btn" id="p-go">Find champions</button></div>
     <div id="p-out"></div>
+  </section>
+
+  <section id="view-roster" class="view hide">
+    <div class="lead" style="font-size:27px;margin-bottom:6px">Legislator directory</div>
+    <p class="sub">All ${'' }current members of the Maryland General Assembly. Sort by their strongest issue, or filter to a chamber or party.</p>
+    <div class="refine">
+      <select id="r-sort"><option value="name">Sort: name</option><option value="effect">Sort: most effective</option><option value="active">Sort: most active</option></select>
+      <select id="r-party"><option value="">Any party</option><option value="D">Democrat</option><option value="R">Republican</option></select>
+      <select id="r-chamber"><option value="">Both chambers</option><option value="house">House</option><option value="senate">Senate</option></select>
+      <span class="rc" id="r-count"></span>
+    </div>
+    <div class="rosgrid" id="r-grid"></div>
   </section>
 
   <section id="view-search" class="view hide">
@@ -620,11 +710,20 @@ async function pageAll(table, sel, orderCol){
 
 async function boot(){
   try{
-    [SCORES, LEGIS, BILLS] = await Promise.all([
+    const cached=(()=>{ try{
+      const raw=sessionStorage.getItem('pinnacle_cache');
+      if(!raw) return null;
+      const c=JSON.parse(raw);
+      if(Date.now()-c.t > 30*60*1000) return null;   // 30-minute freshness
+      return c;
+    }catch(_){ return null; } })();
+    if(cached){ SCORES=cached.s; LEGIS=cached.l; BILLS=cached.b; }
+    else [SCORES, LEGIS, BILLS] = await Promise.all([
       pageAll('legislator_topic_scores','*','legislator_id'),
       pageAll('legislators','id,name,party,chamber,district','name'),
       pageAll('bills','id,bill_number,title,outcome,significance,topic_id,session_id,sessions(is_current,year_end)','id'),
     ]);
+    if(!cached){ try{ sessionStorage.setItem('pinnacle_cache',JSON.stringify({t:Date.now(),s:SCORES,l:LEGIS,b:BILLS})); }catch(_){} }
   }catch(e){ $('tiles').innerHTML=`<div class="note" style="grid-column:1/-1"><b>Couldn't load data.</b><br>${esc(e.message)}<br><button class="btn" style="margin-top:14px" onclick="location.reload()">Try again</button></div>`; return; }
 
   LEGIS.forEach(l=>legById[l.id]=l);
@@ -636,7 +735,7 @@ async function boot(){
   BILLS.forEach(b=>{ b.chamber=String(b.bill_number||'').startsWith('SB')?'senate':'house'; b.ntitle=String(b.title||'').toLowerCase().trim(); });
   COMP={}; BILLS.forEach(b=>{ const k=b.session_id+'|'+b.ntitle; (COMP[k]||(COMP[k]=[])).push(b); });
   $('b-topic').innerHTML='<option value="">All topics</option>'+TOPICS.map(t=>`<option value="${esc(t.code)}">${esc(t.label)}</option>`).join('');
-  renderStrip(); renderTiles(); renderStats(); routeFromHash(); cmdItems=buildCmdIndex();
+  renderStrip(); renderTiles(); renderStats(); routeFromHash(); cmdItems=buildCmdIndex(); maybeWelcome();
 }
 
 function stripHTML(){
@@ -988,9 +1087,22 @@ function renderStats(){
   const ledMap={}; SCORES.forEach(s=>{ const m=ledMap[s.legislator_id]||(ledMap[s.legislator_id]={name:s.name,n:0}); m.n+=s.bills_led||0; });
   const active=Object.values(ledMap).sort((a,b)=>b.n-a.n).slice(0,8);
   $('c-active').innerHTML=active.map((r,i)=>`<div class="rankrow"><span class="rank">${i+1}.</span><span class="rn">${esc(r.name)}</span><span class="rv">${r.n}</span></div>`).join('');
-  const chairs={}; SCORES.forEach(s=>{ if(s.is_committee_chair) chairs[s.legislator_id]={name:s.name,party:s.party,chamber:s.chamber}; });
-  const cl=Object.values(chairs).sort((a,b)=>a.name.localeCompare(b.name));
-  $('c-chairs').innerHTML=cl.length?cl.map(c=>`<div class="rankrow"><span class="pd ${c.party||'I'}"></span><span class="rn" style="font-size:15px">${esc(c.name)}</span><span class="rv" style="font-weight:600;color:var(--muted)">${chamberName(c.chamber)}</span></div>`).join(''):'<span style="color:var(--muted);font-size:13px">Run the OpenStates enrich step to populate committee chairs.</span>';
+  // bubble: volume vs passage rate per topic
+  const bub=Object.keys(dec).filter(id=>dec[id]>=5).map(id=>({label:T(id),n:byTopic[id]||0,pct:Math.round((pass[id]||0)/dec[id]*100)}));
+  if(bub.length){
+    const W=760,H=280,PL=46,PB=40,PR=20,PT=18;
+    const maxN=Math.max(...bub.map(b=>b.n),1);
+    const maxP=Math.max(...bub.map(b=>b.pct),10);
+    const X=i=>PL+(i+0.5)*((W-PL-PR)/bub.length);
+    const Y=p=>H-PB-(p/maxP)*(H-PT-PB);
+    const sorted=bub.slice().sort((a,b)=>b.n-a.n);
+    const circles=sorted.map((b,i)=>{
+      const r=8+Math.sqrt(b.n/maxN)*26;
+      return `<g class="bub" style="animation-delay:${i*45}ms"><circle cx="${X(i).toFixed(1)}" cy="${Y(b.pct).toFixed(1)}" r="${r.toFixed(1)}" fill="var(--willing)" fill-opacity=".28" stroke="var(--willing)" stroke-width="1.4"><title>${esc(b.label)}: ${b.n} bills, ${b.pct}% passage</title></circle><text x="${X(i).toFixed(1)}" y="${(Y(b.pct)+4).toFixed(1)}" text-anchor="middle" class="bubv">${b.pct}%</text><text x="${X(i).toFixed(1)}" y="${H-PB+16}" text-anchor="middle" class="bubl">${esc(b.label.split(' ')[0].replace('&',''))}</text></g>`;
+    }).join('');
+    const grid=[0,25,50,75,100].filter(v=>v<=maxP).map(v=>`<line x1="${PL}" y1="${Y(v).toFixed(1)}" x2="${W-PR}" y2="${Y(v).toFixed(1)}" class="bgl"/><text x="${PL-8}" y="${(Y(v)+3).toFixed(1)}" text-anchor="end" class="bubax">${v}%</text>`).join('');
+    $('c-bubble').innerHTML=`<svg viewBox="0 0 ${W} ${H}" class="bubble">${grid}${circles}</svg>`;
+  } else $('c-bubble').innerHTML='<span style="color:var(--muted);font-size:13px">Not enough decided bills yet.</span>';
 }
 function animateBars(){ requestAnimationFrame(()=>document.querySelectorAll('#view-stats .bf').forEach(f=>f.style.width=f.dataset.w+'%')); }
 
@@ -1067,13 +1179,18 @@ $('p-go').addEventListener('click', async ()=>{
 });
 
 function tab(name){
-  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===name));
-  ['finder','stats','proposer','search','coalitions','bills','guide','watchlist'].forEach(v=>$('view-'+v).classList.toggle('hide',v!==name));
+  document.querySelectorAll('nav button[data-tab], #moremenu button[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===name));
+  $('morebtn').classList.toggle('active',['search','coalitions','watchlist','guide','roster'].includes(name));
+  ['finder','stats','proposer','search','coalitions','bills','guide','watchlist','roster'].forEach(v=>$('view-'+v).classList.toggle('hide',v!==name));
   if(name==='stats'){ animateBars(); countUp($('s-strip')); }
   if(name==='watchlist') renderWatch();
+  if(name==='roster') renderRoster();
   if(name!=='finder') setHash('#/tab/'+name);
 }
-document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>tab(b.dataset.tab)));
+document.querySelectorAll('nav button[data-tab], #moremenu button[data-tab]').forEach(b=>b.addEventListener('click',()=>{tab(b.dataset.tab);closeMore();}));
+function closeMore(){ $('moremenu').classList.remove('open'); $('morebtn').setAttribute('aria-expanded','false'); }
+$('morebtn').addEventListener('click',e=>{e.stopPropagation();const o=$('moremenu').classList.toggle('open');$('morebtn').setAttribute('aria-expanded',o?'true':'false');});
+document.addEventListener('click',closeMore);
 $('back').addEventListener('click',()=>{ $('finder-results').classList.add('hide'); $('finder-landing').classList.remove('hide'); });
 ['f-sort','f-party','f-chamber'].forEach(id=>$(id).addEventListener('change',renderResults));
 $('v-list').addEventListener('click',()=>{setView('list');renderResults();});
@@ -1149,8 +1266,9 @@ async function openBill(billId){
   $('scrim').classList.add('open'); $('drawer').classList.add('open'); $('drawer').setAttribute('aria-hidden','false');
   $('dbody').innerHTML=`<div class="note" style="border:none">Loading…</div>`;
   const b=BILLS.find(x=>x.id===billId)||{};
-  let spons=[];
+  let spons=[], rolls=[];
   try{ const r=await db.from('sponsorships').select('role,sponsor_order,legislators(id,name,party,chamber)').eq('bill_id',billId).order('sponsor_order',{nullsFirst:false}); spons=r.data||[]; }catch(_){}
+  try{ const r=await db.from('roll_calls').select('id,chamber,vote_date,description,yea,nay,nv,absent,passed').eq('bill_id',billId).order('vote_date'); rolls=r.data||[]; }catch(_){}
   const comp=(COMP[b.session_id+'|'+b.ntitle]||[]).find(x=>x.id!==b.id && x.chamber!==b.chamber);
   const oc=b.outcome||'pending';
   const tl=(topicById[b.topic_id]||{}).label;
@@ -1161,6 +1279,17 @@ async function openBill(billId){
   const minority=Math.min(dN,rN), bipPct=tot?Math.round(minority/tot*100):0;
   const bipLabel = tot<2 ? '' : bipPct>=25 ? 'Strongly bipartisan' : bipPct>=8 ? 'Some cross-party support' : 'Single-party bill';
   const bipClass = bipPct>=25?'good':bipPct>=8?'warn':'thin';
+  const rollHtml = rolls.length ? `<div class="sh">Recorded votes</div>` + rolls.map(rc=>{
+    const total=(rc.yea||0)+(rc.nay||0);
+    const pctY=total?Math.round(rc.yea/total*100):0;
+    return `<div class="rc2" data-roll="${rc.id}">
+      <div class="rc2h"><span class="rc2t">${esc(rc.description||'Vote')}</span><span class="rc2r ${rc.passed?'y':'n'}">${rc.passed?'Passed':'Failed'}</span></div>
+      <div class="rc2m">${rc.chamber==='senate'?'Senate':'House'}${rc.vote_date?' · '+rc.vote_date:''}</div>
+      <div class="tallybar"><span style="width:${pctY}%;background:var(--good)"></span><span style="width:${100-pctY}%;background:var(--r)"></span></div>
+      <div class="tallyleg"><b>${rc.yea||0}</b> yea <b>${rc.nay||0}</b> nay${rc.nv?` · ${rc.nv} not voting`:''}${rc.absent?` · ${rc.absent} absent`:''}<button class="seewho" data-roll="${rc.id}">See who voted \u203A</button></div>
+      <div class="whobox" id="who-${rc.id}"></div>
+    </div>`;
+  }).join('') : '';
   const bipHtml = tot? `<div class="sh">Coalition make-up</div>
     <div class="bip"><div class="bipbar"><span style="width:${tot?dN/tot*100:0}%;background:var(--d)"></span><span style="width:${tot?rN/tot*100:0}%;background:var(--r)"></span></div>
     <div class="biplegend"><span><b>${dN}</b> Democrat${dN===1?'':'s'}</span><span><b>${rN}</b> Republican${rN===1?'':'s'}</span><span class="bipflag ${bipClass}">${bipLabel}</span></div></div>`:'';
@@ -1169,18 +1298,33 @@ async function openBill(billId){
     <h2 style="font-size:20px;margin-top:2px">${esc(b.title||'')}</h2>
     <div class="dm" style="margin-top:8px"><span class="oc ${oc}">${oc}</span>${tl?` · ${esc(tl)}`:''}${(b.sessions&&b.sessions.year_end)?` · ${b.sessions.year_end}`:''}</div>
     ${comp?`<div class="comp" data-bill="${comp.id}">Companion bill: <b>${esc(comp.bill_number)}</b> — same title in the ${comp.chamber==='senate'?'Senate':'House'}. Click to open.</div>`:''}
+    ${rollHtml}
     ${bipHtml}
     <div class="sh">Lead sponsor${primaries.length>1?'s':''}</div>${primaries.map(sRow).join('')||'<div style="color:var(--muted);font-size:13px">None listed.</div>'}
     <div class="sh">Co-sponsors (${cosp.length})</div>${cosp.map(sRow).join('')||'<div style="color:var(--muted);font-size:13px">None.</div>'}`;
   $('dbody').querySelectorAll('.spon[data-open]').forEach(el=>{ if(el.dataset.open) el.addEventListener('click',()=>openDetail(el.dataset.open)); });
   const cc=$('dbody').querySelector('.comp[data-bill]'); if(cc)cc.addEventListener('click',()=>openBill(cc.dataset.bill));
   bindStars($('dbody'));
+  $('dbody').querySelectorAll('.seewho').forEach(btn=>btn.addEventListener('click',async e=>{
+    e.stopPropagation();
+    const rid=btn.dataset.roll, box=$('who-'+rid);
+    if(box.classList.contains('open')){ box.classList.remove('open'); box.innerHTML=''; btn.textContent='See who voted \u203A'; return; }
+    btn.textContent='Loading…';
+    let vs=[];
+    try{ const r=await db.from('votes').select('position,legislators(id,name,party,chamber)').eq('roll_call_id',rid); vs=r.data||[]; }catch(_){}
+    const grp=p=>vs.filter(v=>v.position===p).sort((a,b)=>((a.legislators||{}).name||'').localeCompare(((b.legislators||{}).name||'')));
+    const col=(label,arr,cls)=>arr.length?`<div class="wcol"><div class="wch ${cls}">${label} (${arr.length})</div>${arr.map(v=>`<div class="wname" data-open="${(v.legislators||{}).id||''}"><span class="pd ${(v.legislators||{}).party||'I'}"></span>${esc((v.legislators||{}).name||'')}</div>`).join('')}</div>`:'';
+    box.innerHTML=`<div class="whogrid">${col('Yea',grp('yea'),'y')}${col('Nay',grp('nay'),'n')}${col('Not voting',grp('nv').concat(grp('absent')),'o')}</div>`;
+    box.classList.add('open'); btn.textContent='Hide votes \u2039';
+    box.querySelectorAll('.wname[data-open]').forEach(el=>{ if(el.dataset.open) el.addEventListener('click',()=>openDetail(el.dataset.open)); });
+  }));
 }
 $('printbtn').addEventListener('click',()=>window.print());
 
 function saveWatch(){
   try{ localStorage.setItem('pinnacle_watch',JSON.stringify([...WATCH])); }catch(_){}
-  document.querySelectorAll('nav [data-tab="watchlist"]').forEach(b=>b.textContent='Watchlist'+(WATCH.size?` (${WATCH.size})`:''));
+  document.querySelectorAll('[data-tab="watchlist"]').forEach(b=>b.textContent='Watchlist'+(WATCH.size?` (${WATCH.size})`:''));
+  const mb=$('morebtn'); if(mb) mb.classList.toggle('dot-badge',WATCH.size>0);
 }
 function toggleWatch(id){
   if(WATCH.has(id))WATCH.delete(id); else WATCH.add(id);
@@ -1204,6 +1348,7 @@ function applyTheme(t){
   try{ localStorage.setItem('pinnacle_theme', t); }catch(_){}
 }
 (function(){ let t='light'; try{ t=localStorage.getItem('pinnacle_theme')||'light'; }catch(_){} applyTheme(t); })();
+$('helpbtn').addEventListener('click',()=>{ try{localStorage.removeItem('pinnacle_seen');}catch(_){} maybeWelcome(); });
 $('themebtn').addEventListener('click',()=>{
   const cur=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
   applyTheme(cur);
@@ -1330,6 +1475,51 @@ function openStrategy(){
   animateScores($('modal'));
 }
 $('tray-strat').addEventListener('click',openStrategy);
+
+/* ---- legislator directory ---- */
+function renderRoster(){
+  const party=$('r-party').value, ch=$('r-chamber').value, sort=$('r-sort').value;
+  let list=LEGIS.filter(l=>(!party||l.party===party)&&(!ch||l.chamber===ch));
+  const best=id=>{ const rs=byLeg[id]||[]; return rs.slice().sort((a,b)=>(b.willingness+b.effectiveness)-(a.willingness+a.effectiveness))[0]; };
+  const activeOf=id=>(byLeg[id]||[]).reduce((n,r)=>n+(r.bills_led||0),0);
+  list.sort((a,b)=> sort==='effect' ? ((best(b.id)||{}).effectiveness||0)-((best(a.id)||{}).effectiveness||0)
+                  : sort==='active' ? activeOf(b.id)-activeOf(a.id)
+                  : (a.name||'').localeCompare(b.name||''));
+  $('r-count').textContent=`${list.length} member${list.length===1?'':'s'}`;
+  $('r-grid').innerHTML=list.map((l,i)=>{
+    const t=best(l.id);
+    return `<div class="rcard" data-open="${l.id}" tabindex="0" role="button" style="animation-delay:${Math.min(i,30)*18}ms">
+      <div class="rc-top"><span class="pd ${l.party||'I'}"></span><span class="rc-name">${esc(l.name)}</span></div>
+      <div class="rc-meta">${chamberName(l.chamber)}${l.district?` · District ${esc(l.district)}`:''}</div>
+      ${t?`<div class="rc-topic">${esc(t.topic_label)}</div>
+        <div class="rc-scores"><span class="rcs w">W ${clamp(t.willingness)}</span><span class="rcs e">E ${clamp(t.effectiveness)}</span></div>`
+        :'<div class="rc-topic" style="color:var(--faint)">No classified activity</div>'}
+    </div>`;
+  }).join('')||'<div class="note" style="grid-column:1/-1">No members match.</div>';
+  $('r-grid').querySelectorAll('.rcard').forEach(el=>{
+    el.addEventListener('click',()=>openDetail(el.dataset.open));
+    el.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();openDetail(el.dataset.open);} });
+  });
+}
+['r-sort','r-party','r-chamber'].forEach(id=>$(id).addEventListener('change',renderRoster));
+
+/* ---- first-run explainer: teach the two-axis idea once ---- */
+function maybeWelcome(){
+  let seen=false; try{ seen=localStorage.getItem('pinnacle_seen')==='1'; }catch(_){}
+  if(seen) return;
+  $('modal-body').innerHTML=`<div class="welcome">
+    <h2>Two scores, two questions</h2>
+    <p class="wlead">Every legislator is rated on each policy area, because “who will carry my bill” and “who can actually pass it” are different questions.</p>
+    <div class="wgrid">
+      <div class="wcard w"><div class="wk">Willingness</div><p>How active they are on this issue — bills led and co-sponsored across three sessions, weighted toward recent ones. High means they show up on this topic.</p></div>
+      <div class="wcard e"><div class="wk">Effectiveness</div><p>Whether they can move it — committee chairs, leadership posts, majority status, and their real record of getting bills enacted.</p></div>
+    </div>
+    <p class="wnote">Your strongest pick is high on both. A willing sponsor with no standing needs a powerful ally; a powerful member who never touches your issue needs convincing. Press <kbd>\u2318K</kbd> any time to jump anywhere.</p>
+    <button class="btn" id="welcome-go">Start finding champions</button>
+  </div>`;
+  openModal();
+  $('welcome-go').addEventListener('click',()=>{ try{localStorage.setItem('pinnacle_seen','1');}catch(_){} closeModal(); });
+}
 
 boot();
 </script>
