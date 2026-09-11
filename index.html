@@ -442,6 +442,9 @@
   .champchip{display:inline-block;margin-left:9px;background:var(--navy);color:#fff;font-size:12px;font-weight:800;padding:2px 9px;border-radius:20px;vertical-align:2px;font-variant-numeric:tabular-nums}
   .lead-n{color:var(--ink);font-weight:800}
   .lead-none{color:var(--warn);font-weight:800}
+  .foot{max-width:1160px;margin:0 auto;padding:22px 24px 40px;color:var(--faint);font-size:12px;text-align:center;border-top:1px solid var(--line)}
+  .linkish{background:none;border:none;color:var(--willing-ink);font:inherit;font-size:12px;text-decoration:underline;padding:0}
+  @media print{.foot{display:none}}
   @media (max-width:760px){
     .card{grid-template-columns:1fr;gap:16px}
     .scores{justify-content:flex-start}
@@ -653,6 +656,7 @@
   <button class="act ghost" id="tray-clear">×</button>
 </div>
 
+<footer class="foot" id="foot"></footer>
 <div class="maptip" id="maptip"></div>
 <div class="toast" id="toast"></div>
 <div class="cmdk" id="cmdk" role="dialog" aria-label="Quick search">
@@ -744,6 +748,9 @@ async function boot(){
   COMP={}; BILLS.forEach(b=>{ const k=b.session_id+'|'+b.ntitle; (COMP[k]||(COMP[k]=[])).push(b); });
   $('b-topic').innerHTML='<option value="">All topics</option>'+TOPICS.map(t=>`<option value="${esc(t.code)}">${esc(t.label)}</option>`).join('');
   renderStrip(); renderTiles(); renderStats(); routeFromHash(); cmdItems=buildCmdIndex(); maybeWelcome();
+  const yrs=[...new Set(BILLS.map(b=>b.sessions&&b.sessions.year_end).filter(Boolean))].sort();
+  $('foot').innerHTML=`Pinnacle Strategies &middot; ${BILLS.length.toLocaleString()} bills across ${yrs.length} session${yrs.length===1?'':'s'} (${yrs[0]}\u2013${yrs[yrs.length-1]}) &middot; ${LEGIS.length} current members &middot; <button class="linkish" id="foot-help">how scores work</button>`;
+  const fh=$('foot-help'); if(fh) fh.addEventListener('click',()=>{ try{localStorage.removeItem('pinnacle_seen');}catch(_){} maybeWelcome(); });
 }
 
 function stripHTML(){
@@ -1248,9 +1255,9 @@ function openMethodology(){
   <div class="method">
     <p>Every legislator gets two scores for each policy area, each from 0 to 100. Click any legislator to see the bills and record behind them.</p>
     <h4><span class="k" style="background:var(--willing)"></span>Willingness — will they carry it?</h4>
-    <p>How much they actually champion this issue. <b>Leading</b> a bill counts five times more than co-sponsoring one, because in Annapolis signing onto a bill costs almost nothing while carrying one is a real commitment. Recent sessions weigh more than older ones. Anyone who has <b>never led a bill</b> on the topic is capped at 40 — they haven't shown they'll carry it.</p>
+    <p>How much they actually champion this issue. <b>Leading</b> a bill counts five times more than co-sponsoring one, because in Annapolis signing onto a bill costs almost nothing while carrying one is a real commitment. Co-sponsor credit is also capped at twice a member's own lead effort, so volume-signing can amplify a real record but never substitute for one. Recent sessions weigh more than older ones, and anyone who has <b>never led a bill</b> here is capped at 40.</p>
     <h4><span class="k" style="background:var(--effect)"></span>Effectiveness — can they pass it?</h4>
-    <p>Institutional power plus their own track record: committee chair, leadership post, majority status, and the share of bills <em>they led</em> that became law. A rank-and-file member with no wins scores low even when willing.</p>
+    <p>Institutional power plus their own track record: committee chair, leadership post, majority status, and the share of bills <em>they led</em> that became law. Members with no completed record yet are damped rather than rewarded — there's no evidence to judge. A rank-and-file member with no wins scores low even when willing.</p>
     <h4>Champion score</h4>
     <p>The geometric mean of the two. A lopsided profile — willing but powerless, or powerful but disengaged — can't top the list. You need both.</p>
     <h4>Passage rate</h4>
