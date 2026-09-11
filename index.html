@@ -439,6 +439,9 @@
   .wnote{font-size:13.5px;color:var(--muted);max-width:56ch;margin:0 auto 20px;line-height:1.6}
   .wnote kbd{background:var(--paper);border:1px solid var(--line-2);border-radius:4px;padding:1px 6px;font-family:inherit;font-size:12px}
   @media (max-width:620px){.wgrid{grid-template-columns:1fr}}
+  .champchip{display:inline-block;margin-left:9px;background:var(--navy);color:#fff;font-size:12px;font-weight:800;padding:2px 9px;border-radius:20px;vertical-align:2px;font-variant-numeric:tabular-nums}
+  .lead-n{color:var(--ink);font-weight:800}
+  .lead-none{color:var(--warn);font-weight:800}
   @media (max-width:760px){
     .card{grid-template-columns:1fr;gap:16px}
     .scores{justify-content:flex-start}
@@ -500,9 +503,14 @@
       </div>
       <div class="refine">
         <select id="f-sort">
-          <option value="combined">Rank: best overall</option>
+          <option value="champion">Rank: best champion</option>
           <option value="willingness">Rank: most willing to carry</option>
           <option value="effectiveness">Rank: most able to pass</option>
+          <option value="led">Rank: most bills led here</option>
+        </select>
+        <select id="f-led">
+          <option value="led">Has led a bill here</option>
+          <option value="">Include co-sponsors only</option>
         </select>
         <select id="f-party"><option value="">Any party</option><option value="D">Democrat</option><option value="R">Republican</option></select>
         <select id="f-chamber"><option value="">Both chambers</option><option value="house">House</option><option value="senate">Senate</option></select>
@@ -675,11 +683,11 @@ const partyColor = p => p==='R'?'var(--r)':p==='D'?'var(--d)':'var(--i)';
 const lastName = n => String(n||'').trim().split(/\s+/).slice(-1)[0];
 function renderPicks(rows){
   if(rows.length<2) return '';
-  const byC=rows.slice().sort((a,b)=>(b.willingness+b.effectiveness)-(a.willingness+a.effectiveness));
+  const byC=rows.slice().sort((a,b)=>champ(b)-champ(a));
   const byW=rows.slice().sort((a,b)=>b.willingness-a.willingness);
   const byE=rows.slice().sort((a,b)=>b.effectiveness-a.effectiveness);
   const pk=(label,r,val)=>`<div class="pk" data-open="${r.legislator_id}"><div class="pkl">${label}</div><div class="pkn">${esc(r.name)}</div><div class="pkv">${val}</div></div>`;
-  return `<div class="picks">${pk('Best overall',byC[0],`Willingness ${clamp(byC[0].willingness)} · Effectiveness ${clamp(byC[0].effectiveness)}`)}${pk('Most willing to carry',byW[0],`Willingness ${clamp(byW[0].willingness)}`)}${pk('Most able to pass',byE[0],`Effectiveness ${clamp(byE[0].effectiveness)}`)}</div>`;
+  return `<div class="picks">${pk('Best champion',byC[0],`Willingness ${clamp(byC[0].willingness)} · Effectiveness ${clamp(byC[0].effectiveness)}`)}${pk('Most willing to carry',byW[0],`Willingness ${clamp(byW[0].willingness)}`)}${pk('Most able to pass',byE[0],`Effectiveness ${clamp(byE[0].effectiveness)}`)}</div>`;
 }
 function coalitionGraph(center, allies){
   const top=(allies||[]).filter(a=>a.shared_bills>=2).slice(0,10);
@@ -805,10 +813,16 @@ function setView(v){
   $('mapview').classList.toggle('hide',v!=='map');
 }
 
+function champ(r){ return r.champion_score!=null ? r.champion_score : Math.round(Math.sqrt(Math.max(0,r.willingness)*Math.max(0,r.effectiveness))); }
 function rowsForTopic(){
-  const party=$('f-party').value, chamber=$('f-chamber').value, sort=$('f-sort').value;
-  let rows=SCORES.filter(s=>s.topic_code===currentTopic).filter(s=>(!party||s.party===party)&&(!chamber||s.chamber===chamber));
-  rows.sort((a,b)=> sort==='willingness'?b.willingness-a.willingness : sort==='effectiveness'?b.effectiveness-a.effectiveness : (b.willingness+b.effectiveness)-(a.willingness+a.effectiveness));
+  const party=$('f-party').value, chamber=$('f-chamber').value, sort=$('f-sort').value, ledOnly=$('f-led').value==='led';
+  let rows=SCORES.filter(s=>s.topic_code===currentTopic)
+    .filter(s=>(!party||s.party===party)&&(!chamber||s.chamber===chamber))
+    .filter(s=>!ledOnly || (s.bills_led||0)>0);
+  rows.sort((a,b)=> sort==='willingness'?b.willingness-a.willingness
+                  : sort==='effectiveness'?b.effectiveness-a.effectiveness
+                  : sort==='led'?(b.bills_led||0)-(a.bills_led||0)
+                  : champ(b)-champ(a));
   return rows;
 }
 function powerBadges(x){
@@ -820,15 +834,15 @@ function powerBadges(x){
   return b.join('');
 }
 function scoreBreakdown(x){
-  const parts=[['Base', 40, true]];
+  const parts=[['Base', 28, true]];
   if(x.is_committee_chair) parts.push(['Committee chair', 25, true]);
   else if(x.is_committee_vice) parts.push(['Vice chair', 10, true]);
-  if(x.is_leadership) parts.push(['Leadership post', 18, true]);
-  if(x.in_majority) parts.push(['Majority party', 18, true]);
-  if((x.decided_bills||0)>=3){
+  if(x.is_leadership) parts.push(['Leadership post', 15, true]);
+  if(x.in_majority) parts.push(['Majority party', 15, true]);
+  if((x.decided_bills||0)>=2){
     const rate=x.passed_bills/x.decided_bills;
-    const adj=Math.round(((rate-0.5)*2*20)*Math.min(1,x.decided_bills/4));
-    if(adj!==0) parts.push([`Passage record (${Math.round(rate*100)}%)`, adj, adj>0]);
+    const adj=Math.round(((rate-0.35)*2*22)*Math.min(1,x.decided_bills/4));
+    if(adj!==0) parts.push([`Own passage record (${Math.round(rate*100)}%)`, adj, adj>0]);
   }
   const rows=parts.map(([l,v,pos])=>`<div class="bd"><span>${esc(l)}</span><span class="bv2 ${pos?'pos':'neg'}">${v>0?'+':''}${v}</span></div>`).join('');
   return `<div class="bdwrap">${rows}<div class="bd tot"><span>Effectiveness</span><span class="bv2">${clamp(x.effectiveness)}</span></div></div>`;
@@ -837,7 +851,7 @@ function riskFlags(x, va){
   const f=[];
   if((x.substantive_bills||0)<3) f.push(['thin','Thin record — few bills on this topic, so treat these scores as directional.']);
   if((x.decided_bills||0)>=4 && x.passed_bills/x.decided_bills<0.25) f.push(['warn','Low passage rate — files often, converts rarely.']);
-  if((x.bills_led||0)===0 && (x.substantive_bills||0)>0) f.push(['warn','Has never led a bill here — only co-sponsored.']);
+  if((x.bills_led||0)===0 && (x.substantive_bills||0)>0) f.push(['warn','Has never led a bill on this topic — only signed onto other members\u2019 bills. Co-sponsoring costs little in Annapolis; carrying a bill is the real commitment.']);
   if(!x.in_majority) f.push(['warn','Minority party — needs a majority co-sponsor to move.']);
   if(x.is_committee_chair) f.push(['good','Committee chair — controls whether bills get a hearing.']);
   if(x.is_leadership) f.push(['good','Leadership post — real influence over floor time.']);
@@ -853,9 +867,16 @@ function riskFlags(x, va){
   return `<div class="sh">Read on this pick</div>${f.map(([k,t])=>`<div class="flag ${k}"><span class="fi"></span>${esc(t)}</div>`).join('')}`;
 }
 function evidence(x){
-  const pr = x.decided_bills>=1 ? `${Math.round(x.passed_bills/x.decided_bills*100)}% passage rate (${x.passed_bills} of ${x.decided_bills} passed)` : 'no completed bills yet';
+  const led=x.bills_led||0, co=x.bills_cosponsored!=null?x.bills_cosponsored:Math.max(0,(x.substantive_bills||0)-led);
+  const leadTxt = led>0
+    ? `<b class="lead-n">Led ${led}</b> bill${led===1?'':'s'} here`
+    : `<b class="lead-none">Never led a bill here</b>`;
+  const pr = x.decided_bills>=1
+    ? `${Math.round(x.passed_bills/x.decided_bills*100)}% passed (${x.passed_bills} of ${x.decided_bills} they led)`
+    : (led>0?'none decided yet':'');
   const ql=x.data_quality==='solid'?'solid record':x.data_quality==='thin'?'thin record':'minimal record';
-  return `Leads ${x.bills_led} bill${x.bills_led===1?'':'s'} here &nbsp;·&nbsp; ${pr} &nbsp;·&nbsp; <span class="q ${x.data_quality}">${ql}</span>`;
+  return [leadTxt, `co-sponsored ${co}`, pr, `<span class="q ${x.data_quality}">${ql}</span>`]
+    .filter(Boolean).join(' &nbsp;·&nbsp; ');
 }
 const srow=(k,l,v)=>`<div class="srow ${k}"><span class="lbl">${l}</span><span class="track"><span class="fill" data-w="${clamp(v)}"></span></span><span class="val">${clamp(v)}</span></div>`;
 const RING_C = (2*Math.PI*26);
@@ -880,7 +901,7 @@ function card(x,i){
   return `<div class="card" data-id="${x.legislator_id}" style="animation-delay:${(i||0)*26}ms">
     <div class="pick ${on}" data-pick="${x.legislator_id}"><svg viewBox="0 0 14 14"><path d="M2 7l3 3 7-7"/></svg></div>
     <div class="who" data-open="${x.legislator_id}">
-      <div><span class="rank">${i+1}.</span><h3 class="nm">${esc(x.name)}</h3></div>
+      <div><span class="rank">${i+1}.</span><h3 class="nm">${esc(x.name)}</h3><span class="champchip" title="Champion score — the balance of willingness and effectiveness">${champ(x)}</span></div>
       <div class="meta"><span class="party"><span class="pd ${x.party||'I'}"></span>${x.party||'—'}</span><span class="sep"></span><span>${chamberName(x.chamber)}</span>${x.district?`<span class="sep"></span><span>District ${esc(x.district)}</span>`:''}</div>
       <div class="badges">${powerBadges(x)}</div>
       <div class="ev">${evidence(x)}</div>
@@ -919,7 +940,7 @@ function renderMap(rows){
   emin=Math.max(0,Math.floor(emin-spanE*0.15)); emax=Math.min(100,Math.ceil(emax+spanE*0.15));
   const X=v=>PL+((v-wmin)/(wmax-wmin||1))*(W-PL-PR);
   const Y=v=>H-PB-((v-emin)/(emax-emin||1))*(H-PT-PB);
-  const ranked=rows.slice().sort((a,b)=>(b.willingness+b.effectiveness)-(a.willingness+a.effectiveness));
+  const ranked=rows.slice().sort((a,b)=>champ(b)-champ(a));
   const topSet=new Set(ranked.slice(0,3).map(r=>r.legislator_id));
   const dots=rows.map((r,i)=>{
     const isTop=topSet.has(r.legislator_id);
@@ -1192,7 +1213,7 @@ function closeMore(){ $('moremenu').classList.remove('open'); $('morebtn').setAt
 $('morebtn').addEventListener('click',e=>{e.stopPropagation();const o=$('moremenu').classList.toggle('open');$('morebtn').setAttribute('aria-expanded',o?'true':'false');});
 document.addEventListener('click',closeMore);
 $('back').addEventListener('click',()=>{ $('finder-results').classList.add('hide'); $('finder-landing').classList.remove('hide'); });
-['f-sort','f-party','f-chamber'].forEach(id=>$(id).addEventListener('change',renderResults));
+['f-sort','f-party','f-chamber','f-led'].forEach(id=>$(id).addEventListener('change',renderResults));
 $('v-list').addEventListener('click',()=>{setView('list');renderResults();});
 $('v-map').addEventListener('click',()=>{setView('map');renderResults();});
 $('tray-cmp').addEventListener('click',openCompare);
@@ -1227,11 +1248,13 @@ function openMethodology(){
   <div class="method">
     <p>Every legislator gets two scores for each policy area, each from 0 to 100. Click any legislator to see the bills and record behind them.</p>
     <h4><span class="k" style="background:var(--willing)"></span>Willingness — will they carry it?</h4>
-    <p>How active this legislator is on the topic: how many substantive bills they've led or co-sponsored here across recent sessions, weighted toward the most recent. A prolific lead sponsor scores high; someone who has never touched the issue scores low.</p>
+    <p>How much they actually champion this issue. <b>Leading</b> a bill counts five times more than co-sponsoring one, because in Annapolis signing onto a bill costs almost nothing while carrying one is a real commitment. Recent sessions weigh more than older ones. Anyone who has <b>never led a bill</b> on the topic is capped at 40 — they haven't shown they'll carry it.</p>
     <h4><span class="k" style="background:var(--effect)"></span>Effectiveness — can they pass it?</h4>
-    <p>How well-positioned they are to move a bill: their institutional power — committee chair, leadership post, being in the majority party — plus their real record of getting substantive bills enacted in completed sessions. A rank-and-file member with no passed bills scores low even when willing.</p>
+    <p>Institutional power plus their own track record: committee chair, leadership post, majority status, and the share of bills <em>they led</em> that became law. A rank-and-file member with no wins scores low even when willing.</p>
+    <h4>Champion score</h4>
+    <p>The geometric mean of the two. A lopsided profile — willing but powerless, or powerful but disengaged — can't top the list. You need both.</p>
     <h4>Passage rate</h4>
-    <p>Of the substantive bills a legislator sponsored in <em>completed</em> sessions (2024–2025), the share that became law. Bills that died in committee count as not passed, so realistic rates sit well under 100%. Current-session bills are still in flight and don't count against anyone.</p>
+    <p>Of the substantive bills a legislator <b>personally led</b> in <em>completed</em> sessions, the share that became law. Bills they merely co-sponsored don't count — that's someone else's win. Bills that died in committee count as not passed, so realistic rates sit well under 100%. Current-session bills are still in flight and don't count against anyone.</p>
     <h4>Data quality &amp; colors</h4>
     <p>“Solid / thin / minimal” shows how much history backs the numbers — treat thin and minimal with caution. Ring colors: <b style="color:var(--good)">green</b> 67+, <b style="color:var(--warn)">amber</b> 40–66, <b style="color:var(--r)">red</b> under 40.</p>
   </div>`;
@@ -1359,8 +1382,8 @@ $('exportbtn').addEventListener('click',()=>{
   const rows=rowsForTopic();
   if(!rows.length) return;
   const t=TOPICS.find(x=>x.code===currentTopic);
-  const head=['Name','Party','Chamber','District','Willingness','Effectiveness','BillsLed','Passed','Decided','DataQuality'];
-  const body=rows.map(r=>[r.name,r.party||'',r.chamber||'',r.district||'',clamp(r.willingness),clamp(r.effectiveness),r.bills_led||0,r.passed_bills||0,r.decided_bills||0,r.data_quality||'']
+  const head=['Name','Party','Chamber','District','ChampionScore','Willingness','Effectiveness','BillsLed','BillsCosponsored','Passed','Decided','DataQuality'];
+  const body=rows.map(r=>[r.name,r.party||'',r.chamber||'',r.district||'',champ(r),clamp(r.willingness),clamp(r.effectiveness),r.bills_led||0,r.bills_cosponsored||0,r.passed_bills||0,r.decided_bills||0,r.data_quality||'']
     .map(v=>`"${String(v).replace(/"/g,'""')}"`).join(','));
   const csv=[head.join(','),...body].join('\n');
   const a=document.createElement('a');
@@ -1448,7 +1471,7 @@ function openStrategy(){
   const t=TOPICS.find(x=>x.code===currentTopic);
   const ids=[...picks.keys()];
   const rows=ids.map(id=>(byLeg[id]||[]).find(r=>r.topic_code===currentTopic)||(byLeg[id]||[])[0]||{}).filter(r=>r.legislator_id);
-  const byCombined=rows.slice().sort((a,b)=>(b.willingness+b.effectiveness)-(a.willingness+a.effectiveness));
+  const byCombined=rows.slice().sort((a,b)=>champ(b)-champ(a));
   const lead=byCombined[0]||{};
   const chair=rows.find(r=>r.is_committee_chair);
   const bipart=rows.filter(r=>!r.in_majority);
