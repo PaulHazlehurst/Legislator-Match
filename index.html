@@ -445,6 +445,8 @@
   .foot{max-width:1160px;margin:0 auto;padding:22px 24px 40px;color:var(--faint);font-size:12px;text-align:center;border-top:1px solid var(--line)}
   .linkish{background:none;border:none;color:var(--willing-ink);font:inherit;font-size:12px;text-decoration:underline;padding:0}
   @media print{.foot{display:none}}
+  .rankchip{display:inline-block;margin-left:7px;background:var(--paper);border:1px solid var(--line-2);color:var(--muted);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;vertical-align:2px;white-space:nowrap}
+  .rankchip.hot{background:var(--effect-soft);border-color:transparent;color:var(--effect-ink)}
   @media (max-width:760px){
     .card{grid-template-columns:1fr;gap:16px}
     .scores{justify-content:flex-start}
@@ -510,6 +512,10 @@
           <option value="willingness">Rank: most willing to carry</option>
           <option value="effectiveness">Rank: most able to pass</option>
           <option value="led">Rank: most bills led here</option>
+        </select>
+        <select id="f-scale" title="Absolute scores compare across all topics. Relative scores compare only within this policy area.">
+          <option value="abs">Scores: absolute</option>
+          <option value="rel">Scores: relative to this topic</option>
         </select>
         <select id="f-led">
           <option value="led">Has led a bill here</option>
@@ -687,11 +693,11 @@ const partyColor = p => p==='R'?'var(--r)':p==='D'?'var(--d)':'var(--i)';
 const lastName = n => String(n||'').trim().split(/\s+/).slice(-1)[0];
 function renderPicks(rows){
   if(rows.length<2) return '';
-  const byC=rows.slice().sort((a,b)=>champ(b)-champ(a));
-  const byW=rows.slice().sort((a,b)=>b.willingness-a.willingness);
-  const byE=rows.slice().sort((a,b)=>b.effectiveness-a.effectiveness);
+  const byC=rows.slice().sort((a,b)=>C(b)-C(a));
+  const byW=rows.slice().sort((a,b)=>W(b)-W(a));
+  const byE=rows.slice().sort((a,b)=>E(b)-E(a));
   const pk=(label,r,val)=>`<div class="pk" data-open="${r.legislator_id}"><div class="pkl">${label}</div><div class="pkn">${esc(r.name)}</div><div class="pkv">${val}</div></div>`;
-  return `<div class="picks">${pk('Best champion',byC[0],`Willingness ${clamp(byC[0].willingness)} · Effectiveness ${clamp(byC[0].effectiveness)}`)}${pk('Most willing to carry',byW[0],`Willingness ${clamp(byW[0].willingness)}`)}${pk('Most able to pass',byE[0],`Effectiveness ${clamp(byE[0].effectiveness)}`)}</div>`;
+  return `<div class="picks">${pk('Best champion',byC[0],`#${byC[0].topic_rank||1} in this area · W ${clamp(W(byC[0]))} · E ${clamp(E(byC[0]))}`)}${pk('Most willing to carry',byW[0],`Willingness ${clamp(W(byW[0]))} · leads ${byW[0].bills_led||0}`)}${pk('Most able to pass',byE[0],`Effectiveness ${clamp(E(byE[0]))}`)}</div>`;
 }
 function coalitionGraph(center, allies){
   const top=(allies||[]).filter(a=>a.shared_bills>=2).slice(0,10);
@@ -821,6 +827,16 @@ function setView(v){
 }
 
 function champ(r){ return r.champion_score!=null ? r.champion_score : Math.round(Math.sqrt(Math.max(0,r.willingness)*Math.max(0,r.effectiveness))); }
+function relMode(){ const el=document.getElementById('f-scale'); return el && el.value==='rel'; }
+function W(r){ return relMode() && r.rel_willingness!=null ? r.rel_willingness : r.willingness; }
+function E(r){ return relMode() && r.rel_effectiveness!=null ? r.rel_effectiveness : r.effectiveness; }
+function C(r){ return relMode() && r.rel_champion!=null ? r.rel_champion : champ(r); }
+function rankChip(r){
+  if(r.topic_rank==null) return '';
+  const top = r.topic_total ? Math.round(r.topic_rank/r.topic_total*100) : null;
+  const strong = r.topic_rank<=3;
+  return `<span class="rankchip ${strong?'hot':''}" title="Standing among everyone active in this policy area">#${r.topic_rank} of ${r.topic_total}${top!=null&&top<=10?' · top 10%':''}</span>`;
+}
 function rowsForTopic(){
   const party=$('f-party').value, chamber=$('f-chamber').value, sort=$('f-sort').value, ledOnly=$('f-led').value==='led';
   let rows=SCORES.filter(s=>s.topic_code===currentTopic)
@@ -908,12 +924,12 @@ function card(x,i){
   return `<div class="card" data-id="${x.legislator_id}" style="animation-delay:${(i||0)*26}ms">
     <div class="pick ${on}" data-pick="${x.legislator_id}"><svg viewBox="0 0 14 14"><path d="M2 7l3 3 7-7"/></svg></div>
     <div class="who" data-open="${x.legislator_id}">
-      <div><span class="rank">${i+1}.</span><h3 class="nm">${esc(x.name)}</h3><span class="champchip" title="Champion score — the balance of willingness and effectiveness">${champ(x)}</span></div>
+      <div><span class="rank">${i+1}.</span><h3 class="nm">${esc(x.name)}</h3><span class="champchip" title="Champion score — the balance of willingness and effectiveness">${C(x)}</span>${rankChip(x)}</div>
       <div class="meta"><span class="party"><span class="pd ${x.party||'I'}"></span>${x.party||'—'}</span><span class="sep"></span><span>${chamberName(x.chamber)}</span>${x.district?`<span class="sep"></span><span>District ${esc(x.district)}</span>`:''}</div>
       <div class="badges">${powerBadges(x)}</div>
       <div class="ev">${evidence(x)}</div>
     </div>
-    <div class="scores">${gauge(x.willingness,'Willingness','will they carry it')}${gauge(x.effectiveness,'Effectiveness','can they pass it')}</div>
+    <div class="scores">${gauge(W(x),'Willingness',relMode()?'vs. others here':'will they carry it')}${gauge(E(x),'Effectiveness',relMode()?'vs. others here':'can they pass it')}</div>
   </div>`;
 }
 function renderResults(){
@@ -940,7 +956,7 @@ function bindCards(scope){
 function renderMap(rows){
   if(!rows.length){ $('mapview').innerHTML=`<div class="note">No one matches.</div>`; return; }
   const W=240,H=200,PL=24,PR=16,PT=16,PB=24;
-  const ws=rows.map(r=>clamp(r.willingness)), es=rows.map(r=>clamp(r.effectiveness));
+  const ws=rows.map(r=>clamp(W(r))), es=rows.map(r=>clamp(E(r)));
   let wmin=Math.min(...ws),wmax=Math.max(...ws),emin=Math.min(...es),emax=Math.max(...es);
   const spanW=Math.max(10,wmax-wmin), spanE=Math.max(10,emax-emin);
   wmin=Math.max(0,Math.floor(wmin-spanW*0.15)); wmax=Math.min(100,Math.ceil(wmax+spanW*0.15));
@@ -951,9 +967,9 @@ function renderMap(rows){
   const topSet=new Set(ranked.slice(0,3).map(r=>r.legislator_id));
   const dots=rows.map((r,i)=>{
     const isTop=topSet.has(r.legislator_id);
-    return `<circle class="qd" cx="${X(clamp(r.willingness)).toFixed(1)}" cy="${Y(clamp(r.effectiveness)).toFixed(1)}" r="${isTop?3.6:2.7}" fill="${partyColor(r.party)}" stroke="#fff" stroke-width=".6" data-id="${r.legislator_id}" style="animation-delay:${i*9}ms"/>`;
+    return `<circle class="qd" cx="${X(clamp(W(r))).toFixed(1)}" cy="${Y(clamp(E(r))).toFixed(1)}" r="${isTop?3.6:2.7}" fill="${partyColor(r.party)}" stroke="#fff" stroke-width=".6" data-id="${r.legislator_id}" style="animation-delay:${i*9}ms"/>`;
   }).join('');
-  const labels=ranked.slice(0,3).map(r=>`<text class="qlab" x="${(X(clamp(r.willingness))+4).toFixed(1)}" y="${(Y(clamp(r.effectiveness))+1.4).toFixed(1)}">${esc(lastName(r.name))}</text>`).join('');
+  const labels=ranked.slice(0,3).map(r=>`<text class="qlab" x="${(X(clamp(W(r)))+4).toFixed(1)}" y="${(Y(clamp(E(r)))+1.4).toFixed(1)}">${esc(lastName(r.name))}</text>`).join('');
   $('mapview').innerHTML=`<div class="mapwrap"><svg class="quad" viewBox="0 0 ${W} ${H}">
     <line class="axis" x1="${PL}" y1="${H-PB}" x2="${W-PR}" y2="${H-PB}"/>
     <line class="axis" x1="${PL}" y1="${PT}" x2="${PL}" y2="${H-PB}"/>
@@ -969,7 +985,7 @@ function renderMap(rows){
   const tip=$('maptip');
   $('mapview').querySelectorAll('.qd').forEach(c=>{
     const r=rows.find(x=>x.legislator_id===c.getAttribute('data-id'));
-    c.addEventListener('mousemove',e=>{tip.style.opacity=1;tip.textContent=`${r.name} — W ${clamp(r.willingness)} / E ${clamp(r.effectiveness)}`;tip.style.left=(e.clientX+12)+'px';tip.style.top=(e.clientY-8)+'px';});
+    c.addEventListener('mousemove',e=>{tip.style.opacity=1;tip.textContent=`${r.name} — W ${clamp(W(r))} / E ${clamp(E(r))}` + (r.topic_rank?` · #${r.topic_rank}`:'');tip.style.left=(e.clientX+12)+'px';tip.style.top=(e.clientY-8)+'px';});
     c.addEventListener('mouseleave',()=>tip.style.opacity=0);
     c.addEventListener('click',()=>{tip.style.opacity=0;openDetail(r.legislator_id);});
   });
@@ -1220,7 +1236,7 @@ function closeMore(){ $('moremenu').classList.remove('open'); $('morebtn').setAt
 $('morebtn').addEventListener('click',e=>{e.stopPropagation();const o=$('moremenu').classList.toggle('open');$('morebtn').setAttribute('aria-expanded',o?'true':'false');});
 document.addEventListener('click',closeMore);
 $('back').addEventListener('click',()=>{ $('finder-results').classList.add('hide'); $('finder-landing').classList.remove('hide'); });
-['f-sort','f-party','f-chamber','f-led'].forEach(id=>$(id).addEventListener('change',renderResults));
+['f-sort','f-party','f-chamber','f-led','f-scale'].forEach(id=>$(id).addEventListener('change',renderResults));
 $('v-list').addEventListener('click',()=>{setView('list');renderResults();});
 $('v-map').addEventListener('click',()=>{setView('map');renderResults();});
 $('tray-cmp').addEventListener('click',openCompare);
@@ -1258,6 +1274,8 @@ function openMethodology(){
     <p>How much they actually champion this issue. <b>Leading</b> a bill counts five times more than co-sponsoring one, because in Annapolis signing onto a bill costs almost nothing while carrying one is a real commitment. Co-sponsor credit is also capped at twice a member's own lead effort, so volume-signing can amplify a real record but never substitute for one. Recent sessions weigh more than older ones, and anyone who has <b>never led a bill</b> here is capped at 40.</p>
     <h4><span class="k" style="background:var(--effect)"></span>Effectiveness — can they pass it?</h4>
     <p>Institutional power plus their own track record: committee chair, leadership post, majority status, and the share of bills <em>they led</em> that became law. Members with no completed record yet are damped rather than rewarded — there's no evidence to judge. A rank-and-file member with no wins scores low even when willing.</p>
+    <h4>Absolute vs. relative</h4>
+    <p>By default scores are <b>absolute</b> — comparable across every policy area, so a 60 in Health means the same as a 60 in Workforce. In a quiet area the best available champion may still score modestly; that's real information, not a flaw. Switch to <b>relative</b> to rank everyone against others in that area only, and note the <b>#rank</b> on every card, which is the honest way to say "this is the strongest person available here."</p>
     <h4>Champion score</h4>
     <p>The geometric mean of the two. A lopsided profile — willing but powerless, or powerful but disengaged — can't top the list. You need both.</p>
     <h4>Passage rate</h4>
