@@ -1,0 +1,23 @@
+name: Tests
+
+# Guards classification accuracy: the build fails if the classifier drops
+# below the floor on the 630 hand-labelled bills, or a unit test breaks.
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install
+        working-directory: ingest
+      - run: npm test
+        working-directory: ingest
+      - run: node --test tests/*.test.js
+      - name: Accuracy floor
+        run: node ingest/eval/evaluate.js --json | tail -1 | node -e "const r=JSON.parse(require('fs').readFileSync(0,'utf8'));const a=r.all.primary,h=r.holdout.primary;console.log('all',a,'holdout',h);if(a<0.88||h<0.85){console.error('Classifier accuracy regressed');process.exit(1)}"

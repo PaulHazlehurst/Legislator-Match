@@ -5,7 +5,7 @@ import {
   getDatasetList, getSessionData,
   PARTY, VOTE, mapStatus, sponsorRole, chamberFromBody,
 } from './lib/legiscan.js';
-import { classifyBySubject } from './lib/classify.js';
+import { classifyBill, toBillColumns, loadTaxonomyIds, hasV2Columns } from './lib/classify.js';
 
 const STATE = process.env.STATE || 'MD';
 const YEARS = (process.env.YEARS || '2024,2025,2026').split(',').map(s => s.trim());
@@ -13,20 +13,7 @@ const CHUNK = 500;          // batch upsert size
 
 const chunk = (arr, n) => Array.from({ length: Math.ceil(arr.length / n) }, (_, i) => arr.slice(i * n, i * n + n));
 
-// Load taxonomy id maps once.
-async function loadTaxonomy() {
-  const { data: topics } = await db.from('topics').select('id, code');
-  const { data: subs } = await db.from('subtopics').select('id, code, topic_id');
-  const topicIdByCode = Object.fromEntries((topics || []).map(t => [t.code, t.id]));
-  const subIdByPair = {};
-  for (const s of subs || []) {
-    const tcode = topics.find(t => t.id === s.topic_id)?.code;
-    if (tcode) subIdByPair[`${tcode}::${s.code}`] = s.id;
-  }
-  return { topicIdByCode, subIdByPair };
-}
-
-async function ingestSession(dataset, tax) {
+async function ingestSession(dataset, tax, v2) {
   const data = await getSessionData(dataset);
   console.log(`  parsed ${data.bills.length} bills, ${data.people.length} people, ${data.votes.length} roll calls`);
 
@@ -67,26 +54,20 @@ async function ingestSession(dataset, tax) {
     .select('id, legiscan_people_id').eq('state_code', STATE);
   const legByPeople = Object.fromEntries(legs.map(l => [l.legiscan_people_id, l.id]));
 
-  // ── classify from official subjects (free, instant) + build bill rows ──
-  //  Bills with no subject match get topic_id=null and are picked up later by
-  //  reclassify.js (the rate-limited Gemini pass).
-  console.log('  classifying from LegiScan subjects…');
+  // ── classify + build bill rows. Low-confidence results are revisited by
+  //  reclassify.js (AI review) if you run it.
+  console.log('  classifying (shared/classifier.js rules v2)…');
   const billRows = data.bills.map((b) => {
-    const c = classifyBySubject(b);
+    const c = classifyBill(b);
     const { outcome, stage } = mapStatus(b.status);
-    const topic_id = c.topicCode ? tax.topicIdByCode[c.topicCode] : null;
-    const subtopic_id = (topic_id && c.subtopicCode)
-      ? tax.subIdByPair[`${c.topicCode}::${c.subtopicCode}`] || null : null;
     return {
       state_code: STATE, session_id: sessionId,
       legiscan_bill_id: b.bill_id,
       bill_number: b.bill_number,
       title: b.title, description: b.description || null,
       legiscan_subjects: b.subjects || null,
-      topic_id, subtopic_id,
-      outcome, status_stage: stage, significance: c.significance,
-      classified_by: c.classifiedBy, classification_confidence: c.confidence,
-      classified_at: new Date().toISOString(),
+      outcome, status_stage: stage,
+      ...toBillColumns(c, tax, { v2 }),
     };
   });
   for (const c of chunk(billRows, CHUNK)) {
@@ -95,6 +76,26 @@ async function ingestSession(dataset, tax) {
     const { error } = await db.from('bills').upsert(c, { onConflict: 'legiscan_bill_id', ignoreDuplicates: true });
     if (error) console.log('  bill insert error:', error.message);
   }
+  // Existing bills: refresh ONLY outcome + stage (classification untouched),
+  // so the weekly run actually keeps statuses current.
+  const statusNow = Object.fromEntries(billRows.map(r => [r.legiscan_bill_id, r]));
+  let statusUpdates = 0;
+  for (let from = 0; ; from += 1000) {
+    const { data: page, error } = await db.from('bills')
+      .select('id, legiscan_bill_id, outcome, status_stage').eq('session_id', sessionId)
+      .order('id').range(from, from + 999);
+    if (error || !page?.length) break;
+    const changed = page.filter(b => statusNow[b.legiscan_bill_id] &&
+      (statusNow[b.legiscan_bill_id].outcome !== b.outcome || statusNow[b.legiscan_bill_id].status_stage !== b.status_stage));
+    for (let i = 0; i < changed.length; i += 20) {
+      await Promise.all(changed.slice(i, i + 20).map(b => db.from('bills').update({
+        outcome: statusNow[b.legiscan_bill_id].outcome, status_stage: statusNow[b.legiscan_bill_id].status_stage,
+      }).eq('id', b.id)));
+    }
+    statusUpdates += changed.length;
+    if (page.length < 1000) break;
+  }
+  if (statusUpdates) console.log(`  refreshed outcome/status on ${statusUpdates} existing bills`);
   const unclassified = billRows.filter(r => !r.topic_id).length;
   console.log(`  processed ${billRows.length} bills this session (${unclassified} had no subject topic)`);
 
@@ -160,7 +161,9 @@ async function ingestSession(dataset, tax) {
 
 async function main() {
   console.log(`Ingesting ${STATE} for years: ${YEARS.join(', ')}`);
-  const tax = await loadTaxonomy();
+  const tax = await loadTaxonomyIds(db);
+  const v2 = await hasV2Columns(db);
+  if (!v2) console.log('  (v2 columns missing — run ingest/sql/v2_migration.sql to store secondary topics)');
   if (!Object.keys(tax.topicIdByCode).length) {
     console.error('No topics found. Run `npm run seed` first.'); process.exit(1);
   }
@@ -171,7 +174,7 @@ async function main() {
     const ds = list.find(d => /regular/i.test(d.session_name)) || list[0];
     if (!ds) { console.log(`  no dataset for ${year}`); continue; }
     console.log(`\n${year}: ${ds.session_name} (session ${ds.session_id})`);
-    await ingestSession(ds, tax);
+    await ingestSession(ds, tax, v2);
   }
   console.log('\nDone. Log an ingest event.');
   await db.from('activity_log').insert({ actor: 'ingest', action: 'backfill',

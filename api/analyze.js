@@ -6,23 +6,10 @@
 //   GEMINI_API_KEY = your key   (optionally GEMINI_MODEL, default below)
 // Then redeploy.
 
-const TOPICS = [
-  ['environment', 'Environment & Natural Resources'],
-  ['taxation', 'Taxation & Revenue'],
-  ['education', 'Education'],
-  ['public-safety', 'Public Safety & Criminal Justice'],
-  ['firearms', 'Firearms & Weapons'],
-  ['labor-employment', 'Labor & Employment'],
-  ['workforce', 'Workforce Development'],
-  ['health', 'Health & Human Services'],
-  ['business-regulation', 'Business & Professional Regulation'],
-  ['consumer-protection', 'Consumer Protection'],
-  ['land-use-property', 'Land Use & Property Rights'],
-  ['transportation', 'Transportation & Motor Vehicles'],
-  ['alcohol-licensing', 'Alcoholic Beverages & Licensing'],
-  ['government-admin', 'Government Administration & Elections'],
-  ['veterans-military', 'Veterans & Military Affairs'],
-];
+import { TOPICS as TAXONOMY } from '../shared/taxonomy.js';
+
+// One source of truth for policy areas (shared/taxonomy.js).
+const TOPICS = TAXONOMY.map(t => [t.code, t.label, t.includes]);
 
 export default async function handler(req, res) {
   if (req.method === 'GET') {
@@ -40,7 +27,7 @@ export default async function handler(req, res) {
   if (!KEY) { res.status(500).json({ error: 'GEMINI_API_KEY is not set in Vercel env vars.' }); return; }
   const MODEL = process.env.GEMINI_MODEL || 'gemini-3.6-flash';
 
-  const topicList = TOPICS.map(([c, l]) => `  ${c} — ${l}`).join('\n');
+  const topicList = TOPICS.map(([c, l, inc]) => `  ${c} — ${l} (${inc})`).join('\n');
   const system = `You are a Maryland legislative strategist helping a lobbying firm. The user pastes a bill idea, title, summary, or draft. Analyze it and respond with ONLY a JSON object, no markdown:
 
 {

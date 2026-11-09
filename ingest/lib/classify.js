@@ -1,133 +1,54 @@
-import { TOPICS, SUBJECT_TO_TOPIC, KEYWORD_RULES } from '../taxonomy.js';
+// Classification for the ingest pipeline. All rules live in
+// ../../shared/classifier.js (measured by ingest/eval/evaluate.js); this file
+// adapts its output to the database row shape and keeps the old entry point
+// name so ingest.js keeps working.
+import { classifyBill, significanceOf, CLASSIFIER_VERSION } from '../../shared/classifier.js';
 
-// ── significance: keep commemorative/local/procedural noise out of passage rate ──
-export function significanceOf(bill) {
-  const title = (bill.title || '').toLowerCase();
-  const type = String(bill.bill_type || '').toLowerCase();
+export { classifyBill, significanceOf, CLASSIFIER_VERSION };
 
-  if (/commemorat|awareness (month|week|day)|\bmonth\b|\bweek\b|recogniz|honoring|designat/.test(title)
-      && /res/.test(type)) return 'ceremonial';
-  if (/\b(county|city of|town of|municipal)\b/.test(title)) return 'local';
-  if (/task force|- study\b|study on|sunset|- membership\b|- reporting\b|technical correction/.test(title))
-    return 'procedural';
-  return 'substantive';
+// Topic/subtopic id lookups, loaded once per run.
+export async function loadTaxonomyIds(db) {
+  const { data: topics, error: te } = await db.from('topics').select('id, code');
+  if (te) throw new Error('topics: ' + te.message);
+  const { data: subs, error: se } = await db.from('subtopics').select('id, code, topic_id');
+  if (se) throw new Error('subtopics: ' + se.message);
+  const topicIdByCode = Object.fromEntries(topics.map(t => [t.code, t.id]));
+  const codeByTopicId = Object.fromEntries(topics.map(t => [t.id, t.code]));
+  const subIdByPair = {};
+  for (const s of subs) if (codeByTopicId[s.topic_id]) subIdByPair[`${codeByTopicId[s.topic_id]}::${s.code}`] = s.id;
+  return { topicIdByCode, subIdByPair, topics, subs };
 }
 
-// ── PASS 1 (used during ingest): official subject tags only. No AI, no cost. ──
-// Returns a topic when LegiScan's subjects resolve, otherwise leaves it null
-// for the AI pass to pick up later.
+// Does the v2 migration's secondary_topic_id column exist yet?
+export async function hasV2Columns(db) {
+  const { error } = await db.from('bills').select('secondary_topic_id').limit(1);
+  return !error;
+}
+
+// classification → columns to write on `bills`
+export function toBillColumns(c, tax, { v2 = true, classifiedBy = 'rules_v2' } = {}) {
+  const topic_id = c.topic ? tax.topicIdByCode[c.topic] || null : null;
+  const subtopic_id = topic_id && c.subtopic ? tax.subIdByPair[`${c.topic}::${c.subtopic}`] || null : null;
+  const row = {
+    topic_id, subtopic_id,
+    significance: c.significance,
+    classified_by: topic_id ? classifiedBy : 'unclassified',
+    classification_confidence: c.confidence,
+    classified_at: new Date().toISOString(),
+  };
+  if (v2) {
+    row.secondary_topic_id = c.secondary ? tax.topicIdByCode[c.secondary] || null : null;
+    row.classification_score = c.score;
+    row.classification_evidence = c.evidence;
+    row.classifier_version = c.version || CLASSIFIER_VERSION;
+  }
+  return row;
+}
+
+// Back-compat for scripts written against v1.
 export function classifyBySubject(bill) {
-  const significance = significanceOf(bill);
-  const subjects = bill.subjects || [];
-
-  // 1. exact official subject tag — highest precision
-  for (const s of subjects) {
-    const name = s.subject_name || s.subject || '';
-    if (SUBJECT_TO_TOPIC[name]) {
-      return { topicCode: SUBJECT_TO_TOPIC[name], subtopicCode: null,
-               significance, classifiedBy: 'legiscan_subject', confidence: 'high' };
-    }
-  }
-
-  // 2. keyword match. MD titles lead with the subject area ("Property Tax - ..."),
-  //    so match the title PREFIX (before the first dash) first — it's authoritative —
-  //    then fall back to the full subjects + title text.
-  const title = bill.title || '';
-  const prefix = title.split(/\s[-–—]\s/)[0].toLowerCase();
-  const hay = (subjects.map(s => s.subject_name || s.subject || '').join(' ')
-               + ' ' + title).toLowerCase();
-  for (const haystack of [prefix, hay]) {
-    for (const [topic, patterns] of KEYWORD_RULES) {
-      if (patterns.some(p => haystack.includes(p))) {
-        return { topicCode: topic, subtopicCode: null,
-                 significance, classifiedBy: 'subject_keyword', confidence: 'medium' };
-      }
-    }
-  }
-
-  // 3. still nothing — leave for the AI pass
-  return { topicCode: null, subtopicCode: null, significance,
-           classifiedBy: 'unclassified', confidence: null };
-}
-
-// ── PASS 2 (used by reclassify.js): constrained Gemini, only on leftovers. ────
-const TOPIC_CODES = new Set(TOPICS.map(t => t.code));
-const SUBTOPICS_BY_TOPIC = Object.fromEntries(
-  TOPICS.map(t => [t.code, new Set(t.subtopics.map(s => s[0]))])
-);
-
-function buildPrompt() {
-  const list = TOPICS.map(t => {
-    const subs = t.subtopics.map(([c, l, g]) => `      - ${c}: ${l}${g ? ` (${g})` : ''}`).join('\n');
-    return [
-      `TOPIC ${t.code} — ${t.label}`,
-      `  Includes: ${t.includes}`,
-      `  Does NOT include: ${t.excludes}`,
-      subs ? `  Subtopics (choose ONE of these or null):\n${subs}` : '  Subtopics: none',
-    ].join('\n');
-  }).join('\n\n');
-  return `You classify a US state legislative bill for a lobbying firm. Accuracy matters more than coverage: a wrong topic is worse than null.
-
-RULES:
-1. Choose topicCode ONLY from the list below, or null if none clearly fit.
-2. Choose subtopicCode ONLY from the chosen topic's subtopics, or null.
-3. A bill about a POPULATION (veterans, seniors, teachers) is classified by what it DOES, not who it mentions.
-4. If not confident, return null topic with confidence "low". Do not force a fit.
-
-${list}
-
-Respond with ONLY a JSON object, no markdown:
-{"topicCode": string|null, "subtopicCode": string|null, "confidence": "high"|"low", "reasoning": "one sentence"}`;
-}
-const PROMPT = buildPrompt();
-
-const GEMINI_KEY = process.env.GEMINI_API_KEY;
-const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
-
-// Returns { topicCode, subtopicCode, confidence, reasoning } or throws on 429
-// so the caller can back off. Validates output against the taxonomy.
-export async function classifyWithGemini(bill) {
-  const content = `Title: ${bill.title}\n${bill.description ? `Description: ${bill.description}\n` : ''}${
-    (bill.subjects || []).length ? `LegiScan subjects: ${(bill.subjects).map(s => s.subject_name || s.subject).join(', ')}` : ''
-  }`;
-
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
-  const body = JSON.stringify({
-    system_instruction: { parts: [{ text: PROMPT }] },
-    contents: [{ role: 'user', parts: [{ text: content }] }],
-    generationConfig: { temperature: 0, responseMimeType: 'application/json' },
-  });
-
-  // Retry transient conditions: 429 (rate limit) and 500/503 (Google overloaded).
-  // Backoff 2s,4s,8s,16s,32s. If still failing, throw a tagged error so the
-  // caller can stop the run and resume later — no bill gets marked as failed.
-  const RETRYABLE = new Set([429, 500, 503]);
-  let res;
-  for (let attempt = 0; ; attempt++) {
-    res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-goog-api-key': GEMINI_KEY },
-      body,
-    });
-    if (res.ok) break;
-    if (RETRYABLE.has(res.status) && attempt < 5) {
-      await new Promise(r => setTimeout(r, 2000 * Math.pow(2, attempt)));
-      continue;
-    }
-    const err = new Error(`Gemini HTTP ${res.status}: ${await res.text()}`);
-    err.code = res.status;
-    err.retryable = RETRYABLE.has(res.status);
-    throw err;
-  }
-
-  const json = await res.json();
-  let raw = json.candidates?.[0]?.content?.parts?.[0]?.text || '';
-  raw = raw.replace(/^```json\s*|\s*```$/g, '').trim();
-  let parsed;
-  try { parsed = JSON.parse(raw); } catch { return { topicCode: null, subtopicCode: null, confidence: 'low', reasoning: 'parse failure' }; }
-
-  let { topicCode, subtopicCode, confidence, reasoning } = parsed;
-  if (!TOPIC_CODES.has(topicCode)) { topicCode = null; subtopicCode = null; }
-  if (topicCode && subtopicCode && !SUBTOPICS_BY_TOPIC[topicCode].has(subtopicCode)) subtopicCode = null;
-  return { topicCode, subtopicCode, confidence: confidence === 'high' ? 'high' : 'low', reasoning };
+  const c = classifyBill(bill);
+  return { topicCode: c.topic, subtopicCode: c.subtopic, secondaryCode: c.secondary,
+           significance: c.significance, classifiedBy: c.topic ? 'rules_v2' : 'unclassified',
+           confidence: c.confidence, raw: c };
 }
