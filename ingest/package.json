@@ -2,18 +2,21 @@
   "name": "pinnacle-ingest",
   "version": "1.0.0",
   "type": "module",
-  "description": "Backfill Maryland legislative data into Supabase from LegiScan + OpenStates, with free subject-based + Gemini classification.",
+  "description": "Maryland legislative data \u2192 Supabase: LegiScan ingest, OpenStates enrichment, rules-v2 classification with optional AI review.",
   "scripts": {
     "seed": "node seed.js",
     "ingest": "node ingest.js",
-    "reclassify": "node reclassify.js",
+    "reclassify-all": "node reclassify-all.js",
+    "ai-review": "node ai-review.js",
     "enrich": "node enrich.js",
     "relink": "node relink.js",
-    "classify-subjects": "node classify-subjects.js"
+    "eval": "node eval/evaluate.js",
+    "test": "node --test test/*.test.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.4",
     "adm-zip": "^0.5.16",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "@anthropic-ai/sdk": "^1.6.0"
   }
 }

@@ -1,6 +1,12 @@
 name: Data ingest
 
 # Run manually from the Actions tab. No local machine needed.
+#
+# First-time v2 upgrade:
+#   1. Run ingest/sql/v2_migration.sql in the Supabase SQL editor.
+#   2. Run this workflow with step = reclassify-all.
+#   3. Optional: step = ai-review-eval (measures AI review on the hand-labelled
+#      bills, writes nothing), then step = ai-review if it helps.
 on:
   # PAUSED until session starts. Uncomment the two lines below to resume the
   # weekly automatic refresh (Sundays 06:00 UTC) that keeps bill statuses current.
@@ -11,17 +17,17 @@ on:
       step:
         description: 'Which step to run'
         required: true
-        default: 'seed+ingest'
+        default: 'reclassify-all'
         type: choice
         options:
-          - seed          # load state + taxonomy (run once)
-          - ingest        # pull the sessions, classify from subjects
-          - reclassify    # Gemini pass over the leftovers (resumable)
-          - enrich        # OpenStates committees + leadership + roster
-          - relink        # repair roster + sponsorships (keeps bills/topics)
-          - classify-subjects  # free keyword pass over unclassified bills
-          - seed+ingest   # seed then ingest, in one run
-          - all           # seed, ingest, enrich, reclassify
+          - reclassify-all     # seed taxonomy v2 + re-classify every bill (free, minutes)
+          - ai-review-eval     # measure AI review against the gold set (no DB writes)
+          - ai-review          # AI second opinion on medium/low-confidence bills
+          - ingest             # pull the sessions (classifies new bills, refreshes statuses)
+          - seed               # load state + taxonomy only
+          - enrich             # OpenStates committees + leadership + roster
+          - relink             # repair roster + sponsorships (keeps bills/topics)
+          - seed+ingest        # seed then ingest, in one run
       years:
         description: 'Years (comma-separated)'
         required: false
@@ -38,6 +44,7 @@ jobs:
       SUPABASE_URL:         ${{ secrets.SUPABASE_URL }}
       SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
       LEGISCAN_API_KEY:     ${{ secrets.LEGISCAN_API_KEY }}
+      ANTHROPIC_API_KEY:    ${{ secrets.ANTHROPIC_API_KEY }}
       GEMINI_API_KEY:       ${{ secrets.GEMINI_API_KEY }}
       GEMINI_MODEL:         ${{ secrets.GEMINI_MODEL }}
       OPENSTATES_API_KEY:   ${{ secrets.OPENSTATES_API_KEY }}
@@ -52,26 +59,33 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Classifier accuracy check
+        run: npm run eval && npm test
+
       - name: Seed taxonomy
-        if: ${{ inputs.step == 'seed' || inputs.step == 'seed+ingest' || inputs.step == 'all' }}
+        if: ${{ inputs.step == 'seed' || inputs.step == 'seed+ingest' }}
         run: npm run seed
 
       - name: Ingest sessions
-        if: ${{ github.event_name == 'schedule' || inputs.step == 'ingest' || inputs.step == 'seed+ingest' || inputs.step == 'all' }}
+        if: ${{ github.event_name == 'schedule' || inputs.step == 'ingest' || inputs.step == 'seed+ingest' }}
         run: npm run ingest
 
+      - name: Reclassify every bill (rules v2)
+        if: ${{ inputs.step == 'reclassify-all' }}
+        run: npm run reclassify-all
+
+      - name: Measure AI review (no writes)
+        if: ${{ inputs.step == 'ai-review-eval' }}
+        run: npm run ai-review -- --eval
+
+      - name: AI review of uncertain bills
+        if: ${{ inputs.step == 'ai-review' }}
+        run: npm run ai-review
+
       - name: Enrich (OpenStates committees + leadership)
-        if: ${{ inputs.step == 'enrich' || inputs.step == 'all' }}
+        if: ${{ inputs.step == 'enrich' }}
         run: npm run enrich
 
       - name: Repair roster + sponsorships (relink)
         if: ${{ inputs.step == 'relink' }}
         run: npm run relink
-
-      - name: Classify from subjects + title (free)
-        if: ${{ github.event_name == 'schedule' || inputs.step == 'classify-subjects' }}
-        run: npm run classify-subjects
-
-      - name: Reclassify leftovers (Gemini)
-        if: ${{ inputs.step == 'reclassify' || inputs.step == 'all' }}
-        run: npm run reclassify
