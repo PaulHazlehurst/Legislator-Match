@@ -1,7 +1,6 @@
-import { STATE } from '../store.js';
+import { STATE, committeeName } from '../store.js';
 import { scoreTopic, legislatorProfile } from '../../shared/scoring.js';
-import { rpc } from '../api.js';
-import { $, esc, pct, dial, partyChip, partyName, memberMeta, topicLabel, resultTag, openDrawer, on, chamberName } from '../ui.js';
+import { $, esc, pct, scoreBlock, partyChip, partyName, memberMeta, topicLabel, resultTag, openDrawer, on, chamberName } from '../ui.js';
 import { relsFor, STRENGTH, staffColor, REL } from '../relationships.js';
 
 let current = null;
@@ -15,15 +14,18 @@ export function openLegislator(id, topic = null) {
   const r = topic ? scoreTopic(STATE.index, topic).find(x => x.legislator_id === id) : null;
   const L = STATE.index.legById.get(id);
   const rels = relsFor(id);
-  const power = L.power || {};
-
-  const badges = [power.chair && `Chair${power.chairOf?.length ? ', ' + power.chairOf.filter(Boolean).join(', ') : ''}`, power.vice && 'Vice chair', power.leadership && 'Leadership', L.inMajority ? 'Majority party' : 'Minority party'].filter(Boolean);
+  const power = L.power || {}, person = STATE.people[id];
+  const seats = Object.entries(power.seats || {}).map(([code, role]) => `${{ chair: 'Chair', vice: 'Vice chair', member: 'Member' }[role]}, ${committeeName(code) || code}`);
+  const badges = [...(power.posts || []), ...seats.filter(s => !s.startsWith('Member')), L.inMajority ? 'Majority party' : 'Minority party'];
+  const memberOf = seats.filter(s => s.startsWith('Member')).map(s => s.replace('Member, ', ''));
 
   openDrawer(`
     <header class="d-head">
       <h2 id="drawer-title">${esc(l.name)}</h2>
       <p class="meta">${partyChip(l.party)} ${esc(partyName(l.party))}, ${esc(memberMeta(l))}</p>
       <p class="badges">${badges.map(b => `<span class="badge badge-power">${esc(b)}</span>`).join('')}</p>
+      ${memberOf.length ? `<p class="d-record">Sits on ${memberOf.map(esc).join(' and ')}.</p>` : ''}
+      ${person ? `<p class="contact">${person.email ? `<a class="btn btn-quiet" href="mailto:${esc(person.email)}">Email</a>` : ''}${person.phone ? `<a class="btn btn-quiet" href="tel:${esc(person.phone)}">${esc(person.phone)}</a>` : ''}<a class="btn btn-quiet" href="https://mgaleg.maryland.gov/mgawebsite/Members/Details/${esc(person.slug)}" target="_blank" rel="noopener">Official page</a></p>` : ''}
       <p class="d-record">Across all areas: led <b>${L.record.n}</b> bills in completed sessions, <b>${L.record.laws}</b> became law. Expected passage rate ${pct(L.expect)} (chamber average ${pct(STATE.index.chamberBase[l.chamber])}).</p>
     </header>
 
@@ -38,13 +40,12 @@ export function openLegislator(id, topic = null) {
 
     <section class="d-sec">
       <h3>Strongest policy areas</h3>
-      <ol class="areas">${profile.slice(0, 8).map(p => `<li><button class="linkish" data-topic="${p.topic}">${esc(topicLabel(p.topic))}</button><span class="muted">led ${p.bills_led}, ${p.laws} law${p.laws === 1 ? '' : 's'}</span>${dial(p.willingness, p.effectiveness, p.champion, { size: 40, label: false })}</li>`).join('') || '<li class="muted">No classified activity yet.</li>'}</ol>
+      <ol class="areas">${profile.slice(0, 8).map(p => `<li><button class="linkish" data-topic="${p.topic}">${esc(topicLabel(p.topic))}</button><span class="muted">led ${p.bills_led}, ${p.laws} law${p.laws === 1 ? '' : 's'}</span><b class="score-n sm">${p.champion}</b></li>`).join('') || '<li class="muted">No classified activity yet.</li>'}</ol>
     </section>
 
     <section class="d-sec"><h3>Works most often with</h3>${allies(id)}</section>
-    <section class="d-sec"><h3>Votes most alike</h3><div id="d-votes" class="muted">Comparing roll-call votes…</div></section>
+    ${votesSection(id)}
   `);
-  loadVotes(id);
 }
 
 function scoreSection(r, l, topic) {
@@ -54,13 +55,13 @@ function scoreSection(r, l, topic) {
   return `<section class="d-sec">
     <h3>${esc(topicLabel(topic))}</h3>
     <div class="explain">
-      ${dial(r.willingness, r.effectiveness, r.champion, { size: 84 })}
+      ${scoreBlock(r.champion, r.willingness, r.effectiveness)}
       <dl>
-        <dt class="k-w">Willingness ${r.willingness}</dt>
-        <dd>Led ${r.bills_led} bill${r.bills_led === 1 ? '' : 's'} here (weighted ${b.ledWeight}) and co-sponsored ${r.bills_cosponsored} (adds ${b.coContribution}, capped so co-signing can't stand in for leading)${b.focus ? `, plus ${b.focus} for focus: this area is a large share of what they carry` : ''}. Recent sessions and substantive bills count most.</dd>
-        <dt class="k-e">Effectiveness ${r.effectiveness}</dt>
+        <dt class="k-w">Carries it: ${r.willingness}</dt>
+        <dd>Led ${r.bills_led} bill${r.bills_led === 1 ? '' : 's'} here and co-sponsored ${r.bills_cosponsored}. Leading a bill is what counts; co-signing adds only a little${b.focus >= 3 ? '. This area is a large share of what they carry' : ''}.</dd>
+        <dt class="k-e">Passes it: ${r.effectiveness}</dt>
         <dd>${r.decided ? `Of ${r.decided} bill${r.decided === 1 ? '' : 's'} they led here in completed sessions, ${r.laws} became law${r.laws_via_companion ? ` (${r.laws_via_companion} through a cross-filed companion)` : ''}${r.passed_chamber ? ` and ${r.passed_chamber} passed one chamber` : ''}.` : 'No completed record in this area yet, so this leans on their overall record.'}
-          Blended with their overall record (${pct(b.overallRate)}) and ${r.in_majority ? 'majority' : 'minority'} status, that is an expected passage rate of ${pct(r.expected_rate)}, against ${pct(STATE.index.expectDist.mean)} for a typical member${b.power ? `, plus ${b.power} for committee or leadership posts` : ''}.</dd>
+          Blended with their overall record (${pct(b.overallRate)}) and ${r.in_majority ? 'majority' : 'minority'} status, that is an expected passage rate of ${pct(r.expected_rate)}, against ${pct(STATE.index.expectDist.mean)} for a typical member${b.power > 0 ? `. Their committee or leadership seat adds ${b.power} points` : ''}.</dd>
       </dl>
     </div>
     ${led.length ? `<h4>Led (${led.length})</h4><ul class="bills">${led.map(x => billLi(x)).join('')}</ul>` : ''}
@@ -79,17 +80,18 @@ function allies(id) {
   return `<ul class="peers">${top.map(([o, n]) => { const p = STATE.legById[o]; return `<li><button class="linkish" data-leg="${o}">${partyChip(p.party)} ${esc(p.name)}</button><span class="muted">${n} bills together, ${esc(chamberName(p.chamber))}</span></li>`; }).join('')}</ul>${cross ? `<p class="fine">${cross} of these work across the aisle.</p>` : ''}`;
 }
 
-async function loadVotes(id) {
-  let rows = [];
-  try { rows = await rpc('voting_alignment', { leg: id }); } catch (e) {
-    const el = $('d-votes'); if (el && current?.id === id) el.textContent = 'Vote comparison is unavailable right now (the database did not answer in time).';
-    return;
-  }
-  const el = $('d-votes'); if (!el || current?.id !== id) return;
-  if (!rows?.length) { el.textContent = 'Not enough shared roll calls to compare.'; return; }
-  const row = x => `<li><button class="linkish" data-leg="${x.legislator_id || x.id || ''}">${partyChip(x.party)} ${esc(x.name)}</button><span class="vbar"><i style="width:${x.pct}%"></i></span><span class="muted">${x.pct}%</span></li>`;
-  el.classList.remove('muted');
-  el.innerHTML = `<ul class="peers">${rows.slice(0, 6).map(row).join('')}</ul>`;
+// Voting patterns on contested roll calls (data/votes.json).
+function votesSection(id) {
+  const v = STATE.votes?.[id], me = STATE.legById[id];
+  if (!v) return '';
+  const row = ([o, p]) => { const l = STATE.legById[o]; return l ? `<li><button class="linkish" data-leg="${o}">${partyChip(l.party)} ${esc(l.name)}</button><span class="vbar"><i style="width:${p}%"></i></span><span class="muted">${p}%</span></li>` : ''; };
+  const other = me.party === 'D' ? 'Republicans' : 'Democrats';
+  const read = v.loyal == null ? '' : v.loyal >= 97 ? 'Almost never breaks with their party.' : v.loyal >= 90 ? 'Occasionally breaks with their party.' : 'Breaks with their party more than most: a possible swing vote.';
+  return `<section class="d-sec"><h3>How they vote</h3>
+    ${v.loyal != null ? `<p>Votes with their party on <b>${v.loyal}%</b> of ${v.n.toLocaleString()} contested votes. ${read}</p>` : ''}
+    ${v.cross?.length ? `<h4>${other} they agree with most</h4><ul class="peers">${v.cross.slice(0, 3).map(row).join('')}</ul>` : ''}
+    ${v.unlikeOwn?.length && v.unlikeOwn[0][1] < 95 ? `<h4>In their own party, least alike</h4><ul class="peers">${v.unlikeOwn.map(row).join('')}</ul>` : ''}
+    <p class="fine">Contested votes are roll calls where at least one in ten voted on the losing side. Unanimous votes are left out.</p></section>`;
 }
 
 export function setupLegislatorDrawer(openBill) {

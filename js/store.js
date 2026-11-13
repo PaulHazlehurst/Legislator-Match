@@ -7,7 +7,7 @@ import { buildIndex } from '../shared/scoring.js';
 export const STATE = {
   sessions: [], topics: [], topicByCode: {}, topicById: {}, subtopicById: {},
   legislators: [], legById: {}, bills: [], billById: {}, sponsorships: [], sponsorsByBill: new Map(),
-  index: null, hasSecondary: false, classifierMix: {}, loadedAt: null,
+  index: null, hasSecondary: false, committees: [], committeeByCode: {}, people: {}, seats: {}, votes: null, mgaDate: null, classifierMix: {}, loadedAt: null,
 };
 
 const CACHE_KEY = 'pinnacle_cache_v2';
@@ -51,15 +51,22 @@ async function fetchRaw(onProgress) {
   return { sessions, topics, subtopics, legislators, bills, sponsorships, memberships, leadership, hasSecondary };
 }
 
+// Static files built by ingest/build-data.js. The app works without them
+// (no committees, title-matched companions), so failures are tolerated.
+const staticJson = (f) => fetch(`data/${f}`).then(r => r.ok ? r.json() : null).catch(() => null);
+
 export async function loadAll({ onProgress, force = false } = {}) {
   const cached = !force && readCache();
-  const raw = cached ? unpackCache(cached) : await fetchRaw(onProgress);
+  const [raw, mga, votes] = await Promise.all([cached ? unpackCache(cached) : fetchRaw(onProgress), staticJson('mga.json'), staticJson('votes.json')]);
   if (!cached) writeCache(raw);
-  normalise(raw);
+  normalise(raw, mga);
+  STATE.votes = votes?.members || null; STATE.votesMeta = votes ? { contested: votes.contested, generated: votes.generated } : null;
   return STATE;
 }
 
-function normalise(raw) {
+export const committeeName = (code) => STATE.committeeByCode[code]?.name || null;
+
+function normalise(raw, mga) {
   const yearBySession = Object.fromEntries(raw.sessions.map(s => [s.id, s.year_end]));
   STATE.sessions = raw.sessions.slice().sort((a, b) => a.year_end - b.year_end);
   STATE.hasSecondary = raw.hasSecondary;
@@ -96,23 +103,41 @@ function normalise(raw) {
       year: yearBySession[b.session_id], session_id: b.session_id,
       classified_by: b.classified_by, confidence: b.classification_confidence,
       chamber: /^S/i.test(b.bill_number || '') ? 'senate' : 'house',
+      ...officialRecord(mga, yearBySession[b.session_id], b.bill_number),
     };
   });
   STATE.sponsorships = raw.sponsorships;
   STATE.sponsorsByBill = new Map();
   for (const s of raw.sponsorships) { if (!STATE.sponsorsByBill.has(s.bill_id)) STATE.sponsorsByBill.set(s.bill_id, []); STATE.sponsorsByBill.get(s.bill_id).push(s); }
 
+  // committees, seats and leadership from the official record
+  STATE.committees = (mga?.committees || []).filter(c => !c.former);
+  STATE.committeeByCode = Object.fromEntries((mga?.committees || []).map(c => [c.code, c]));
+  STATE.people = mga?.people || {};
+  STATE.mgaDate = mga?.generated || null;
   const power = {};
-  for (const m of raw.memberships || []) {
-    const p = power[m.legislator_id] ||= {};
-    if (m.role === 'chair') { p.chair = true; (p.chairOf ||= []).push(m.committees?.name); }
-    if (m.role === 'vice_chair') p.vice = true;
+  for (const c of STATE.committees) {
+    if (/^(sru|hru|exn)$/.test(c.code)) continue;                 // Rules / Nominations seats don't move policy bills
+    for (const id of c.members) (power[id] ||= { seats: {} }).seats[c.code] = 'member';
+    if (c.chair) (power[c.chair] ||= { seats: {} }).seats[c.code] = 'chair';
+    if (c.vice) (power[c.vice] ||= { seats: {} }).seats[c.code] = 'vice';
   }
-  for (const l of raw.leadership || []) if (!/committee/.test(l.role)) (power[l.legislator_id] ||= {}).leadership = true;
+  for (const [id, p] of Object.entries(STATE.people)) {
+    const posts = p.leadership || []; if (!posts.length) continue;
+    const e = power[id] ||= { seats: {} };
+    e.posts = posts; e.top = posts.some(x => !/^(deputy|assistant|chief deputy)/i.test(x));
+  }
+  STATE.seats = power;
 
   STATE.index = buildIndex({ bills: STATE.bills, sponsorships: STATE.sponsorships, legislators: STATE.legislators, power });
   STATE.billById = Object.fromEntries([...STATE.index.billById.values()].map(b => [b.id, b]));
   STATE.loadedAt = new Date();
+}
+
+function officialRecord(mga, year, number) {
+  const r = mga?.bills?.[`${year}:${number}`];
+  if (!r) return {};
+  return { stage: r.s, end: r.e || null, xfile: r.x || null, committee: r.c || null, committee2: r.c2 || null, oppCommittee: r.o || null, hearing: r.h || null, chapter: r.ch || null };
 }
 
 // Is the database already on the v2 classifier? (Drives an admin banner.)

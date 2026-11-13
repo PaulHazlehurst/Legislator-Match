@@ -3,10 +3,16 @@
   "version": "2.0.0",
   "private": true,
   "type": "module",
-  "engines": { "node": "24.x" },
+  "engines": {
+    "node": "24.x"
+  },
   "scripts": {
     "test": "node --test tests/*.test.js && cd ingest && npm test",
     "eval": "node ingest/eval/evaluate.js",
-    "serve": "python3 -m http.server 8765"
+    "serve": "python3 -m http.server 8765",
+    "build-data": "node ingest/build-data.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.6.0"
   }
 }

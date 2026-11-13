@@ -28,10 +28,14 @@ on:
           - enrich             # OpenStates committees + leadership + roster
           - relink             # repair roster + sponsorships (keeps bills/topics)
           - seed+ingest        # seed then ingest, in one run
+          - build-data         # refresh committees, bill progress and vote comparisons (data/*.json)
       years:
         description: 'Years (comma-separated)'
         required: false
         default: '2024,2025,2026'
+
+permissions:
+  contents: write      # build-data commits the refreshed data/*.json
 
 jobs:
   run:
@@ -89,3 +93,13 @@ jobs:
       - name: Repair roster + sponsorships (relink)
         if: ${{ inputs.step == 'relink' }}
         run: npm run relink
+
+      - name: Refresh committees, bill progress and vote comparisons
+        if: ${{ github.event_name == 'schedule' || inputs.step == 'build-data' || inputs.step == 'ingest' || inputs.step == 'seed+ingest' }}
+        run: |
+          npm run build-data
+          cd ..
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/mga.json data/votes.json
+          git diff --cached --quiet || (git commit -m "Refresh committee, bill-progress and vote data" && git push)

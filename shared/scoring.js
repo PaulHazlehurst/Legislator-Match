@@ -51,7 +51,16 @@ export const WEIGHTS = {
   priorOverall: 6,
   priorTopic: 4,
   fit: { intercept: -0.009, rate: 0.83, majority: 0.10 },
-  power: { chair: 8, vice: 4, leadership: 6 },
+  // Added to the expected passage rate when a member sits on the committee
+  // that hears this area's bills (scaled by that committee's share of them).
+  // Measured on 2026: sponsor chairs the committee of referral 60% enacted,
+  // vice chair 46%, member 38%, not on it 30%. Roughly half of each gap is
+  // used because a member's own record already reflects part of it.
+  seat: { chair: 0.16, vice: 0.08, member: 0.04 },
+  topLeadership: 0.04,
+  // "Best for Pinnacle": champion × (1 + accessBoost × access), access 0–1.
+  accessBoost: 0.25,
+  access: { 0: 0, 1: 0.4, 2: 0.7, 3: 1 },
 };
 
 // Maryland's session runs January–April; outcomes (including vetoes) are
@@ -67,7 +76,10 @@ const norm = s => String(s || '').toLowerCase().replace(/[\s–—-]+/g, ' ').re
 //                  topic, subtopic, secondary, year }]   (topic codes, not ids)
 // sponsorships: [{ bill_id, legislator_id, role: 'primary'|'cosponsor' }]
 // legislators:  [{ id, name, party, chamber, district }]
-// power:        { [legislator_id]: { chair, vice, leadership } }
+// power:        { [legislator_id]: { seats: { [committeeCode]: 'chair'|'vice'|'member' }, top: bool, posts: [] } }
+// Optional per-bill fields from the official record (data/mga.json): stage
+// (1 filed … 7 law), end ('w' withdrawn, 'u' unfavorable, 'v'/'vd' vetoed),
+// xfile (companion's bill number), committee / oppCommittee (codes).
 // majority:     { house: 'D', senate: 'D' }
 export function buildIndex({ bills, sponsorships, legislators, power = {}, majority = { house: 'D', senate: 'D' }, now = new Date() }) {
   const years = [...new Set(bills.map(b => b.year).filter(Boolean))].sort((a, b) => b - a);
@@ -80,17 +92,22 @@ export function buildIndex({ bills, sponsorships, legislators, power = {}, major
     if (!groups.has(k)) groups.set(k, []);
     groups.get(k).push(b);
   }
+  const byNumber = new Map(bills.map(b => [b.year + '|' + b.bill_number, b]));
+  const isLaw = x => x.outcome === 'passed' || x.stage === 7;
   const billById = new Map();
   for (const b of bills) {
-    const sibs = groups.get(b.year + '|' + norm(b.title)).filter(x => x.id !== b.id && chamberOf(x) !== chamberOf(b));
-    const companionPassed = sibs.some(x => x.outcome === 'passed');
+    // official cross-file when we have it, otherwise same-title twin
+    const official = b.xfile && byNumber.get(b.year + '|' + b.xfile);
+    const sibs = official ? [official] : b.stage ? [] : groups.get(b.year + '|' + norm(b.title)).filter(x => x.id !== b.id && chamberOf(x) !== chamberOf(b));
+    const companionPassed = sibs.some(isLaw);
     const concluded = sessionConcluded(b.year, now);
     let credit = null, result;
-    if (b.outcome === 'passed') { credit = WEIGHTS.credit.passed; result = 'law'; }
+    if (isLaw(b)) { credit = WEIGHTS.credit.passed; result = 'law'; }
     else if (companionPassed) { credit = WEIGHTS.credit.companionPassed; result = 'law-companion'; }
-    else if (b.outcome === 'failed' && b.status_stage === 'vetoed') { credit = 0; result = 'vetoed'; }
+    else if (b.end === 'v' || b.end === 'vd' || (b.outcome === 'failed' && b.status_stage === 'vetoed')) { credit = 0; result = 'vetoed'; }
     else if (!concluded) { credit = null; result = 'in-flight'; }
-    else if (b.status_stage === 'on_floor' || b.status_stage === 'advancing') { credit = WEIGHTS.credit.passedChamber; result = 'passed-chamber'; }
+    else if (b.end === 'w') { credit = WEIGHTS.credit.died; result = 'withdrawn'; }
+    else if (b.stage ? b.stage >= 4 : (b.status_stage === 'on_floor' || b.status_stage === 'advancing')) { credit = WEIGHTS.credit.passedChamber; result = 'passed-chamber'; }
     else { credit = WEIGHTS.credit.died; result = 'died'; }
     billById.set(b.id, {
       ...b, companions: sibs.map(x => x.id), companionPassed, credit, result, concluded,
@@ -126,7 +143,7 @@ export function buildIndex({ bills, sponsorships, legislators, power = {}, major
   const expects = [...legById.values()].map(l => l.expect);
   const mean = expects.reduce((a, b) => a + b, 0) / (expects.length || 1);
   const sd = Math.sqrt(expects.reduce((a, b) => a + (b - mean) ** 2, 0) / (expects.length || 1)) || 0.1;
-  return { billById, legById, years, chamberBase, expectDist: { mean, sd }, now };
+  return { billById, legById, years, chamberBase, expectDist: { mean, sd }, now, _tc: new Map() };
 }
 
 const chamberOf = b => /^S/i.test(b.bill_number || '') ? 'senate' : 'house';
@@ -149,11 +166,34 @@ function percentile(sorted, v) {
 }
 const clamp = v => Math.max(0, Math.min(100, Math.round(v)));
 
+// Which committees hear a policy area's bills, per chamber, as shares.
+// Uses the committee of referral in the bill's chamber of origin; committees
+// that no longer exist (code "x-…") are left out so shares describe today.
+export function topicCommittees(index, topic, subtopic = null) {
+  const key = topic + '|' + (subtopic || '');
+  if (index._tc.has(key)) return index._tc.get(key);
+  const n = { house: {}, senate: {} }, tot = { house: 0, senate: 0 };
+  for (const b of index.billById.values()) {
+    if (b.topic !== topic || (subtopic && b.subtopic !== subtopic) || !b.committee || b.committee.startsWith('x-')) continue;
+    const ch = chamberOf(b); n[ch][b.committee] = (n[ch][b.committee] || 0) + 1; tot[ch]++;
+  }
+  const out = {};
+  for (const ch of ['house', 'senate']) out[ch] = Object.entries(n[ch]).map(([code, c]) => ({ code, share: c / tot[ch], bills: c })).sort((a, b) => b.share - a.share);
+  index._tc.set(key, out);
+  return out;
+}
+
+// "Best for Pinnacle": lift a champion score by how well we know the member.
+export function withAccess(champion, strength = 0) {
+  return Math.min(100, Math.round(champion * (1 + WEIGHTS.accessBoost * (WEIGHTS.access[strength] || 0))));
+}
+
 // ── per-topic scores ─────────────────────────────────────────────────────────
 // Returns one row per legislator with any activity on the topic, sorted by
 // champion score. Every row carries the bills and a breakdown for the UI.
 export function scoreTopic(index, topic, { subtopic = null } = {}) {
   const rows = [];
+  const tc = topicCommittees(index, topic);
   for (const l of index.legById.values()) {
     const match = b => {
       if (b.topic === topic) return 1;
@@ -178,10 +218,20 @@ export function scoreTopic(index, topic, { subtopic = null } = {}) {
     const tCredit = tRec.reduce((a, b) => a + b.credit * match(b), 0);
     const tN = tRec.reduce((a, b) => a + match(b), 0);
     const topicRate = (tCredit + WEIGHTS.priorTopic * l.rate) / (tN + WEIGHTS.priorTopic);
-    const expect = expected(topicRate, l.inMajority);
-    const base = Math.round(effectivenessOf(index, expect));
-    const pw = (l.power.chair ? WEIGHTS.power.chair : l.power.vice ? WEIGHTS.power.vice : 0) + (l.power.leadership ? WEIGHTS.power.leadership : 0);
-    const effectiveness = clamp(base + pw);
+    // committee seats that matter for THIS area
+    const seats = l.power.seats || {};
+    let seatBonus = 0, seat = null;
+    for (const c of tc[l.chamber] || []) {
+      const role = seats[c.code]; if (!role) continue;
+      seatBonus += c.share * WEIGHTS.seat[role];
+      if (!seat || c.share * WEIGHTS.seat[role] > seat.share * WEIGHTS.seat[seat.role]) seat = { code: c.code, role, share: c.share };
+    }
+    if (l.power.top) seatBonus += WEIGHTS.topLeadership;
+    const baseExpect = expected(topicRate, l.inMajority);
+    const expect = baseExpect + seatBonus;
+    const base = Math.round(effectivenessOf(index, baseExpect));
+    const effectiveness = clamp(effectivenessOf(index, expect));
+    const pw = effectiveness - base;
     const champion = Math.round(Math.sqrt(willingness * effectiveness));
 
     const laws = tRec.filter(b => b.result === 'law' || b.result === 'law-companion');
@@ -195,7 +245,7 @@ export function scoreTopic(index, topic, { subtopic = null } = {}) {
       passed_chamber: tRec.filter(b => b.result === 'passed-chamber').length,
       in_flight: led.filter(b => b.result === 'in-flight').length,
       latest_year: Math.max(...[...led, ...co].map(b => b.year || 0)),
-      in_majority: l.inMajority, power: l.power,
+      in_majority: l.inMajority, power: l.power, seat,
       overall: { led: l.record.n, laws: l.record.laws, rate: l.rate },
       expected_rate: expect,
       quality: tRec.length >= 4 && led.length >= 3 ? 'solid' : led.length >= 1 ? 'thin' : 'minimal',

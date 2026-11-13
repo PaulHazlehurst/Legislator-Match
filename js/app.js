@@ -7,7 +7,7 @@ import { openLegislator, setupLegislatorDrawer } from './views/legislator.js';
 import { setupBills, renderBills, renderWatch, openBill } from './views/bills.js';
 import { setupInsights, renderInsights } from './views/insights.js';
 import { setupNetwork, renderNetwork } from './views/network.js';
-import { setupProposer } from './views/proposer.js';
+import { setupProposer, runIdea } from './views/proposer.js';
 import { setupDirectory, renderDirectory } from './views/directory.js';
 import { WEIGHTS } from '../shared/scoring.js';
 
@@ -26,12 +26,22 @@ function routes() {
   route('bills', () => { show('bills'); renderBills(); });
   route('relationships', (action, id) => { show('relationships'); renderNetwork(action === 'add' ? id : null); });
   route('insights', () => { show('insights'); renderInsights(); });
-  route('proposer', () => { show('proposer'); });
+  route('proposer', (...parts) => { show('proposer'); if (parts.length) runIdea(parts.join('/')); });
   route('directory', () => { show('directory'); renderDirectory(); });
   route('watchlist', () => { show('watchlist'); renderWatch(); });
-  route('playbook', () => { show('playbook'); });
+  route('playbook', () => { show('playbook'); renderPlaybookCommittees(); });
   route('legislator', (id) => { show('champions'); closeTopic(); openLegislator(id); });
   route('bill', (id) => { show('bills'); openBill(id); });
+}
+
+function renderPlaybookCommittees() {
+  const el = $('pb-committees'); if (!el || el.dataset.done) return;
+  if (!STATE.committees.length) { el.innerHTML = '<p class="muted">Committee data has not been built yet.</p>'; return; }
+  const name = (id) => id && STATE.legById[id] ? `<button class="linkish" data-leg="${id}">${esc(STATE.legById[id].name)}</button>` : '—';
+  el.innerHTML = ['house', 'senate'].map(ch => `<div><h4>${ch === 'house' ? 'House' : 'Senate'}</h4>${STATE.committees.filter(c => c.chamber === ch && c.code !== 'exn').map(c =>
+    `<div class="ci"><b>${esc(c.name)}</b><span>Chair ${name(c.chair)}, vice chair ${name(c.vice)}</span><span>${esc((c.issues || []).slice(0, 6).join(', ').toLowerCase())}${(c.issues || []).length > 6 ? ', …' : ''}</span></div>`).join('')}</div>`).join('');
+  el.dataset.done = '1';
+  on(el, 'click', '[data-leg]', b => openLegislator(b.dataset.leg));
 }
 
 // ── chrome ───────────────────────────────────────────────────────────────────
@@ -59,18 +69,17 @@ function methodology() {
   const w = WEIGHTS;
   openModal(`<article class="method">
     <h2>How the scores work</h2>
-    <p>Every current member gets two scores per policy area, from three sessions of sponsorship and outcome data. Click any member to see the bills behind their numbers.</p>
-    <h3><span class="k k-w"></span>Willingness: will they carry it?</h3>
-    <p>Driven by the bills they <b>lead</b>. Co-sponsoring is cheap in Annapolis, so it adds a little and is capped relative to what they lead: someone who only co-signs tops out around 33. Recent sessions count more (${w.recency.join(', ')} by session), and substantive bills more than local (${w.significance.local}), procedural (${w.significance.procedural}) or ceremonial ones (${w.significance.ceremonial}). A bill whose secondary area is this one counts half. A member gets up to ${w.focusMax} extra points when this area is a big share of what they carry.</p>
-    <h3><span class="k k-e"></span>Effectiveness: can they pass it?</h3>
-    <p>Their real record of getting the bills they lead enacted, in completed sessions. A bill counts as a win if it became law <b>or its cross-filed companion did</b>, since in Maryland only one twin often gets the vote. Passing one chamber earns partial credit (${w.credit.passedChamber}). Small samples are pulled toward the chamber average, so one lucky bill doesn't make anyone 100%. Majority-party membership adds what the data says it's worth. The result is placed on a bell curve: 50 is a typical member, 84 is one standard deviation better.</p>
-    <p>Checked against reality: a member's 2024–25 record predicts their 2026 results (correlation 0.61).</p>
-    <h3><span class="k k-c"></span>Champion</h3>
-    <p>The geometric mean of the two. You need both: a willing member with no record of passing bills, or a powerful one who never touches the issue, can't top the list.</p>
-    <h3>Policy areas</h3>
-    <p>Bills are classified by a rule engine built on the Department of Legislative Services' own subject assignments and Maryland's title conventions, with an AI second opinion on uncertain bills. On 150 hand-checked bills it picks the right area 88% of the time, and the right area or its listed secondary 97%. Any colleague with the team passcode can fix a bill from its page; fixes are never overwritten.</p>
-    <h3>Absolute and relative</h3>
-    <p>Absolute scores compare across all areas. Relative scores rank members against others active in the same area only.</p>
+    <p>Each member gets one number per policy area, with a plain word beside it (Top pick, Strong, Solid, Possible, Long shot). It blends the three things below. Click any member to see the bills behind it.</p>
+    <h3><span class="k k-w"></span>Carries it: will they take the bill?</h3>
+    <p>Driven by the bills they <b>lead</b> in this area. Co-sponsoring is cheap in Annapolis, so it adds a little and is capped: someone who only co-signs tops out around 33. Recent sessions count more, and substantive bills more than local, procedural or ceremonial ones. A bill whose secondary area is this one counts half.</p>
+    <h3><span class="k k-e"></span>Passes it: can they get it through?</h3>
+    <p>Their real record of getting the bills they lead enacted. A bill counts as a win if it became law <b>or its cross-filed companion did</b>. Passing one chamber earns partial credit (${w.credit.passedChamber}). Small samples are pulled toward the chamber average, and majority-party status is added at its measured value.</p>
+    <p><b>Committee seats count, per area.</b> In 2026, bills became law 60% of the time when the sponsor chaired the committee that heard them, 46% for vice chairs, 38% for members and 30% for everyone else. A seat on the committee that hears this area's bills raises the score in proportion to how many of them it hears.</p>
+    <p>Checked against reality: a member's 2024–25 record predicts their 2026 results (correlation 0.61). 50 is a typical member; 84 is one standard deviation better.</p>
+    <h3><span class="k k-c"></span>We know them</h3>
+    <p>The headline number starts as the balance of the two scores above (you need both). If someone on our team has a relationship with the member, it rises by up to ${Math.round(w.accessBoost * 100)}%: ${Math.round(w.accessBoost * w.access[1] * 100)}% for an acquaintance, ${Math.round(w.accessBoost * w.access[2] * 100)}% for a working relationship, ${Math.round(w.accessBoost * 100)}% for a close one. A champion we can reach beats a slightly stronger one we can't. Turn this off under Filters.</p>
+    <h3>Where the data comes from</h3>
+    <p>Sponsors and votes from LegiScan; committees, hearings, committee votes, cross-files and contact details from the General Assembly's own site. Bills are sorted into policy areas by a rule engine checked against 630 hand-labelled bills (88% exact, 97% counting the listed secondary area). Any colleague with the team passcode can fix a bill from its page.</p>
   </article>`);
 }
 

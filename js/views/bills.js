@@ -1,9 +1,9 @@
-import { STATE } from '../store.js';
+import { STATE, committeeName } from '../store.js';
 import { select } from '../api.js';
 import { teamApi, getPasscode, setPasscode } from '../api.js';
 import { classifyBill } from '../../shared/classifier.js';
 import { invalidateInsights } from './insights.js';
-import { $, esc, num, partyChip, topicLabel, subtopicLabel, resultTag, openDrawer, on, toast, store } from '../ui.js';
+import { $, esc, num, partyChip, topicLabel, subtopicLabel, resultTag, openDrawer, on, toast, store, journey, stoppedAt } from '../ui.js';
 
 const WATCH_KEY = 'pinnacle_watch';
 export const WATCH = new Set(store(WATCH_KEY) || []);
@@ -11,6 +11,8 @@ const saveWatch = () => { store(WATCH_KEY, [...WATCH]); const b = $('nav-watch-c
 
 const CONF = { high: 'High confidence', medium: 'Medium confidence', low: 'Low confidence' };
 const BY = { rules_v2: 'Rules v2', ai_review: 'AI-reviewed', manual: 'Fixed by a colleague', legiscan_subject: 'v1 subject tag', subject_keyword: 'v1 keyword', gemini: 'v1 AI', gemini_no_match: 'v1 AI (no match)', unclassified: 'Unclassified' };
+
+const officialUrl = (b) => `https://mgaleg.maryland.gov/mgawebsite/Legislation/Details/${b.bill_number.toLowerCase().replace(/^([a-z]+)(\d+)$/, (m, p, n) => p + n.padStart(4, '0'))}?ys=${b.year}RS`;
 
 export function billRow(b) {
   return `<li class="bill-row"><button class="bill-line" data-bill="${b.id}">
@@ -46,7 +48,9 @@ export async function openBill(id) {
   openDrawer(`<header class="d-head">
       <p class="meta"><b>${esc(b.bill_number)}</b>, ${b.year} session <button class="star ${WATCH.has(b.id) ? 'on' : ''}" data-star="${b.id}" title="Watch this bill">★</button></p>
       <h2 id="drawer-title" class="bill-title">${esc(b.title)}</h2>
-      <p>${resultTag(b)}</p>
+      <p>${resultTag(b)} ${stoppedAt(b) ? `<span class="muted">${esc(stoppedAt(b))}</span>` : ''}${b.chapter ? `<span class="muted">Chapter ${esc(b.chapter)}</span>` : ''}</p>
+      ${journey(b)}
+      ${b.committee ? `<p class="d-record">Sent to <b>${esc(committeeName(b.committee) || '')}</b>${b.committee2 ? ` and ${esc(committeeName(b.committee2) || '')}` : ''}${b.hearing ? `, hearing ${esc(new Date(b.hearing + 'T12:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }))}` : ''}${b.oppCommittee ? `; then ${esc(committeeName(b.oppCommittee) || '')} in the other chamber` : ''}. <a href="${officialUrl(b)}" target="_blank" rel="noopener">Official page</a></p>` : ''}
     </header>
     <section class="d-sec" id="d-desc"><p class="muted">Loading summary…</p></section>
     <section class="d-sec">
