@@ -56,8 +56,14 @@
 
   <section id="view-champions" class="view" aria-labelledby="h-champ">
     <div id="finder-landing">
-      <h1 id="h-champ">Who should carry your bill?</h1>
-      <p class="lede">Pick a policy area. Members are ranked by how often they lead bills on it and how often those bills become law, and you can see who on our team already knows them.</p>
+      <p class="countdown" id="countdown"></p>
+      <h1 id="h-champ">What do you want to pass?</h1>
+      <form class="ideabox" id="idea-form">
+        <label class="sr" for="idea-input">Describe your bill idea</label>
+        <textarea id="idea-input" rows="2" placeholder="Describe it in your own words, e.g. cap what seniors pay in rent increases, or let food trucks work across county lines"></textarea>
+        <button class="btn btn-big">Build the game plan</button>
+      </form>
+      <p class="lede">You'll get the policy area, the odds, the committees that decide it, who should carry it, and who on our team knows them. Or browse an area:</p>
       <div class="searchrow"><input id="topic-filter" type="search" placeholder="Filter areas, e.g. housing, cannabis, apprenticeships" aria-label="Filter policy areas"></div>
       <nav class="topic-index" id="topic-index" aria-label="Policy areas"></nav>
     </div>
@@ -68,26 +74,30 @@
         <h1 id="rtitle"></h1>
       </div>
       <nav class="subchips" id="subchips" aria-label="Subtopics"></nav>
+      <div id="gatekeepers"></div>
       <div class="controls">
         <label>Rank by <select id="f-sort">
-          <option value="champion">Best champion</option>
-          <option value="willingness">Most willing to carry</option>
+          <option value="champion">Best for us</option>
+          <option value="willingness">Most likely to carry it</option>
           <option value="effectiveness">Best at passing bills</option>
           <option value="laws">Most laws here</option>
-          <option value="led">Most bills led here</option>
-          <option value="warm">Our relationships first</option>
         </select></label>
-        <label>Party <select id="f-party"><option value="">Any</option><option value="D">Democrat</option><option value="R">Republican</option></select></label>
-        <label>Chamber <select id="f-chamber"><option value="">Both</option><option value="house">House</option><option value="senate">Senate</option></select></label>
-        <label>Scores <select id="f-scale" title="Absolute compares across all areas; relative ranks against others active here"><option value="abs">Absolute</option><option value="rel">Relative to this area</option></select></label>
-        <label class="check"><input type="checkbox" id="f-led" checked> Led a bill here</label>
-        <label class="check"><input type="checkbox" id="f-warm"> Our relationships only</label>
+        <details class="filters" id="filters">
+          <summary>Filters<span id="filter-count"></span></summary>
+          <div class="filters-body">
+            <label>Party <select id="f-party"><option value="">Any</option><option value="D">Democrat</option><option value="R">Republican</option></select></label>
+            <label>Chamber <select id="f-chamber"><option value="">Both</option><option value="house">House</option><option value="senate">Senate</option></select></label>
+            <label class="check"><input type="checkbox" id="f-led" checked> Only members who have led a bill here</label>
+            <label class="check"><input type="checkbox" id="f-seat"> Only members on the committees that hear these bills</label>
+            <label class="check"><input type="checkbox" id="f-warm"> Only members we know</label>
+            <label class="check"><input type="checkbox" id="f-access" checked> Count our relationships in the ranking</label>
+          </div>
+        </details>
         <span class="spacer"></span>
         <div class="seg" role="group" aria-label="View"><button id="v-list" class="on">List</button><button id="v-map">Map</button></div>
         <button class="btn btn-quiet" id="exportbtn">Export CSV</button>
       </div>
       <p class="rsummary" id="rsummary"></p>
-      <p class="legend"><span class="lg"><span class="k k-w"></span>Outer ring: willingness to carry</span><span class="lg"><span class="k k-e"></span>Inner ring: effectiveness at passing</span><span class="lg"><span class="k k-c"></span>Centre: champion score</span><button class="linkish" data-method>How these work</button></p>
       <div id="results"></div>
     </div>
   </section>
@@ -99,7 +109,7 @@
       <input id="b-input" type="search" placeholder="Number or title words, e.g. HB1358 or apprenticeship" aria-label="Search bills" class="grow">
       <select id="b-topic" aria-label="Policy area"></select>
       <select id="b-year" aria-label="Session"></select>
-      <select id="b-outcome" aria-label="Outcome"><option value="">Any outcome</option><option value="law">Became law</option><option value="passed-chamber">Passed one chamber</option><option value="died">Did not pass</option><option value="vetoed">Vetoed</option><option value="in-flight">In progress</option></select>
+      <select id="b-outcome" aria-label="Outcome"><option value="">Any outcome</option><option value="law">Became law</option><option value="passed-chamber">Passed one chamber</option><option value="died">Did not pass</option><option value="withdrawn">Withdrawn</option><option value="vetoed">Vetoed</option><option value="in-flight">In progress</option></select>
       <label class="check" title="Bills the classifier was unsure about: check and fix these first"><input type="checkbox" id="b-review"> Needs review</label>
       <span class="rc" id="b-count"></span>
     </div>
@@ -131,17 +141,22 @@
     <p class="lede">What three sessions of Maryland legislation say about getting a bill passed.</p>
     <div class="kpis" id="s-kpis"></div>
     <div class="panel"><h2>What moves a bill</h2><p class="fine">Share of substantive bills in completed sessions that became law (or whose cross-filed companion did). Bars compare like with like; the right-hand number is how many bills each rate is based on.</p><div class="drivers" id="s-drivers"></div></div>
-    <div class="panel"><h2>From filing to law, by session</h2><div id="s-funnel"></div></div>
+    <div class="panel"><h2>Where bills die</h2><p class="fine">Every bill filed in three sessions, by how far it got. The committee vote is the cliff: get out of committee and the odds flip in your favour.</p><div id="s-funnel"></div></div>
+    <div class="panel"><h2>The committees</h2><p class="fine">How each standing committee treats the bills sent to it. “Voted out” is the share it reported favourably.</p><div class="tablewrap" id="s-committees"></div></div>
     <div class="panel"><h2>Policy areas</h2><p class="fine">Click a column to sort. “Bipartisan” is the share of decided bills with sponsors from both parties.</p><div class="tablewrap" id="s-areas"></div></div>
+    <div class="panel"><h2>Swing votes</h2><p class="fine">Members who break with their own party most often on contested votes. On a close bill, these are the people to talk to.</p><div class="boards" id="s-swing"></div></div>
     <div class="panel"><h2>Members to know</h2><div class="boards" id="s-boards"></div></div>
     <div class="panel"><h2>How reliable the policy areas are</h2><div id="s-quality"></div></div>
   </section>
 
   <section id="view-proposer" class="view" hidden aria-labelledby="h-prop">
-    <h1 id="h-prop">Proposer</h1>
-    <p class="lede">Describe a bill you want to move. You'll get its policy area, the members best placed to carry it, who on our team knows them, and similar bills already filed.</p>
-    <textarea id="p-text" rows="4" placeholder="e.g. A tax credit for employers who hire apprentices from registered apprenticeship programs"></textarea>
-    <p><button class="btn" id="p-go">Find champions</button> <span class="fine">Ctrl or ⌘ Enter</span></p>
+    <h1 id="h-prop">Game plan</h1>
+    <form class="ideabox" id="p-form">
+      <label class="sr" for="p-text">Describe your bill idea</label>
+      <textarea id="p-text" rows="3" placeholder="Describe the bill in your own words, or paste a title, summary or draft"></textarea>
+      <button class="btn btn-big" id="p-go">Build the game plan</button>
+    </form>
+    <p class="fine" id="p-examples">Try: <button class="linkish" data-example="Cap insulin costs at $30 a month">cap insulin costs</button>, <button class="linkish" data-example="Stop landlords from raising rent on seniors by more than 3% a year">limit rent increases for seniors</button>, <button class="linkish" data-example="Make data centers pay for the power lines they need">data centers pay for power lines</button>, <button class="linkish" data-example="Tax credit for employers who hire registered apprentices">apprenticeship tax credit</button></p>
     <div id="p-out"></div>
   </section>
 
@@ -178,26 +193,10 @@
       </div>
     </div>
 
-    <div class="grid2">
-      <div class="panel"><h3>House standing committees</h3><div class="comm">
-        <div class="ci"><b>Ways &amp; Means</b><span>Taxes, education, elections</span></div>
-        <div class="ci"><b>Appropriations</b><span>State budget &amp; spending</span></div>
-        <div class="ci"><b>Economic Matters</b><span>Business, labor, insurance, utilities</span></div>
-        <div class="ci"><b>Environment &amp; Transportation</b><span>Environment, land use, vehicles, local gov</span></div>
-        <div class="ci"><b>Health &amp; Government Operations</b><span>Health, state government</span></div>
-        <div class="ci"><b>Judiciary</b><span>Criminal &amp; civil law, courts</span></div>
-      </div></div>
-      <div class="panel"><h3>Senate standing committees</h3><div class="comm">
-        <div class="ci"><b>Budget &amp; Taxation</b><span>Budget, taxes</span></div>
-        <div class="ci"><b>Finance</b><span>Health, insurance, business, labor</span></div>
-        <div class="ci"><b>Education, Energy &amp; the Environment</b><span>Schools, energy, environment</span></div>
-        <div class="ci"><b>Judicial Proceedings</b><span>Criminal &amp; civil law, courts</span></div>
-        <div class="ci"><b>Rules</b><span>Procedure, late bills</span></div>
-      </div></div>
-    </div>
+    <div class="panel"><h3>The standing committees and who runs them</h3><div id="pb-committees" class="cgrid"></div></div>
 
     <div class="panel"><h3>Who to talk to — in priority order</h3><div class="talk">
-      <div class="ti"><div class="tn">1</div><div><b>Your lead sponsor.</b> They carry the bill. Pick for willingness <em>and</em> standing — use the Champion Finder's two-axis scores.</div></div>
+      <div class="ti"><div class="tn">1</div><div><b>Your lead sponsor.</b> They carry the bill. Pick for willingness <em>and</em> standing — use the scores in Champions.</div></div>
       <div class="ti"><div class="tn">2</div><div><b>The committee chair.</b> The biggest gatekeeper in Annapolis — controls whether your bill gets a hearing and a vote. Win them or route around them.</div></div>
       <div class="ti"><div class="tn">3</div><div><b>Committee members.</b> The first real vote. Target persuadable members — check their voting alignment to find who crosses party lines.</div></div>
       <div class="ti"><div class="tn">4</div><div><b>A cross-file sponsor.</b> A companion bill in the other chamber doubles your momentum and beats the clock.</div></div>
@@ -221,7 +220,6 @@
 <div class="tray" id="tray" aria-live="polite">
   <div class="tray-chips" id="tray-chips"></div>
   <button class="btn" id="tray-cmp">Compare</button>
-  <button class="btn" id="tray-strat">Strategy brief</button>
   <button class="btn btn-quiet" id="tray-clear">Clear</button>
 </div>
 

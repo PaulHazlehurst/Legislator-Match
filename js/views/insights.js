@@ -1,4 +1,5 @@
 import { STATE } from '../store.js';
+import { relsFor } from '../relationships.js';
 import { scoreTopic } from '../../shared/scoring.js';
 import { $, esc, pct, num, sparkline, partyChip, topicLabel, on, bar } from '../ui.js';
 import { openLegislator } from './legislator.js';
@@ -35,11 +36,15 @@ function compute() {
   ];
 
   const years = STATE.index.years.slice().sort();
-  const funnel = years.map(y => {
-    const xs = bills.filter(b => b.year === y);
-    return { y, filed: xs.length, chamber: xs.filter(b => ['on_floor', 'advancing', 'passed', 'vetoed'].includes(b.status_stage)).length,
-      law: xs.filter(b => b.outcome === 'passed').length, inFlight: xs.some(b => b.result === 'in-flight') };
-  });
+  // the real journey, from the official record (stage 1 filed … 7 law)
+  const staged = bills.filter(b => b.stage && b.concluded);
+  const steps = [[1, 'Filed'], [2, 'Got a hearing'], [3, 'Voted out of committee'], [4, 'Passed first chamber'], [6, 'Passed both chambers'], [7, 'Became law']];
+  const funnel = steps.map(([s, label]) => ({ label, n: staged.filter(b => b.stage >= s).length }));
+  const committees = STATE.committees.map(c => {
+    const sent = staged.filter(b => b.committee === c.code && b.significance !== 'ceremonial');
+    if (sent.length < 20) return null;
+    return { c, sent: sent.length, heard: sent.filter(b => b.stage >= 2).length / sent.length, out: sent.filter(b => b.stage >= 3).length / sent.length, law: sent.filter(b => isLaw(b)).length / sent.length };
+  }).filter(Boolean).sort((x, y) => y.sent - x.sent);
 
   const areas = STATE.topics.filter(t => !t.legacy).map(t => {
     const xs = bills.filter(b => b.topic === t.code);
@@ -67,7 +72,7 @@ function compute() {
 
   const conf = { high: 0, medium: 0, low: 0, none: 0 };
   for (const b of bills) conf[b.topic ? (b.confidence || 'none') : 'none'] = (conf[b.topic ? (b.confidence || 'none') : 'none'] || 0) + 1;
-  return { bills, decided, rate, isLaw, drivers, funnel, areas, boards, conf, years };
+  return { bills, decided, rate, isLaw, drivers, funnel, committees, areas, boards, conf, years };
 }
 
 export function renderInsights() {
@@ -87,9 +92,22 @@ export function renderInsights() {
   $('s-drivers').innerHTML = c.drivers.map(d => `<div class="drv"><h4>${esc(d.label)}</h4>${d.rows.map(([l, r, n], i) => `
       <div class="drv-row" title="${esc(l)}: ${pct(r, 1)} of ${num(n)} bills became law"><span class="drv-l">${esc(l)}</span>${bar(r || 0, d.rows.length === 2 ? (i === 0 ? 'e' : 'n') : 'w', maxR)}<span class="drv-v">${pct(r)}</span><span class="drv-n">${num(n)}</span></div>`).join('')}</div>`).join('');
 
-  const fmax = Math.max(...c.funnel.map(f => f.filed));
-  $('s-funnel').innerHTML = `<div class="funnel">${c.funnel.map(f => `<div class="fy"><h4>${f.y}${f.inFlight ? ' <span class="muted">(in progress)</span>' : ''}</h4>
-    ${[['Filed', f.filed, 'n'], ['Passed one chamber', f.chamber, 'w'], ['Became law', f.law, 'e']].map(([l, v, k]) => `<div class="drv-row" title="${l}: ${num(v)}"><span class="drv-l">${l}</span>${bar(v, k, fmax)}<span class="drv-v">${num(v)}</span><span class="drv-n">${pct(v / f.filed)}</span></div>`).join('')}</div>`).join('')}</div>`;
+  if (c.funnel[0].n) {
+    const f0 = c.funnel[0].n;
+    $('s-funnel').innerHTML = `<div class="steps-chart">${c.funnel.map((f, i) => { const drop = i ? 1 - f.n / c.funnel[i - 1].n : 0;
+      return `<div class="drv-row${drop >= 0.3 ? ' cliff' : ''}" title="${esc(f.label)}: ${num(f.n)} bills"><span class="drv-l">${esc(f.label)}</span>${bar(f.n, drop >= 0.3 ? 'g' : 'w', f0)}<span class="drv-v">${num(f.n)}</span><span class="drv-n">${i ? (drop >= 0.005 ? '−' + pct(drop) : 'same') : ''}</span></div>`; }).join('')}</div>
+      <p class="fine">Right-hand column: how many were lost since the step above. Of the bills voted out of their first committee, ${pct(c.funnel[5].n / c.funnel[2].n)} became law.</p>`;
+    $('s-committees').innerHTML = `<table class="areas-t"><thead><tr><th scope="col">Committee</th><th scope="col">Chair</th><th scope="col" class="r">Bills sent</th><th scope="col">Got a hearing</th><th scope="col">Voted out</th><th scope="col">Became law</th></tr></thead><tbody>
+      ${c.committees.map(x => { const ch = x.c.chair && STATE.legById[x.c.chair]; const rel = ch && relsFor(ch.id)[0];
+        return `<tr><th scope="row">${esc(x.c.name)} <span class="muted">${x.c.chamber === 'senate' ? 'Senate' : 'House'}</span></th><td>${ch ? `<button class="linkish" data-leg="${ch.id}">${partyChip(ch.party)} ${esc(ch.name)}</button>${rel ? ` <span class="warm" style="--c:${rel.staff.color || 'var(--gold)'}">${esc(rel.staff.name)}</span>` : ''}` : '—'}</td><td class="r">${num(x.sent)}</td>
+        <td class="bc">${bar(x.heard, 'n', 1)}<span>${pct(x.heard)}</span></td><td class="bc">${bar(x.out, 'w', 1)}<span>${pct(x.out)}</span></td><td class="bc">${bar(x.law, 'e', 1)}<span>${pct(x.law)}</span></td></tr>`; }).join('')}</tbody></table>`;
+  } else { $('s-funnel').innerHTML = '<p class="muted">Bill progress data has not been built yet (npm run build-data).</p>'; $('s-committees').innerHTML = ''; }
+
+  // swing votes
+  if (STATE.votes) {
+    const sw = (party) => STATE.legislators.filter(l => l.party === party && STATE.votes[l.id]?.n >= 200).map(l => [l, STATE.votes[l.id].loyal]).sort((a, b) => a[1] - b[1]).slice(0, 8);
+    $('s-swing').innerHTML = [['D', 'Democrats who break ranks most'], ['R', 'Republicans who break ranks most']].map(([p, title]) => `<section class="board"><h4>${title}</h4><ol>${sw(p).map(([l, v]) => `<li><button class="linkish" data-leg="${l.id}">${partyChip(l.party)} ${esc(l.name)}</button><span class="bv">${100 - v}% of votes</span></li>`).join('')}</ol></section>`).join('');
+  } else $('s-swing').innerHTML = '<p class="muted">Vote comparison data has not been built yet.</p>';
 
   renderAreas();
 

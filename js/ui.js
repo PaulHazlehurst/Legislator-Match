@@ -27,6 +27,7 @@ const RESULT = {
   'passed-chamber': ['Passed one chamber', 'part'],
   'vetoed': ['Vetoed', 'dead'],
   'died': ['Did not pass', 'dead'],
+  'withdrawn': ['Withdrawn', 'dead'],
   'in-flight': ['In progress', 'live'],
 };
 export function resultTag(b) {
@@ -47,6 +48,45 @@ export function dial(w, e, c, { size = 64, label = true } = {}) {
     </svg>
     ${label ? `<figcaption><span class="k-w">W ${w}</span><span class="k-e">E ${e}</span></figcaption>` : ''}
   </figure>`;
+}
+
+// The everyday score: one number, one plain word, two small bars.
+const WORDS = [[85, 'Top pick'], [70, 'Strong'], [55, 'Solid'], [40, 'Possible'], [0, 'Long shot']];
+export const scoreWord = (n) => WORDS.find(([min]) => n >= min)[1];
+export function scoreBlock(n, w, e, { note = '' } = {}) {
+  return `<div class="score" title="Carries it: ${w} of 100. Passes it: ${e} of 100.${note ? ' ' + note : ''}">
+    <span class="score-top"><b class="score-n">${n}</b><span class="score-w">${scoreWord(n)}</span></span>
+    <span class="score-bar"><i>Carries it</i>${bar(w, 'w')}</span>
+    <span class="score-bar"><i>Passes it</i>${bar(e, 'e')}</span>
+  </div>`;
+}
+
+// How far a bill got, from the official record (stage 1–7).
+const STEPS = [[1, 'Filed'], [2, 'Hearing'], [3, 'Out of committee'], [4, 'Passed first chamber'], [6, 'Passed both'], [7, 'Law']];
+export function journey(b) {
+  if (!b.stage) return '';
+  const dead = b.result !== 'law' && b.result !== 'in-flight';
+  const last = STEPS.filter(([s]) => b.stage >= s).length - 1;
+  return `<ol class="journey${dead ? ' journey-dead' : ''}" aria-label="How far this bill got">${STEPS.map(([s, label], i) =>
+    `<li class="${b.stage >= s ? 'done' : ''}${i === last && dead ? ' stopped' : ''}"><span>${label}</span></li>`).join('')}</ol>`;
+}
+export function stoppedAt(b) {
+  if (!b.stage || b.result === 'law' || b.result === 'in-flight') return '';
+  if (b.end === 'w') return 'Withdrawn by the sponsor';
+  if (b.end === 'u') return 'Voted down in committee';
+  if (b.end === 'v') return 'Vetoed by the Governor';
+  if (b.end === 'vd') return 'Vetoed as a duplicate of its companion';
+  return { 1: 'Never got a hearing', 2: 'Died in committee after its hearing', 3: 'Left committee but stalled on the floor', 4: 'Passed its first chamber, then stalled in the second', 5: 'Stalled on the floor of the second chamber', 6: 'Passed both chambers but did not become law' }[b.stage] || '';
+}
+
+// Maryland's regular session convenes the second Wednesday of January.
+export function nextSession(now = new Date()) {
+  const start = (y) => { const d = new Date(y, 0, 1); d.setDate(1 + ((3 - d.getDay() + 7) % 7) + 7); return d; };
+  let s = start(now.getFullYear());
+  const end = new Date(s); end.setDate(end.getDate() + 89);
+  if (now > end) s = start(now.getFullYear() + 1);
+  const days = Math.ceil((s - now) / 864e5);
+  return { start: s, days, inSession: days <= 0 };
 }
 
 export function bar(v, cls = 'w', max = 100) {
